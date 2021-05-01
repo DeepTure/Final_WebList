@@ -23,6 +23,8 @@ const flash = require("connect-flash");
 const main = require("./routes/main");
 const login = require("./routes/logic.login");
 const perfil = require("./routes/profile");
+const historial = require("./routes/history");
+const recuperar = require("./routes/recover")
 //variables
 
 /*
@@ -219,7 +221,8 @@ app.use(Parser);
 app.use(main);
 app.use(login);
 app.use(perfil);
-
+app.use(historial);
+app.use(recuperar);
 
 //rutas de emergencia cuando ocurre
 app.use((req, res) => {

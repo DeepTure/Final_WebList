@@ -1,0 +1,9 @@
+<% if(rol == "administrador"){%>
+
+    <%- include('vistas/historyadmin'); %>
+
+<% }else if(rol == "profesor"){%>
+
+    <%- include('vistas/historyprof'); %>
+
+<% } %>

@@ -28,20 +28,20 @@
         <div class="navImg" id="navbar">
             <ul>
                 <li>
-                	<a href="/home/perfil">
-                		Mi perfil
+                	<a href="/home">
+                		Volver
                 	</a>
                 </li>
                 <li>
-                </li>
-                <li>
-                	<a href="/logout">
-                		Cerrar sesión
-                	</a>
                 </li>
                 <li>
                 	<a href="#">
                 		Ayuda
+                	</a>
+                </li>
+                <li>
+                	<a href="/logout">
+                		Cerrar Sesión
                 	</a>
                 </li>
             </ul>
@@ -54,28 +54,28 @@
 			<!-- Izquierda -->
 			<section class="squareSectionSizeLW addTopMarginAlt">
 				<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
-					Bienvenido <%= id %>
+					Gráficos
 				</p>
 				
 				<br>
 				
+				<p class="addLeftMarginAlt centerText">
+					Para empezar la busqueda, seleccione un grupo
+				</p>
+
+				<br>
+
 				<aside class="addLeftMarginAlt">
-					Grupos incritos: 6IAB
-					<br>
-					
-					<br>
-					
-					<aside class="autoManageSpacedAlways">
-						Código de la clase
-						<br>
-						<input class="smallInput" type="text" name="classCode" placeholder="Ingresa el código">
-					</aside>
+					<article class="autoManageCenter">
+						<input class="buttonInput smallButton blue" type="button" name="groupA" value="6IAB">
+						<input class="buttonInput smallButton blue" type="button" name="groupA" value="6ICD">
+						<input class="buttonInput smallButton blue" type="button" name="groupA" value="6IEF">
+					</article>
+				</aside>
 
-					<br>
+				<br>
 
-				</aside>			
-
-				<input class="buttonInput addLeftMarginAlt blue" type="button" name="applyForAssistance" value="Solicitar registro">
+				<input class="buttonInput addLeftMarginAlt blue" type="button" name="bringStudentReg" value="Traer historial">
 
 				<br><br>
 
@@ -87,7 +87,7 @@
 
 				<select class="addLeftMarginAlt">
 					<option>
-						-- Grupo --
+						-- Materia --
 					</option>
 				</select>
 
@@ -95,7 +95,7 @@
 
 				<select class="addLeftMarginAlt">
 					<option>
-						-- Materia --
+						-- Todos los alumnos --
 					</option>
 				</select>
 
@@ -118,9 +118,9 @@
 				<script src="../public/MorrisJS/morris.min.js"></script>
 
 				<p class="centerText">
-					Historial de faltas
+					Historial de faltas de Fulano de Tal
 				</p>
-				
+
 				<div class="addLeftMarginAlt" id="sampleChart">
 					
 				</div>
@@ -151,7 +151,13 @@
 							Fecha
 						</th>
 						<th>
-							Nombre
+							U.A
+						</th>
+						<th>
+							Alumno
+						</th>
+						<th>
+							
 						</th>
 					</tr>
 					<tr>
@@ -161,13 +167,25 @@
 						<td>
 							Proyecto Integrador 
 						</td>
+						<td>
+							Fulano de Tal
+						</td>
+						<td>
+							<input class="buttonInput tinyButton red" type="button" name="decline" value="Eliminar">
+						</td>
 					</tr>
 					<tr>
 						<td>
 							YYYY/MM/DD
 						</td>
 						<td>
-							Inglés X
+							Proyecto Integrador 
+						</td>
+						<td>
+							Fulano de Tal
+						</td>
+						<td>
+							<input class="buttonInput tinyButton red" type="button" name="decline" value="Eliminar">
 						</td>
 					</tr>
 				</table>
