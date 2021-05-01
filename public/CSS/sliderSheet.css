@@ -1,0 +1,56 @@
+body{
+    justify-content: center;
+}
+
+#a{
+    width: 100px;
+}
+
+.swiper-slide {
+    width: 100px;
+    height: 25%;
+    background-position: center;
+    background-size: cover;
+    margin: 0 20px;
+    background-color: green;
+    border:#800040 solid 1px;
+}
+
+.contenedor{
+    height: 20rem;
+    background-color: red;
+    position: relative;
+    max-width: 99%;
+}
+
+.contenedor .carta{
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    background-color: blue;
+    margin: 60px 40px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.contenedor .carta .contenido{
+    position: relative;
+    z-index: 2;
+}
+
+.contenedor .carta .contenido p{
+    font-size: 5px;
+    line-height: 24px;
+    margin-bottom: 20px;
+    background-color: yellow;
+    color: #111;
+}
+
+.contenedor .carta .contenido h2{  
+    transition: 0.5s; 
+}
+
+.contenedor .carta:hover .contenido h2{
+    background-color: purple;
+    color: #800040;
+}

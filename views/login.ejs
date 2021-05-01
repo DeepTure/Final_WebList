@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		WebList
+	</title>
+	<link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css">
+	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: no-preference)" href="../public/CSS/lightColorSheet.css">
+	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: light)" href="../public/CSS/lightColorSheet.css">
+	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: dark)" href="../public/CSS/darkColorSheet.css">
+	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/navSheet.css">
+
+	<link rel="icon" href="../public/IMG/DeepTure.ico">
+	<link rel="shortcut icon" href="../public/IMG/DeepTure.ico">
+	
+	<meta charset='utf-8'>	
+</head>
+<body>
+	<nav class="addShadow" id="header">
+        <article class="addLeftMargin">
+			<img src="../public/IMG/WebListLogo.png" class="navImg">
+			<p class="titleFont addLeftMargin alignMiddle">
+				WebList Project
+			</p>
+		</article>
+
+        <div class="navImg" id="toggle"></div>
+        <div class="navImg" id="navbar">
+            <ul>
+                <li>
+                	<a href="recovery.html">
+                		Recuperar acceso
+                	</a>
+                </li>
+                <li>
+                	<a href="help.html">
+                		Ayuda
+                	</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <script src="../public/JS/nav.js"></script>
+
+	<div>
+		<section class="squareSectionSize addLargeTopMargin addShadow">
+			<p class="titleFont addTopMargin centerText">
+				Iniciar sesión
+			</p>
+            <form action="/InicioSesionController" method="POST">
+                <p class="centerText">
+                    <br>
+                    
+                    <div class="alignMiddle">
+                        <img class="inputIcon" src="../public/IMG/user.png">
+                        <input class="largeInput" type="text" name="username" placeholder="Usuario">
+                    </div>
+                    
+                    <br>
+                    <br>
+                    
+                    <div class="alignMiddle">
+                        <img class="inputIcon" src="../public/IMG/key.png">
+                        <input class="largeInput" type="password" name="password" placeholder="Contraseña">
+                    </div>
+                    
+                    <br>
+                    <br>
+
+                    <div class="alignMiddle">
+                        <img class="inputIcon" src="../public/IMG/users.png">
+                        <select class="largeInput" id="kind" name="rol">
+                            <option class="largeInput">
+                                -- Seleccione su perfil --
+                            </option>
+                            <option class="largeInput">
+                                Administrador
+                            </option>
+                            <option class="largeInput">
+                                Profesor
+                            </option>
+                            <option class="largeInput">
+                                Alumno
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <br>
+                </p>
+                <p class=" centerText">
+                    
+                    <br><br><br><br>
+                    
+                    <input class="buttonInput submit" type="submit" name="login" value="Iniciar sesión">
+                    <input class="buttonInput" type="button" name="signature" value="Usar firma digital">
+                </p>
+            </form>
+		</section>
+	</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+#toggle{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #800040;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#toggle::before{
+    content: '';
+    position: absolute;
+    width: 58%;
+    height: 0.1rem;
+    background: white;
+    transform: translateY(-5px);
+    transition: 0.2s transform;
+}
+#toggle::after{
+    content: '';
+    position: absolute;
+    width: 58%;
+    height: 0.1rem;
+    background: white;
+    transform: translateY(5px);
+    transition: 0.2s transform;
+}
+
+#toggle.active::before{
+    transform: translateY(0px) rotate(45deg);
+}
+
+#toggle.active::after{
+    transform: translateY(0px) rotate(-45deg);
+}
+
+#toggle.active{
+    background:#6e0037;
+}
+
+#navbar{
+    position: relative;
+    right: 2.5rem;
+    width: 0;
+    overflow: hidden;
+    transition: 0.5s width;
+}
+
+#navbar.active{
+    width: 50%;
+}
+
+#navbar ul{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+#navbar ul li{
+    list-style: none;
+}
+
+#navbar ul li a{
+    height: 3rem;
+    line-height: 3rem;
+    display: block;
+    text-decoration: none;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    transition: 0.5s background;
+}
+
+#navbar ul li a:hover{
+    color: white;
+    background: #800040;
+    transition: 0.5s background;
+}
+
+@media (max-width: 600px) {
+    #navbar{
+        top: -100%;
+        right: 0;
+        width: 100%;
+        transition: 0.5s;
+        position: fixed;
+        overflow: hidden;
+    }
+
+    #navbar.active{
+        z-index: 1;
+        top: 3rem;
+        height: 100%;
+        width: 100%;
+    }
+
+    #navbar ul{
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #navbar ul li a{
+        padding-top: 1rem;
+        text-align: center;
+        padding-left: 0;
+        padding-right: 0;
+        transition: 1s;
+        width: 100%;
+    }
+
+    #navbar ul li a:hover{
+        color: white;
+        background: #800040;
+        transition: 0.5s;
+    }
+}
+

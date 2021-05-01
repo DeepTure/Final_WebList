@@ -1,0 +1,24 @@
+*{
+	color: black;
+}
+
+body{
+	background-color: rgb(241, 241, 246);
+}
+
+section{
+	background-color: rgb(255, 255, 255);
+}
+
+nav{
+	background-color: rgb(255, 255, 255);
+}
+
+input, select, option{
+	background-color: rgb(255, 255, 255);
+}
+
+.grayHighlight:hover{
+	background-color: rgb(200, 200, 200);
+	transition: 1s background;
+}

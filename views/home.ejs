@@ -1,0 +1,13 @@
+<% if(rol == "administrador"){%>
+
+    <%- include('vistas/homeadmin'); %>
+
+<% }else if(rol == "profesor"){%>
+
+    <%- include('vistas/homeprofesor'); %>
+
+<% }else if(rol == "alumno"){%>
+
+    <%- include('vistas/homealumno'); %>
+
+<% }%>

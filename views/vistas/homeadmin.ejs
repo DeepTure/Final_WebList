@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		WebList
+	</title>
+	<link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css">
+	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: no-preference)" href="../public/CSS/lightColorSheet.css">
+	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: light)" href="../public/CSS/lightColorSheet.css">
+	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: dark)" href="../public/CSS/darkColorSheet.css">
+	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/navSheet.css">
+	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/timerSheet.css">
+
+	<link rel="icon" href="../public/IMG/DeepTure.ico">
+	<link rel="shortcut icon" href="../public/IMG/DeepTure.ico">
+	<meta charset="utf-8">
+</head>
+<body>
+	<nav class="addShadow" id="header">
+        <article class="addLeftMargin">
+			<img src="../public/IMG/WebListLogo.png" class="navImg">
+			<p class="titleFont addLeftMargin alignMiddle">
+				WebList Project
+			</p>
+		</article>
+
+        <div class="navImg" id="toggle"></div>
+        <div class="navImg" id="navbar">
+            <ul>
+                <li>
+                	<a href="/home/perfil">
+                		Mi perfil
+                	</a>
+                </li>
+                <li>
+                	<a href="grapAdmin.html">
+                		Graficas
+                	</a>
+                </li>
+                <li>
+                	<a href="/logout">
+                		Cerrar sesión
+                	</a>
+                </li>
+                <li>
+                	<a href="help.html">
+                		Ayuda
+                	</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <script src="../public/JS/nav.js"></script>
+
+	<div>
+		<section class="defaultSectionSize autoManageSpaced addShadow">
+			<!-- Izquierda -->
+			<section class="squareSectionSizeLW addTopMarginAlt">
+				<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
+					Administración
+				</p>
+				
+				<br>
+				
+				<aside class="addLeftMarginAlt">
+					Agregar / modificar
+					<br>
+					
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						ID
+						<br>
+						<input class="smallInput" type="text" name="ID" placeholder="ID">
+					</aside>
+
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						Nombre
+						<br>
+						<input class="smallInput" type="text" name="name" placeholder="Nombre">
+					</aside>
+
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						Apellido paterno
+						<br>
+						<input class="smallInput" type="text" name="lastName" placeholder="Apellido paterno">
+					</aside>
+
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						Apellido materno
+						<br>
+						<input class="smallInput" type="text" name="lastName1" placeholder="Apellido materno">
+					</aside>
+
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						Rol
+						<br>
+						<select class="smallInput centerText" name="role">
+							<option class="smallInput centerText">
+								Profesor
+							</option>
+							<option class="smallInput centerText">
+								Alumno
+							</option>
+						</select>
+					</aside>
+				
+					<br>
+
+				</aside>			
+
+				<input class="buttonInput addLeftMarginAlt blue" type="button" name="sent" value="Ejecutar">
+				
+				<br><br>
+
+				<input class="buttonInput addLeftMarginAlt tallInput dashedBorder green" type="button" name="fastRegister" value="Subir archivo CSV">
+			</section>
+			
+			<!-- Derecha -->
+			<section class="squareSectionSizeLW addTopMarginAlt">
+				<p class="titleFont addTopMarginAlt centerText">
+					Vizualización de datos
+				</p>
+
+				<br>
+
+				<article class="autoManageSpaced addLeftMarginAlt">
+					<aside class="autoManageTogether">
+						<input class="buttonInput smallButton blue" type="button" name="professorEntities" value="Profesores">
+						<input class="buttonInput smallButton blue" type="button" name="studentEntities" value="Alumnos">
+					</aside>
+
+					<input class="smallInput centerText" type="text" name="search" placeholder="Buscar">
+				</article>
+
+				<br>
+
+				<table class="addLeftMarginAlt" cellspacing="0" cellpadding="0">
+					<tr class="title">
+						<th>
+							ID
+						</th>
+						<th>
+							Nombre
+						</th>
+						<th>
+							Ap_paterno
+						</th>
+						<th>
+							Ap_materno
+						</th>
+						<th>
+							Rol
+						</th>
+						<th>
+								
+						</th>
+					</tr>
+					<tr>
+						<td>
+							2019090000
+						</td>
+						<td>
+							Sultano
+						</td>
+						<td>
+							de Tal
+						</td>
+						<td>
+							Undefined
+						</td>
+						<td>
+							Alumno
+						</td>
+						<td>
+							<input class="buttonInput tinyButton red" type="button" name="delete" value="Eliminar">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							2019090001
+						</td>
+						<td>
+							Fulano
+						</td>
+						<td>
+							de Tal
+						</td>
+						<td>
+							Undefined
+						</td>
+						<td>
+							Alumno
+						</td>
+						<td>
+							<input class="buttonInput tinyButton red" type="button" name="delete" value="Eliminar">
+						</td>
+					</tr>
+				</table>
+
+				<style type="text/css">
+					tr, th, td{
+						text-align: center;
+						padding-right: 1rem;
+						padding-left: 1rem;
+						height: 1.4rem;
+						transition: 1s background;
+					}
+				</style>
+
+			</section>
+		</section>
+	</div>
+</body>
+</html>
