@@ -9,11 +9,10 @@
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: light)" href="../public/CSS/lightColorSheet.css">
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: dark)" href="../public/CSS/darkColorSheet.css">
 	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/navSheet.css">
+	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/timerSheet.css">
 
 	<link rel="icon" href="../public/IMG/DeepTure.ico">
 	<link rel="shortcut icon" href="../public/IMG/DeepTure.ico">
-
-	<script src="../public/JS/script.js"></script>
 
 	<meta charset="utf-8">
 </head>
@@ -21,7 +20,7 @@
 	<style type="text/css">
 		@media (min-width: 600px) {
 			#navbar.active{
-				width: 13.8rem;
+				width: 6rem;
 			}
 		}
 	</style>
@@ -35,16 +34,16 @@
 
         <div class="navImg" id="toggle"></div>
         <div class="navImg" id="navbar">
+			
             <ul>
                 <li>
-                	<a href="/">
-                		Iniciar sesión
-                	</a>
-                </li>
-                <li>
-                	<a href="/help">
-                		Ayuda
-                	</a>
+                	<!-- SE TIENE QUE CAMBIAR SEGUN DE DONDE VINO -->
+					<% if (direccion != null){%>
+					<a href="<%= direccion %>">
+						Volver
+					</a>
+					<% } %>
+					
                 </li>
             </ul>
         </div>
@@ -52,31 +51,34 @@
     <script src="../public/JS/nav.js"></script>
 
 	<div>
-		<section class="squareSectionSize addLargeTopMargin addShadow">
-			<p class="titleFont addTopMargin centerText">
-				Recuperar accesso
+		<section class="defaultSectionSize addShadow">
+			<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
+				Centro de ayuda
 			</p>
-			<p class=" centerText">
-				<br>
-				<div class="alignMiddle">
-					<img class="inputIcon" src="../public/IMG/user.png">
-					<input class="largeInput" type="text" name="mail" placeholder="Usuario">
-				</div>
-				<p class=" centerText">
+			<br>
+			<p class="addLeftMarginAlt centerText">
+				Seleccione una sección
+			</p>
+			<br>
+			<article class="autoManageTogetherAlways addLeftMarginAlt">
+				<article class="largeButton autoManageStack">
+					<a href="/helpuno" target="view" class="centerText blue">Cuentas y contraseñas</a>
 					<br>
-					<input class="buttonInput fullLargeButton submit" type="button" name="sent" value="Enviar">
-				</p>
-				<br>
-				<br>
-				<div class="alignMiddle">
-					<img class="inputIcon" src="../public/IMG/key.png">
-					<input class="largeInput" type="password" name="password" placeholder="Código de acceso temporal">
-				</div>
-				<br>
-			</p>
-			<p class="centerText">
-				<input class="buttonInput fullLargeButton submit" type="button" name="login" value="Verificar">
-			</p>
+					<a class="centerText blue">Funcionamiento de la página</a>
+				</article>
+				<p style="visibility: hidden;"> space </p>
+				<article class="largeButton autoManageStack">
+					<a class="centerText blue">Preguntas frecuentes</a>
+					<br>
+					<a class="centerText blue">Soporte técnico</a>
+				</article>
+			</article>
+			
+			<br>
+
+			<iframe src="" name="view" class="addLeftMarginAlt dashedBorder" style="height: 20rem;">
+				
+			</iframe>
 		</section>
 	</div>
 </body>

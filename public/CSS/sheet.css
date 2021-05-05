@@ -106,9 +106,23 @@ tr:hover{
 	height: 37.5rem;
 }
 
+.defaultSectionSizeNoMarg{
+	margin: 9;
+	width: 100%;
+}
+
 .squareSectionSize{
 	width: 25rem;
 	height: 23.5rem;
+}
+
+.sectionSizeXLW{
+	width: 100%;
+}
+
+.squareSectionSizeLWAlt{
+	margin: 3%;
+	width: 44%;
 }
 
 .squareSectionSizeLW{
@@ -299,6 +313,11 @@ background-color: rgb(30, 62, 110); dk
 	justify-content: center;
 }
 
+.autoManageTogetherAlways{
+	display: flex;
+	justify-content: center;
+}
+
 .autoManageCenter{
 	display: flex;
 	justify-content: center;
@@ -326,6 +345,14 @@ background-color: rgb(30, 62, 110); dk
 .navImg{
 	width: 3rem;
 	height: 3rem;
+}
+
+.helpImg{
+	border: 0.1rem solid lightgray;
+	background-color: white;
+	padding: 1rem;
+	width: 6rem;
+	height: 6rem;
 }
 
 .inputIcon{
