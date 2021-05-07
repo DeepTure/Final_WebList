@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		WebList
+	</title>
+	<link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css">
+	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: no-preference)" href="../public/CSS/lightColorSheet.css">
+	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: light)" href="../public/CSS/lightColorSheet.css">
+	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: dark)" href="../public/CSS/darkColorSheet.css">
+	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/navSheet.css">
+	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/timerSheet.css">
+
+	<link rel="icon" href="../public/IMG/DeepTure.ico">
+	<link rel="shortcut icon" href="../public/IMG/DeepTure.ico">
+
+	<meta charset="utf-8">
+</head>
+<body>
+	<style type="text/css">
+		@media (min-width: 600px) {
+			#navbar.active{
+				width: 25rem;
+			}
+		}
+	</style>
+	<nav class="addShadow" id="header">
+        <article class="addLeftMargin">
+			<img src="../public/IMG/WebListLogo.png" class="navImg">
+			<p class="titleFont addLeftMargin alignMiddle">
+				WebList Project
+			</p>
+		</article>
+
+        <div class="navImg" id="toggle"></div>
+        <div class="navImg" id="navbar">
+            <ul>
+                <li>
+                	<a href="/home/perfil">
+                		Mi perfil
+                	</a>
+                </li>
+                <li>
+                	<a href="/home/historial">
+                		Graficas
+                	</a>
+                </li>
+                <li>
+                	<a href="/">
+                		Cerrar sesión
+                	</a>
+                </li>
+                <li>
+                	<a href="/home/modify/help">
+                		Ayuda
+                	</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <script src="../public/JS/nav.js"></script>
+
+	<div>
+		<section class="defaultSectionSize autoManageSpaced addShadow">
+			<!-- Izquierda -->
+			<section class="squareSectionSizeLW addTopMarginAlt">
+				<p class="titleFont addTopMarginAlt centerText">
+					Datos del usuario %%%%%%%%%%
+				</p>
+
+				<p class="bodyFont addTopMargin addLeftMargin addRightMargin centerText dashedBorder fillSpaceAlt submit">
+					<br><br>
+					Matricula (ID): 2019090000
+					<br><br>
+					Correo: hola@hola.com
+					<br><br>
+					Nombre: Fulano
+					<br><br>
+					Apellido paterno: de Tal
+					<br><br>
+					Apellido materno: undefined
+					<br><br>
+					Rol: Alumno/Profesor
+					<br><br>
+					if alumno: Grupos inscritos elif profesor: U.A impartidas
+				</p>
+				<br>
+			</section>
+
+			<!-- Derecha -->
+			<section class="squareSectionSizeLW addTopMarginAlt">
+				<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
+					Modificar datos de usuarios
+				</p>
+				
+				<br>
+				
+				<aside class="addLeftMarginAlt">
+					
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						ID
+						<br>
+						<input class="smallInput" type="text" name="ID" placeholder="ID" value="2019090000">
+					</aside>
+
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						Nombre
+						<br>
+						<input class="smallInput" type="text" name="name" placeholder="Nombre" value="Fulano">
+					</aside>
+
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						Apellido paterno
+						<br>
+						<input class="smallInput" type="text" name="lastName" placeholder="Apellido paterno" value="de Tal">
+					</aside>
+
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						Apellido materno
+						<br>
+						<input class="smallInput" type="text" name="lastName1" placeholder="Apellido materno" value="undefined">
+					</aside>
+
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						Rol
+						<br>
+						<select class="smallInput centerText" name="role">
+							<option class="smallInput centerText">
+								Profesor
+							</option>
+							<option class="smallInput centerText">
+								Alumno
+							</option>
+						</select>
+					</aside>
+
+					<br>
+
+					<aside class="autoManageSpacedAlways">
+						<aside class="autoManageStack">
+							<aside class="autoManageSpacedAlways">
+								Agregue grupos/materias
+								<p style="visibility: hidden;"> space </p>
+								<select class="smallInput centerText" name="role">
+									<option class="smallInput centerText">
+										6IAB
+									</option>
+									<option class="smallInput centerText">
+										6ICD
+									</option>
+									<option class="smallInput centerText">
+										6IEF
+									</option>
+								</select>
+							</aside>
+							<br>
+							<aside class="autoManageSpacedAlways">
+								<p style="visibility: hidden;"> space </p>
+								<input class="buttonInput green" type="button" placeholder="Apellido materno" value="Agregar">
+							</aside>
+						</aside>
+						<br>
+						<aside class="autoManageSpacedAlways">
+							<p>
+								Agregados:
+							</p>
+							<p style="visibility: hidden;"> space </p>
+							<aside class="autoManageStack">
+								<p>- 6IAB</p>
+								<p>- 6ICD</p>
+								<p>- 6IEF</p>
+							</aside>
+						</aside>
+					</aside>			
+
+					<br>
+
+				</aside>			
+
+				<input class="buttonInput addLeftMarginAlt blue" type="button" name="sent" value="Modificar">
+			</section>
+		</section>
+	</div>
+</body>
+</html>

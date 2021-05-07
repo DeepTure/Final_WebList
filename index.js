@@ -24,7 +24,9 @@ const main = require("./routes/main");
 const login = require("./routes/logic.login");
 const perfil = require("./routes/profile");
 const historial = require("./routes/history");
-const recuperar = require("./routes/recover")
+const recuperar = require("./routes/recover");
+const help = require("./routes/help");
+const crud_admin = require("./routes/crud_admin");
 //variables
 
 /*
@@ -214,6 +216,7 @@ passport.deserializeUser(function (user, done) {
 
 //para acceder a archivos estaticos
 app.use("/public", express.static("public"));
+app.use("/home/public", express.static("public"));
 //usamos el body parser
 app.use(Parser);
 
@@ -223,6 +226,8 @@ app.use(login);
 app.use(perfil);
 app.use(historial);
 app.use(recuperar);
+app.use(crud_admin);
+app.use(help);
 
 //rutas de emergencia cuando ocurre
 app.use((req, res) => {
