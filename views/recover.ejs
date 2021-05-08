@@ -4,6 +4,7 @@
 	<title>
 		WebList
 	</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no">
 	<link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css">
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: no-preference)" href="../public/CSS/lightColorSheet.css">
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: light)" href="../public/CSS/lightColorSheet.css">
@@ -56,15 +57,40 @@
 					Recuperar accesso
 				</p>
 				<p class=" centerText">
-					<br>
-					<div class="alignMiddle">
+					<!-- Primera parte del recovery-->
+					<br class="first-action">
+					<div class="alignMiddle first-action">
+						<img class="inputIcon" src="../public/IMG/mail.png">
+						<input class="largeInput" id="username" type="text" name="username" placeholder="Numero de usuario">
+					</div>
+					<br class="first-action">
+					<div class="alignMiddle first-action">
 						<img class="inputIcon" src="../public/IMG/mail.png">
 						<input class="largeInput" id="email" type="email" name="mail" placeholder="Correo electrónico">
 					</div>
-					<p class="centerText">
+					<br class="first-action">
+					<div class="alignMiddle first-action">
+                        <img class="inputIcon" src="../public/IMG/users.png">
+                        <select class="largeInput" id="rol" name="rol">
+                            <option class="largeInput">
+                                -- Seleccione su perfil --
+                            </option>
+                            <option class="largeInput">
+                                Administrador
+                            </option>
+                            <option class="largeInput">
+                                Profesor
+                            </option>
+                            <option class="largeInput">
+                                Alumno
+                            </option>
+                        </select>
+                    </div>
+					<p class="centerText first-action">
 						<br>
-						<input class="buttonInput fullLargeButton submit" id="sendEmail" type="button" name="sent" value="Enviar">
+						<input class="buttonInput fullLargeButton submit" id="sendEmail" type="button" name="sent" value="Enviarme codigo de acceso">
 					</p>
+					<!-- Segunda parte del recovery-->
 					<br>
 					<br>
 					<div class="alignMiddle second-action">
