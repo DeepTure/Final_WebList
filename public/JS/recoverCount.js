@@ -1,7 +1,11 @@
 //acciones de inicio
+$('.second-action').hide();
+
+
 $('#sendEmail').click(function(){
     const email = document.getElementById('email').value;
-    //ahora debemos revisar que exista el correo y levantar el token
-});
+    //validamos si el correo es correcto
 
-$('.second-action').hide();
+    //ahora debemos revisar que exista el correo y levantar el token
+    alert(email);
+});

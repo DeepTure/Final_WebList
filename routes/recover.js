@@ -1,10 +1,10 @@
 const router = require("express").Router();
-const db = require("../database/connection");
+//const db = require("../database/connection");
 const crypto = require("crypto");
 
-//Redireccionamiento al perfil
-router.get("/recovery", (req, res) => {
-    return res.render("recover");
-});
+const model = require('../models/recovery.js');
+
+//Rutas
+router.get('/recovery',model.recovery);
 
 module.exports = router;
