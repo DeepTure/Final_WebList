@@ -25,6 +25,7 @@ const login = require("./routes/logic.login");
 const perfil = require("./routes/profile");
 const historial = require("./routes/history");
 const recuperar = require("./routes/recover");
+const studentCrud = require('./routes/studentCrudRoutes');
 const help = require("./routes/help");
 const crud_admin = require("./routes/crud_admin");
 //variables
@@ -228,6 +229,7 @@ app.use(historial);
 app.use(recuperar);
 app.use(crud_admin);
 app.use(help);
+app.use(studentCrud);
 
 //rutas de emergencia cuando ocurre
 app.use((req, res) => {

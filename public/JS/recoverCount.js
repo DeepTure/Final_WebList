@@ -7,9 +7,10 @@ $('#sendEmail').click(function(){
     const username = document.getElementById('username').value;
     const rol = document.getElementById('rol').value;
     //validamos si el correo es correcto
-
+    let vemail = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/i;
+    let vusername = /[a-zA-Z0-9]{1,10}/;
     //ahora debemos revisar que exista el correo y levantar el token
-    if(true){
+    if(vemail.test(email) && vusername.test(username)){
         $.ajax({
             url:'/recovery/comprobateEmail',
             type:'post',
@@ -20,7 +21,7 @@ $('#sendEmail').click(function(){
                     sendCode(email, response.idUser, rol);
                     popUp('Se Ha enviado un codigo a su correo','se envió con exito', 'success');
                 }else{
-                    popUp('Ha ocurrido un error','probablemente no se encontró su correo', 'error');
+                    popUp('Los datos son erroneos','probablemente no se encontró su correo', 'error');
                 }
             },
             error:function(response){
@@ -29,7 +30,7 @@ $('#sendEmail').click(function(){
             }
         });
     }else{
-
+        popUp('Los datos no cumplen con el formato','Ingrese otro formato', 'error');
     }
 });
 

@@ -37,7 +37,7 @@ model.comprobateEmail = (req, res) =>{
                     }
                 });
             }else{
-                return res.send({success: false, idUser: idMUsuario[0].idMUsuario});
+                return res.send({success: false, idUser: null});
             }
         });
     }else if(data.rol==='Profesor'){
@@ -58,7 +58,7 @@ model.comprobateEmail = (req, res) =>{
                     }
                 });
             }else{
-                return res.send({success: false, idUser: idMUsuario[0].idMUsuarios});
+                return res.send({success: false, idUser: null});
             }
         });
     }else{
@@ -75,7 +75,7 @@ model.comprobateEmail = (req, res) =>{
                         }
                 });
             }else{
-                return res.send({success: false, idUser: idMUsuario[0].idMUsuario});
+                return res.send({success: false, idUser: null});
             }
         });
     }

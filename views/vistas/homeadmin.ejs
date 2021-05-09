@@ -8,6 +8,7 @@
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: no-preference)" href="../public/CSS/lightColorSheet.css">
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: light)" href="../public/CSS/lightColorSheet.css">
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: dark)" href="../public/CSS/darkColorSheet.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/navSheet.css">
 	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/timerSheet.css">
 
@@ -178,7 +179,7 @@
 		<aside class="autoManageSpacedAlways">
 			ID
 			<br>
-			<input class="smallInput" type="text" name="ID" placeholder="ID">
+			<input class="smallInput" type="text" id="aid" name="ID" placeholder="ID">
 		</aside>
 
 		<br>
@@ -186,7 +187,7 @@
 		<aside class="autoManageSpacedAlways">
 			Nombre
 			<br>
-			<input class="smallInput" type="text" name="name" placeholder="Nombre">
+			<input class="smallInput" type="text" id="aname" name="name" placeholder="Nombre">
 		</aside>
 
 		<br>
@@ -194,7 +195,7 @@
 		<aside class="autoManageSpacedAlways">
 			Apellido paterno
 			<br>
-			<input class="smallInput" type="text" name="lastName" placeholder="Apellido paterno">
+			<input class="smallInput" type="text" id="alastf" name="lastName" placeholder="Apellido paterno">
 		</aside>
 
 		<br>
@@ -202,7 +203,7 @@
 		<aside class="autoManageSpacedAlways">
 			Apellido materno
 			<br>
-			<input class="smallInput" type="text" name="lastName1" placeholder="Apellido materno">
+			<input class="smallInput" type="text" id="alastm" name="lastName1" placeholder="Apellido materno">
 		</aside>
 
 		<br>
@@ -210,7 +211,7 @@
 		<aside class="autoManageSpacedAlways">
 			Rol
 			<br>
-			<select class="smallInput centerText" name="role">
+			<select class="smallInput centerText" id="arol" name="role">
 				<option class="smallInput centerText">
 					Profesor
 				</option>
@@ -224,7 +225,7 @@
 
 	</aside>			
 
-	<input class="buttonInput addLeftMarginAlt blue" type="button" name="sent" value="Agregar usuario">
+	<input class="buttonInput addLeftMarginAlt blue" id="addUser" type="button" name="sent" value="Agregar usuario">
 	
 	<br><br>
 
@@ -232,5 +233,8 @@
 			</section>
 		</section>
 	</div>
+
+	<script src="public/JS/toGeneral.js"></script>
+	<script src="public/JS/studentCrud.js"></script>
 </body>
 </html>
