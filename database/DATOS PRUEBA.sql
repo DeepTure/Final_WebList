@@ -77,7 +77,7 @@ insert into CMateria values("P608","INGENIERIA DE SOFTWARE BASICA","Programacion
 insert into CMateria values("P609","LAB. DE PROYECTOS DE TECNOLOGIAS DE LA INFORMACION IV","Programacion");
 insert into CMateria values("P610","PROYECTO INTEGRADOR","Programacion");
 
-//IdMUsuario primeras 2 letras del usuario sea PR (Profesor), AL(Alumno), AD(Administrador) y 4 números au
+# IdMUsuario primeras 2 letras del usuario sea PR (Profesor), AL(Alumno), AD(Administrador) y 4 números au
 insert into CUsuario values("AD0001","Deep","Ture","Software","correo@gmail.com","b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79");
 insert into CUsuario values("PR0002","Jaime","Minor","Goméz","correo@gmail.com","b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79");
 insert into CUsuario values("AL0003","Leo","Piña","Ramírez","correo@gmail.com","b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79");

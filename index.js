@@ -25,7 +25,7 @@ const login = require("./routes/logic.login");
 const perfil = require("./routes/profile");
 const historial = require("./routes/history");
 const recuperar = require("./routes/recover");
-const studentCrud = require('./routes/studentCrudRoutes');
+const studentCrud = require("./routes/studentCrudRoutes");
 const help = require("./routes/help");
 const crud_admin = require("./routes/crud_admin");
 //variables
@@ -72,83 +72,91 @@ passport.use(
             var asegurado = hash.digest("hex");
             //Depende del tipo de usuario busca dentro de la tabla usuario correspondiente su id y de la tabla master usuarios para ubicar su contraseña para así poder dar el login
             //Una vez encontrado se guardan los ids para uso próximo por todo el sistema
-            if (req.body.rol == "Administrador"){
-                db.query("select * from EAdministrador admin JOIN CUsuario user on admin.idMUsuario = user.idMUsuario where  (admin.id_administrador = ? and user.contrasena = ?);"
-                ,[username,asegurado]
-                ,(err,administrador) =>{
-                    if(err){
-                        console.log(err);
-                        return done(null,false,{
-                            message:
-                                "Hubo un fallo en el proceso"
-                        });
+            if (req.body.rol == "Administrador") {
+                db.query(
+                    "select * from EAdministrador admin JOIN CUsuario user on admin.idMUsuario = user.idMUsuario where  (admin.id_administrador = ? and user.contrasena = ?);",
+                    [username, asegurado],
+                    (err, administrador) => {
+                        if (err) {
+                            console.log(err);
+                            return done(null, false, {
+                                message: "Hubo un fallo en el proceso",
+                            });
+                        }
+                        var ids = [
+                            administrador[0].idMUsuario,
+                            administrador[0].id_administrador,
+                        ];
+                        if (administrador.length > 0) {
+                            return done(null, {
+                                rol: "administrador",
+                                id: ids,
+                            });
+                        } else {
+                            return done(null, false, {
+                                message:
+                                    "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
+                            });
+                        }
                     }
-                    var ids=[administrador[0].idMUsuario, administrador[0].id_administrador];
-                    if (administrador.length > 0){
-                        return done(null, {
-                            rol: "administrador",
-                            id: ids,
-                        });
-                    }else{
-                        return done(null, false, {
-                            message:
-                                "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
-                        });
+                );
+            } else if (req.body.rol == "Profesor") {
+                db.query(
+                    "select * from EProfesor profe JOIN CUsuario user on profe.idMUsuarios = user.idMUsuario where  (profe.id_empleado = ? and user.contrasena = ?);",
+                    [username, asegurado],
+                    (err, profesor) => {
+                        if (err) {
+                            console.log(err);
+                            return done(null, false, {
+                                message: "Hubo un fallo en el proceso",
+                            });
+                        }
+                        if (profesor.length > 0) {
+                            var ids = [
+                                profesor[0].idMUsuario,
+                                profesor[0].id_empleado,
+                            ];
+                            return done(null, {
+                                rol: "profesor",
+                                id: ids,
+                            });
+                        } else {
+                            return done(null, false, {
+                                message:
+                                    "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
+                            });
+                        }
                     }
+                );
+            } else if (req.body.rol == "Alumno") {
+                db.query(
+                    "select * from EAlumno alumn JOIN CUsuario user on alumn.idMUsuario = user.idMUsuario where  (alumn.Boleta = ? and user.contrasena = ?);",
+                    [username, asegurado],
+                    (err, alumno) => {
+                        if (err) {
+                            console.log(err);
+                            return done(null, false, {
+                                message: "Hubo un fallo en el proceso",
+                            });
+                        }
+                        if (alumno.length > 0) {
+                            var ids = [alumno[0].idMUsuario, alumno[0].Boleta];
+                            return done(null, {
+                                rol: "alumno",
+                                id: ids,
+                            });
+                        } else {
+                            return done(null, false, {
+                                message:
+                                    "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
+                            });
+                        }
+                    }
+                );
+            } else {
+                return done(null, false, {
+                    message: "Debe de seleccionar un usuario",
                 });
-            }else if(req.body.rol == "Profesor"){
-                db.query("select * from EProfesor profe JOIN CUsuario user on profe.idMUsuarios = user.idMUsuario where  (profe.id_empleado = ? and user.contrasena = ?);"
-                ,[username,asegurado]
-                ,(err,profesor) =>{
-                    if(err){
-                        console.log(err);
-                        return done(null,false,{
-                            message:
-                                "Hubo un fallo en el proceso"
-                        });
-                    }
-                    if (profesor.length > 0){
-                        var ids=[profesor[0].idMUsuario, profesor[0].id_empleado];
-                        return done(null, {
-                            rol: "profesor",
-                            id: ids,
-                        });
-                    }else{
-                        return done(null, false, {
-                            message:
-                                "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
-                        });
-                    }
-                });
-            }else if(req.body.rol == "Alumno"){
-                db.query("select * from EAlumno alumn JOIN CUsuario user on alumn.idMUsuario = user.idMUsuario where  (alumn.Boleta = ? and user.contrasena = ?);"
-                ,[username,asegurado]
-                ,(err,alumno) =>{
-                    if(err){
-                        console.log(err);
-                        return done(null,false,{
-                            message:
-                                "Hubo un fallo en el proceso"
-                        });
-                    }
-                    if (alumno.length > 0){
-                        var ids=[alumno[0].idMUsuario, alumno[0].Boleta];
-                        return done(null, {
-                            rol: "alumno",
-                            id: ids,
-                        });
-                    }else{
-                        return done(null, false, {
-                            message:
-                                "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
-                        });
-                    }
-                });
-            }else{
-                return done(null, false,{
-                    message:
-                        "Debe de seleccionar un usuario"
-                })
             }
         }
     )
