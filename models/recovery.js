@@ -31,13 +31,13 @@ model.comprobateEmail = (req, res) =>{
                     if(err)return res.json(err);
                     console.log('id: '+idMUsuario[0].idMUsuario+' ? emaildb: '+emailDb[0].email+' ? email: ',data.email);
                     if(data.email == emailDb[0].email){
-                        return res.send(true);
+                        return res.send({success: true, idUser: idMUsuario[0].idMUsuario});
                     }else{
-                        return res.send(false);
+                        return res.send({success: false, idUser: idMUsuario[0].idMUsuario});
                     }
                 });
             }else{
-                return res.send(false);
+                return res.send({success: false, idUser: idMUsuario[0].idMUsuario});
             }
         });
     }else if(data.rol==='Profesor'){
@@ -49,16 +49,16 @@ model.comprobateEmail = (req, res) =>{
                     if(emailDb.length != 0){
                         console.log('id: '+idMUsuario[0].idMUsuario+' ? emaildb: '+emailDb[0].email+' ? email: ',data.email);
                         if(data.email == emailDb[0].email){
-                            return res.send(true);
+                            return res.send({success: true, idUser: idMUsuario[0].idMUsuarios});
                         }else{
-                            return res.send(false);
+                            return res.send({success: false, idUser: idMUsuario[0].idMUsuarios});
                         }
                     }else{
-                        return res.send(false);
+                        return res.send({success: false, idUser: idMUsuario[0].idMUsuarios});
                     }
                 });
             }else{
-                return res.send(false);
+                return res.send({success: false, idUser: idMUsuario[0].idMUsuarios});
             }
         });
     }else{
@@ -69,13 +69,13 @@ model.comprobateEmail = (req, res) =>{
                     if(err)return res.json(err);
                     console.log('id: '+idMUsuario[0].idMUsuario+' ? emaildb: '+emailDb[0].email+' ? email: ',data.email);
                         if(data.email == emailDb[0].email){
-                            return res.send(true);
+                            return res.send({success: true, idUser: idMUsuario[0].idMUsuario});
                         }else{
-                            return res.send(false);
+                            return res.send({success: false, idUser: idMUsuario[0].idMUsuario});
                         }
                 });
             }else{
-                return res.send(false);
+                return res.send({success: false, idUser: idMUsuario[0].idMUsuario});
             }
         });
     }
@@ -84,14 +84,20 @@ model.comprobateEmail = (req, res) =>{
 model.sendEmail = (req, res)=>{
     const data = req.body;
     const code = generateCode();
-    const username = data.username;
+    const username = data.idUser;
     const email = data.email;
+    const rol = data.rol;
 
-    const token = jwt.sign({email, username},code);
+    const token = jwt.sign({email, username, rol},code);
 
     try{
         sendEmailCode(email,code);
-        return res.send('Correo enviado');
+        //si el correo se envia satisfactoriamente hay que guardar el token en la bd
+        db.query("INSERT INTO etoken VALUES (?, current_time(), ?)", [token, username], (err, response)=>{
+            if(err) return res.json(err);
+            console.log(response);
+            return res.send(response);
+        });
     }catch(err){
         return res.send(err);
     }
@@ -126,5 +132,28 @@ function generateCode(){
     }
     return code;
 }
+
+model.comprobateCode = (req, res)=>{
+    const data = req.body;
+    let token = 0;
+    console.log(data);
+    db.query('SELECT idEToken FROM etoken WHERE idMUsuario = ?',[data.idUser], (err, tokenDb)=>{
+        if(err)return res.send(err);
+        token = tokenDb[0].idEToken;
+        console.log(token);
+        //compriobamos que sea el token
+        jwt.verify(token, data.code, (err, userData)=>{
+            if(err){
+                return res.send('nel');
+            }else{
+                //si entra es porque el codigo es correcto
+                db.query("DELETE FROM etoken WHERE idMUsuario=?",[data.idUser], (err, response)=>{
+                    if(err)return res.json(err);
+                    return res.send(userData);
+                })
+            }
+        });
+    });
+};
 
 module.exports = model;

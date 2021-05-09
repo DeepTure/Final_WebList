@@ -16,16 +16,16 @@ $('#sendEmail').click(function(){
             data:{email, username, rol},
             success:function(response){
                 console.log(response);
-                if(response){
-                    sendCode(email, username);
-                    alert('se ha enviado un codigo a su correo')
+                if(response.success){
+                    sendCode(email, response.idUser, rol);
+                    popUp('Se Ha enviado un codigo a su correo','se envió con exito', 'success');
                 }else{
-                    alert('no se encontró su correo')
+                    popUp('Ha ocurrido un error','probablemente no se encontró su correo', 'error');
                 }
             },
             error:function(response){
                 console.log(response);
-                alert(response);
+                popUp('Ha ocurrido un error','probablemente no se encontró su correo', 'error');
             }
         });
     }else{
@@ -33,19 +33,49 @@ $('#sendEmail').click(function(){
     }
 });
 
-function sendCode(email, username){
+function sendCode(email, idUser, rol){
     $('.second-action').show();
     $('.first-action').hide();
+    console.log(idUser);
+    sessionStorage.setItem('idUser', idUser);
     $.ajax({
         url:'/recovery/comprobateEmail/sendEmail',
         type:'post',
-        data:{email, username},
+        data:{email, idUser, rol},
         success:function(response){
             console.log(response);
+            //este mensaje de error solo va a funconar para este id especifico
+            /*const aux = response.split(' ');
+            if(aux[0] == 'Duplicate'){
+                popUp('Usted tiene un codigo activo','use el primer codigo que le llegó a su correo', 'error');
+            }*/
         },
         error:function(response){
-            alert('Hubo un error');
+            popUp('Ha ocurrido un error','esto es un error inesperado', 'error');
             console.log(response);
         }
     });
 }
+
+$('#verify').click(function(){
+    const code = document.getElementById('codeKey').value;
+    const idUser = sessionStorage.getItem('idUser');
+    //hacemos una validación
+
+    $.ajax({
+        url:'/recovery/comprobateCode',
+        type:'post',
+        data:{code, idUser},
+        success:function(response){
+            console.log(response);
+            if(response == 'nel'){
+                popUp('Acceso denegado','ha ocurrido un error', 'error');
+            }else{
+                popUp('Acceso otorgado','Cambie su contraseña', 'success');
+            }
+        },
+        error:function(response){
+            console.log(response);
+        }
+    });
+});

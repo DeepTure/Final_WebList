@@ -8,5 +8,6 @@ const model = require('../models/recovery.js');
 router.get('/recovery',model.recovery);
 router.post('/recovery/comprobateEmail',model.comprobateEmail);
 router.post('/recovery/comprobateEmail/sendEmail',model.sendEmail);
+router.post('/recovery/comprobateCode',model.comprobateCode);
 
 module.exports = router;
