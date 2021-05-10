@@ -15,6 +15,9 @@ $('#addUser').click(function(){
                 data:{id, name, lastf, lastm},
                 success:function(response){
                     console.log(response);
+                    if(response.success){
+                        alert('registrado con exito');
+                    }
                 },
                 error:function(response){
                     console.log(response);

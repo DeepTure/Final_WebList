@@ -93,3 +93,13 @@ function validar() {
         return false;
     }
 }
+
+//cuando se haga click al select detecta si es profe para mostrar as materias
+$('#arol').click( ()=>{
+    const rol = document.getElementById('arol').value;
+    if(rol === 'Profesor'){
+        $('#subjectsForTeacher').show();
+    }else{
+        $('#subjectsForTeacher').hide();
+    }
+});
