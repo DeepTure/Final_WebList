@@ -21,6 +21,7 @@ model.addStudent = (req, res)=>{
 }
 
 //funcion para generar el id de cada usuario
+//Este algoritmo esta mal porque cuenta todos los registros y toma el ultimo numero por lo que habrá numeros iguales
 function userIdAlgorithm(sizeTable, typeUser){
     let idUser = ''+typeUser;
     if(sizeTable<9){
@@ -33,6 +34,28 @@ function userIdAlgorithm(sizeTable, typeUser){
         idUser += (sizeTable+1);
     }
     return idUser;
-}
+};
+//carros.find(carro => carro.color === "rojo");
+model.getStudets = (req, res)=>{
+    let studentsUsers = [];
+    db.query('SELECT * FROM ealumno', (err, students) => {
+        if(err)return res.send(err);
+        db.query('SELECT * FROM cusuario',(err, usuarios)=>{
+            if(err) return res.send(err);
+            students.forEach((student,i)=>{
+                if(usuarios.find(usuario =>usuario.idMUsuario==student.idMUsuario)!=='undefined'){
+                    const usuario = usuarios.find(usuario =>usuario.idMUsuario==student.idMUsuario);
+                    let studentUser = {id: student.Boleta,
+                        name: usuario.nombre,
+                        lastf: usuario.app,
+                        lastm: usuario.apm,
+                    };
+                    studentsUsers.push(studentUser);
+                }
+            });
+            return res.send(studentsUsers);
+        });
+    });
+};
 
 module.exports = model;
