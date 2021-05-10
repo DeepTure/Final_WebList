@@ -26,6 +26,8 @@
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
             crossorigin="anonymous"
         ></script>
+        <link rel="stylesheet" type="text/css" href="/public/dropzone-5.7.0/dist/dropzone.css">
+        <script src="/public/dropzone-5.7.0/dist/dropzone.js"></script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <link
             rel="stylesheet"
@@ -365,6 +367,19 @@
                         name="fastRegister"
                         value="Subir archivo CSV"
                     />
+
+                    <!--Codigo de la caja-->>
+                    <form action="/uploadFiles" class="dropzone" id="dropzone">
+                        <div class="fallback">
+                            <input type="file" name="file" multiple id="files">
+                        </div>
+                    </form>
+                    <script>
+                        let dropzone = new Dropzone('#files',{
+                            url:'/uloadFiles'
+                        });
+                    </script>
+
                 </section>
             </section>
         </div>
