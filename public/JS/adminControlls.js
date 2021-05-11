@@ -1,8 +1,11 @@
 const patron_almn = /^([0-9]{10}){1}$/;
-const patron_prof = /^([0-9]{3}){1}$/;
+const patron_prof = /^([0-9]{10}){1}$/;
 const patron_letras = /^([a-zA-Z ])+$/;
 
+//Funciones de JQuery
 $(document).ready(() => {
+    $("#otherDataAlumno").hide();
+
     $("#addUser").click((ev) => {
         let test = validar();
         if (test == true) {
@@ -37,13 +40,25 @@ $(document).ready(() => {
                         datos: datos,
                     },
                     success: (res) => {
-                        console.log("done");
+                        alert(res);
                     },
                     error: (err) => {
                         console.log(err);
+                        alert("Algo a salido mal, intentelo mas tarde");
                     },
                 });
             } else {
+                let Year = new Date().getFullYear();
+                let cicle = new Date().getMonth() <= 5 ? 1 : 2;
+
+                let datos = JSON.stringify({
+                    id_empleado: $("#aid").val(),
+                    nombre: $("#aname").val(),
+                    app: $("#alastf").val(),
+                    apm: $("#alastm").val(),
+                    id_CicloE: Year + "-" + cicle,
+                    id_Grupo: $("#arol option:selected").val(),
+                });
             }
         } else {
             alert(
@@ -53,6 +68,7 @@ $(document).ready(() => {
     });
 });
 
+//Funcion para validar campos
 function validar() {
     let check = 0;
     try {
@@ -60,8 +76,24 @@ function validar() {
             if (patron_almn.test($("#aid").val())) {
                 check++;
             }
+            if (
+                $("#arol option:selected").val() == "6IV9" ||
+                $("#arol option:selected").val() == "6IV7" ||
+                $("#arol option:selected").val() == "6IV8"
+            ) {
+                check++;
+            }
         } else if ($("#arol option:selected").val() == "Profesor") {
             if (patron_prof.test($("#aid").val())) {
+                check++;
+            }
+            if (
+                $("#amap").prop("checked") == true ||
+                $("#ass").prop("checked") == true ||
+                $("#aisb").prop("checked") == true ||
+                $("#alptiiv").prop("checked") == true ||
+                $("#api").prop("checked") == true
+            ) {
                 check++;
             }
         } else {
@@ -72,15 +104,6 @@ function validar() {
             patron_letras.test($("#aname").val()) &&
             patron_letras.test($("#alastf").val()) &&
             patron_letras.test($("#alastm").val())
-        ) {
-            check++;
-        }
-        if (
-            $("#amap").prop("checked") == true ||
-            $("#ass").prop("checked") == true ||
-            $("#aisb").prop("checked") == true ||
-            $("#alptiiv").prop("checked") == true ||
-            $("#api").prop("checked") == true
         ) {
             check++;
         }
@@ -95,11 +118,14 @@ function validar() {
 }
 
 //cuando se haga click al select detecta si es profe para mostrar as materias
-$('#arol').click( ()=>{
-    const rol = document.getElementById('arol').value;
-    if(rol === 'Profesor'){
-        $('#subjectsForTeacher').show();
-    }else{
-        $('#subjectsForTeacher').hide();
+$("#arol").on("change", () => {
+    if ($("#arol option:selected").val() === "Profesor") {
+        $("#otherDataAlumno").hide();
+        $("#otherDataProfesor").show();
+    } else if ($("#arol option:selected").val() == "Alumno") {
+        $("#otherDataProfesor").hide();
+        $("#otherDataAlumno").show();
+    } else {
+        alert("Algo salio mal, intentelo mas tarde");
     }
 });

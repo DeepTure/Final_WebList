@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>WebList</title>
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
         <link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css" />
         <link
             rel="stylesheet"
@@ -26,7 +27,11 @@
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
             crossorigin="anonymous"
         ></script>
-        <link rel="stylesheet" type="text/css" href="/public/dropzone-5.7.0/dist/dropzone.css">
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="/public/dropzone-5.7.0/dist/dropzone.css"
+        />
         <script src="/public/dropzone-5.7.0/dist/dropzone.js"></script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <link
@@ -286,13 +291,16 @@
                         </aside>
 
                         <br />
-                        <section id="subjectsForTeacher">
+                        <!-- Datos para el profesor -->
+                        <section id="otherDataProfesor">
                             <aside class="autoManageSpacedAlways">
                                 Clase(s) que imparte
                                 <br />
                             </aside>
                             <br />
-                            <aside class="autoManageSpacedAlways addLeftMarginAlt">
+                            <aside
+                                class="autoManageSpacedAlways addLeftMarginAlt"
+                            >
                                 Metodos agiles de programacion
                                 <br />
                                 <input
@@ -303,7 +311,9 @@
                                 />
                             </aside>
                             <br />
-                            <aside class="autoManageSpacedAlways addLeftMarginAlt">
+                            <aside
+                                class="autoManageSpacedAlways addLeftMarginAlt"
+                            >
                                 Soporte de software
                                 <br />
                                 <input
@@ -314,7 +324,9 @@
                                 />
                             </aside>
                             <br />
-                            <aside class="autoManageSpacedAlways addLeftMarginAlt">
+                            <aside
+                                class="autoManageSpacedAlways addLeftMarginAlt"
+                            >
                                 Ingenieria de software basica
                                 <br />
                                 <input
@@ -325,9 +337,11 @@
                                 />
                             </aside>
                             <br />
-                            <aside class="autoManageSpacedAlways addLeftMarginAlt">
-                                Lab. de proyectos de tecnologias de la informacion
-                                IV
+                            <aside
+                                class="autoManageSpacedAlways addLeftMarginAlt"
+                            >
+                                Lab. de proyectos de tecnologias de la
+                                informacion IV
                                 <br />
                                 <input
                                     type="checkbox"
@@ -337,7 +351,9 @@
                                 />
                             </aside>
                             <br />
-                            <aside class="autoManageSpacedAlways addLeftMarginAlt">
+                            <aside
+                                class="autoManageSpacedAlways addLeftMarginAlt"
+                            >
                                 Proyecto integrador
                                 <br />
                                 <input
@@ -346,6 +362,28 @@
                                     id="api"
                                     name="cpi"
                                 />
+                            </aside>
+                        </section>
+                        <!-- Datos para el alumno -->
+                        <section id="otherDataAlumno">
+                            <aside class="autoManageSpacedAlways">
+                                Grupo
+                                <br />
+                                <select
+                                    class="smallInput centerText"
+                                    id="agrupo"
+                                    name="grupo"
+                                >
+                                    <option class="smallInput centerText">
+                                        6IV9
+                                    </option>
+                                    <option class="smallInput centerText">
+                                        6IV8
+                                    </option>
+                                    <option class="smallInput centerText">
+                                        6IV7
+                                    </option>
+                                </select>
                             </aside>
                         </section>
                         <br />
@@ -371,15 +409,19 @@
                     <!--Codigo de la caja-->>
                     <form action="/uploadFiles" class="dropzone" id="dropzone">
                         <div class="fallback">
-                            <input type="file" name="file" multiple id="files">
+                            <input
+                                type="file"
+                                name="file"
+                                multiple
+                                id="files"
+                            />
                         </div>
                     </form>
                     <script>
-                        let dropzone = new Dropzone('#files',{
-                            url:'/uloadFiles'
+                        let dropzone = new Dropzone("#files", {
+                            url: "/uloadFiles",
                         });
                     </script>
-
                 </section>
             </section>
         </div>
