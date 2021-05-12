@@ -48,7 +48,7 @@ $(document).ready(() => {
                     },
                 });
             } else {
-                let Year = new Date().getFullYear();
+                /*let Year = new Date().getFullYear();
                 let cicle = new Date().getMonth() <= 5 ? 1 : 2;
 
                 let datos = JSON.stringify({
@@ -58,13 +58,28 @@ $(document).ready(() => {
                     apm: $("#alastm").val(),
                     id_CicloE: Year + "-" + cicle,
                     id_Grupo: $("#arol option:selected").val(),
-                });
+                });*/
+                alert("Esta opcion se encuentra en mantenimiento");
             }
         } else {
             alert(
                 "Por favor revise que los campos sean correctos e intentelo de nuevo"
             );
         }
+    });
+
+    $("#bProfessorEntities").click((ev) => {
+        $.ajax({
+            url: "/getProfesor",
+            type: "POST",
+            success: (res) => {
+                console.log(res);
+            },
+            error: (err) => {
+                console.log(err);
+                alert("Algo a salido mal, intentelo mas tarde");
+            },
+        });
     });
 });
 

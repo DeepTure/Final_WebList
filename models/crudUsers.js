@@ -134,6 +134,25 @@ model.addProfesor = (req, res) => {
     }
 };
 
+//obtener profesores
+model.getProfesor = (req, res) => {
+    try {
+        db.query(
+            "SELECT id_empleado, nombre, app, apm, materia FROM EProfesor INNER JOIN CUsuario USING (id_usuario) INNER JOIN EProfesor_Materia USING (id_empleado) INNER JOIN CMateria USING (id_materia);",
+            (err, rows) => {
+                if (err) {
+                    console.log(err);
+                    return res.send("Ocurrio un error inesperado");
+                }
+                return res.send(rows);
+            }
+        );
+    } catch (ex) {
+        console.log(ex);
+        return res.send("A fatal error has ocurred. Please try again later");
+    }
+};
+
 //genera la query para insertar los datos del profesor
 function QueryGeneratorAddProfesor(data) {
     let {
