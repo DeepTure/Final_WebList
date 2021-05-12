@@ -35,7 +35,7 @@ model.addProfesor = (req, res) => {
                             hash.update(id_empleado);
                             var asegurado = hash.digest("hex");
 
-                            let idMUsuario = db.query(
+                            let id_usuario = db.query(
                                 "SELECT id_empleado FROM EProfesor WHERE id_empleado = ?",
                                 [id_empleado],
                                 (err, rows) => {
@@ -47,9 +47,9 @@ model.addProfesor = (req, res) => {
                                     } else {
                                         if (rows.length == 0) {
                                             db.query(
-                                                "SELECT idMUsuario FROM CUsuario WHERE idMUsuario LIKE 'PR%'  ORDER BY idMUsuario DESC LIMIT 1",
+                                                "SELECT id_usuario FROM CUsuario WHERE id_usuario LIKE 'PR%'  ORDER BY id_usuario DESC LIMIT 1",
                                                 (err, rows) => {
-                                                    let idMUsuario = "";
+                                                    let id_usuario = "";
                                                     if (err) {
                                                         console.log(err);
                                                         return res.send(
@@ -58,27 +58,30 @@ model.addProfesor = (req, res) => {
                                                     } else if (
                                                         rows.length == 0
                                                     ) {
-                                                        idMUsuario = "PR0001";
+                                                        id_usuario = "PR0001";
                                                     } else {
-                                                        idMUsuario = idGeneratorStandard(
-                                                            "PR",
-                                                            rows[0].idMUsuario
-                                                        );
+                                                        id_usuario =
+                                                            idGeneratorStandard(
+                                                                "PR",
+                                                                rows[0]
+                                                                    .id_usuario
+                                                            );
                                                     }
-                                                    let querys = QueryGeneratorAddProfesor(
-                                                        {
-                                                            id_empleado,
-                                                            nombre,
-                                                            app,
-                                                            apm,
-                                                            materiasID:
-                                                                check.materiasID,
-                                                            idMUsuario,
-                                                            correo:
-                                                                "correo@gmail.com",
-                                                            contrasena: asegurado,
-                                                        }
-                                                    );
+                                                    let querys =
+                                                        QueryGeneratorAddProfesor(
+                                                            {
+                                                                id_empleado,
+                                                                nombre,
+                                                                app,
+                                                                apm,
+                                                                materiasID:
+                                                                    check.materiasID,
+                                                                id_usuario,
+                                                                correo: "correo@gmail.com",
+                                                                contrasena:
+                                                                    asegurado,
+                                                            }
+                                                        );
 
                                                     db.query(
                                                         querys.query,
@@ -139,7 +142,7 @@ function QueryGeneratorAddProfesor(data) {
         app,
         apm,
         materiasID,
-        idMUsuario,
+        id_usuario,
         correo,
         contrasena,
     } = data;
@@ -148,11 +151,11 @@ function QueryGeneratorAddProfesor(data) {
 
     //CUsuario
     query = query + "INSERT INTO CUsuario SET ?;";
-    queryData.push({ idMUsuario, nombre, app, apm, email: correo, contrasena });
+    queryData.push({ id_usuario, nombre, app, apm, email: correo, contrasena });
 
     //EProfesor
     query = query + "INSERT INTO EProfesor SET ?;";
-    queryData.push({ id_empleado, idMUsuarios: idMUsuario });
+    queryData.push({ id_empleado, id_usuario });
 
     //EProfesor_Materia
     materiasID.forEach((materiaID) => {

@@ -74,7 +74,7 @@ passport.use(
             //Una vez encontrado se guardan los ids para uso próximo por todo el sistema
             if (req.body.rol == "Administrador") {
                 db.query(
-                    "select * from EAdministrador admin JOIN CUsuario user on admin.idMUsuario = user.idMUsuario where  (admin.id_administrador = ? and user.contrasena = ?);",
+                    "select * from EAdministrador admin JOIN CUsuario user on admin.id_usuario = user.id_usuario where  (admin.id_administrador = ? and user.contrasena = ?);",
                     [username, asegurado],
                     (err, administrador) => {
                         if (err) {
@@ -84,7 +84,7 @@ passport.use(
                             });
                         }
                         var ids = [
-                            administrador[0].idMUsuario,
+                            administrador[0].id_usuario,
                             administrador[0].id_administrador,
                         ];
                         if (administrador.length > 0) {
@@ -102,7 +102,7 @@ passport.use(
                 );
             } else if (req.body.rol == "Profesor") {
                 db.query(
-                    "select * from EProfesor profe JOIN CUsuario user on profe.idMUsuarios = user.idMUsuario where  (profe.id_empleado = ? and user.contrasena = ?);",
+                    "select * from EProfesor profe JOIN CUsuario user on profe.id_usuarios = user.id_usuario where  (profe.id_empleado = ? and user.contrasena = ?);",
                     [username, asegurado],
                     (err, profesor) => {
                         if (err) {
@@ -113,7 +113,7 @@ passport.use(
                         }
                         if (profesor.length > 0) {
                             var ids = [
-                                profesor[0].idMUsuario,
+                                profesor[0].id_usuario,
                                 profesor[0].id_empleado,
                             ];
                             return done(null, {
@@ -130,7 +130,7 @@ passport.use(
                 );
             } else if (req.body.rol == "Alumno") {
                 db.query(
-                    "select * from EAlumno alumn JOIN CUsuario user on alumn.idMUsuario = user.idMUsuario where  (alumn.Boleta = ? and user.contrasena = ?);",
+                    "select * from EAlumno alumn JOIN CUsuario user on alumn.id_usuario = user.id_usuario where  (alumn.boleta = ? and user.contrasena = ?);",
                     [username, asegurado],
                     (err, alumno) => {
                         if (err) {
@@ -140,7 +140,7 @@ passport.use(
                             });
                         }
                         if (alumno.length > 0) {
-                            var ids = [alumno[0].idMUsuario, alumno[0].Boleta];
+                            var ids = [alumno[0].id_usuario, alumno[0].boleta];
                             return done(null, {
                                 rol: "alumno",
                                 id: ids,

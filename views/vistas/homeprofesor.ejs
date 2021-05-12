@@ -1,218 +1,270 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>
-		WebList
-	</title>
-	<link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css">
-	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: no-preference)" href="../public/CSS/lightColorSheet.css">
-	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: light)" href="../public/CSS/lightColorSheet.css">
-	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: dark)" href="../public/CSS/darkColorSheet.css">
-	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/navSheet.css">
-	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/timerSheet.css">
+    <head>
+        <title>WebList</title>
+        <link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen and (prefers-color-scheme: no-preference)"
+            href="../public/CSS/lightColorSheet.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen and (prefers-color-scheme: light)"
+            href="../public/CSS/lightColorSheet.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen and (prefers-color-scheme: dark)"
+            href="../public/CSS/darkColorSheet.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen"
+            href="../public/CSS/navSheet.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen"
+            href="../public/CSS/timerSheet.css"
+        />
 
-	<link rel="icon" href="../public/IMG/DeepTure.ico">
-	<link rel="shortcut icon" href="../public/IMG/DeepTure.ico">
+        <link rel="icon" href="../public/IMG/DeepTure.ico" />
+        <link rel="shortcut icon" href="../public/IMG/DeepTure.ico" />
 
-	<script src="../public/JS/timer.js"></script>
+        <script src="../public/JS/timer.js"></script>
 
-	<meta charset="utf-8">
-</head>
-<body>
-	<style type="text/css">
-		@media (min-width: 600px) {
-			#navbar.active{
-				width: 25rem;
-			}
-		}
-	</style>
-	<nav class="addShadow" id="header">
-        <article class="addLeftMargin">
-			<img src="../public/IMG/WebListLogo.png" class="navImg">
-			<p class="titleFont addLeftMargin alignMiddle">
-				WebList Project
-			</p>
-		</article>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <style type="text/css">
+            @media (min-width: 600px) {
+                #navbar.active {
+                    width: 25rem;
+                }
+            }
+        </style>
+        <nav class="addShadow" id="header">
+            <article class="addLeftMargin">
+                <img src="../public/IMG/WebListLogo.png" class="navImg" />
+                <p class="titleFont addLeftMargin alignMiddle">
+                    WebList Project
+                </p>
+            </article>
 
-        <div class="navImg" id="toggle"></div>
-        <div class="navImg" id="navbar">
-            <ul>
-                <li>
-                	<a href="/home/perfil">
-                		Mi perfil
-                	</a>
-                </li>
-                <li>
-                	<a href="/home/historial">
-                		Graficas
-                	</a>
-                </li>
-                <li>
-                	<a href="/logout">
-                		Cerrar sesión
-                	</a>
-                </li>
-                <li>
-                	<a href="/home/help">
-                		Ayuda
-                	</a>
-                </li>
-            </ul>
+            <div class="navImg" id="toggle"></div>
+            <div class="navImg" id="navbar">
+                <ul>
+                    <li>
+                        <a href="/home/perfil"> Mi perfil </a>
+                    </li>
+                    <li>
+                        <a href="/home/historial"> Graficas </a>
+                    </li>
+                    <li>
+                        <a href="/logout"> Cerrar sesión </a>
+                    </li>
+                    <li>
+                        <a href="/home/help"> Ayuda </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <script src="../public/JS/nav.js"></script>
+
+        <div>
+            <section class="defaultSectionSize autoManageSpaced addShadow">
+                <!-- Izquierda -->
+                <section class="squareSectionSizeLW addTopMarginAlt">
+                    <p
+                        class="
+                            titleFont
+                            centerText
+                            addLeftMarginAlt
+                            addTopMarginAlt
+                        "
+                    >
+                        Bienvenido <%= id %>
+                    </p>
+
+                    <br />
+
+                    <aside class="addLeftMarginAlt">
+                        Seleccione un grupo
+                        <br />
+
+                        <br />
+
+                        <article class="autoManageCenter">
+                            <input
+                                class="buttonInput smallButton blue"
+                                type="button"
+                                name="groupA"
+                                value="6IAB"
+                            />
+                            <input
+                                class="buttonInput smallButton blue"
+                                type="button"
+                                name="groupA"
+                                value="6ICD"
+                            />
+                            <input
+                                class="buttonInput smallButton blue"
+                                type="button"
+                                name="groupA"
+                                value="6IEF"
+                            />
+                        </article>
+
+                        <br />
+
+                        <aside class="autoManageSpacedAlways">
+                            Código de la clase
+                            <br />
+                            <input
+                                class="smallInput"
+                                type="text"
+                                name="classCode"
+                                placeholder="Haga click en generar"
+                                readonly
+                            />
+                        </aside>
+
+                        <br />
+                    </aside>
+
+                    <input
+                        class="buttonInput addLeftMarginAlt blue"
+                        type="button"
+                        name="generateCode"
+                        value="Generar código"
+                    />
+
+                    <br />
+                    <br />
+
+                    <p class="addLeftMarginAlt">Seleccione una opción</p>
+
+                    <select class="buttonInput addLeftMarginAlt centerText">
+                        <option class="buttonInput addLeftMarginAlt centerText">
+                            Aceptar todas las solicitudes cuando termine el
+                            tiempo
+                        </option>
+                        <option class="buttonInput addLeftMarginAlt centerText">
+                            Rechazar todas las solicitudes cuando termine el
+                            tiempo
+                        </option>
+                    </select>
+
+                    <br /><br />
+
+                    <p class="centerText">
+                        Tiempo restante para que cierre el sistema
+                    </p>
+
+                    <br />
+
+                    <article
+                        class="autoManageCenter addLeftMarginAlt centerText"
+                    >
+                        <div class="timer">
+                            <div class="titleFontLarge" id="minuto">NA</div>
+                            <div class="titleFontLarge" id="segundo">NA</div>
+                        </div>
+
+                        <p style="visibility: hidden">sp</p>
+
+                        <article class="autoManageStack">
+                            Tiempo
+                            <select
+                                class="buttonInput alignMiddle smallButton"
+                                id="timeSetter"
+                                onchange="updateTime(value)"
+                            >
+                                <option>50 min</option>
+                                <option>30 min</option>
+                                <option>10 min</option>
+                                <option>5 min</option>
+                                <option>3 min</option>
+                                <option>1 min</option>
+                            </select>
+                        </article>
+                    </article>
+                </section>
+
+                <!-- Derecha -->
+                <section class="squareSectionSizeLW addTopMarginAlt">
+                    <p class="centerText addLeftMarginAlt addTopMarginAlt">
+                        Solicitudes de asistencia pendientes
+                    </p>
+
+                    <br />
+
+                    <table
+                        class="addLeftMarginAlt"
+                        cellspacing="0"
+                        cellpadding="0"
+                    >
+                        <tr class="title">
+                            <th>boleta</th>
+                            <th>Nombre</th>
+                            <th>
+                                <input
+                                    class="buttonInput tinyButtonLW green"
+                                    type="button"
+                                    name="acceptAll"
+                                    value="Aceptar todo"
+                                />
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>2019090000</td>
+                            <td>Sultano de Tal</td>
+                            <td>
+                                <article class="autoManageTogether">
+                                    <input
+                                        class="buttonInput tinyButton blue"
+                                        type="button"
+                                        name="accept"
+                                        value="Aceptar"
+                                    />
+                                    <input
+                                        class="buttonInput tinyButton red"
+                                        type="button"
+                                        name="decline"
+                                        value="Rechazar"
+                                    />
+                                </article>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2019090001</td>
+                            <td>Fulano de Tal</td>
+                            <td>
+                                <article class="autoManageTogether">
+                                    <input
+                                        class="buttonInput tinyButton blue"
+                                        type="button"
+                                        name="accept"
+                                        value="Aceptar"
+                                    />
+                                    <input
+                                        class="buttonInput tinyButton red"
+                                        type="button"
+                                        name="decline"
+                                        value="Rechazar"
+                                    />
+                                </article>
+                            </td>
+                        </tr>
+                    </table>
+                </section>
+            </section>
         </div>
-    </nav>
-    <script src="../public/JS/nav.js"></script>
-
-	<div>
-		<section class="defaultSectionSize autoManageSpaced addShadow">
-			<!-- Izquierda -->
-			<section class="squareSectionSizeLW addTopMarginAlt">
-				<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
-					Bienvenido <%= id %>
-				</p>
-				
-				<br>
-				
-				<aside class="addLeftMarginAlt">
-					Seleccione un grupo
-					<br>
-					
-					<br>
-
-					<article class="autoManageCenter">
-						<input class="buttonInput smallButton blue" type="button" name="groupA" value="6IAB">
-						<input class="buttonInput smallButton blue" type="button" name="groupA" value="6ICD">
-						<input class="buttonInput smallButton blue" type="button" name="groupA" value="6IEF">
-					</article>
-				
-					<br>
-
-					<aside class="autoManageSpacedAlways">
-						Código de la clase
-						<br>
-						<input class="smallInput" type="text" name="classCode" placeholder="Haga click en generar" readonly>
-					</aside>
-
-					<br>
-
-				</aside>			
-
-				<input class="buttonInput addLeftMarginAlt blue" type="button" name="generateCode" value="Generar código">
-				
-				<br>
-				<br>
-
-				<p class="addLeftMarginAlt">
-					Seleccione una opción	
-				</p>
-
-				<select class="buttonInput addLeftMarginAlt centerText">
-					<option class="buttonInput addLeftMarginAlt centerText">
-						Aceptar todas las solicitudes cuando termine el tiempo
-					</option>
-					<option class="buttonInput addLeftMarginAlt centerText">
-						Rechazar todas las solicitudes cuando termine el tiempo
-					</option>
-				</select>
-
-				<br><br>
-
-				<p class="centerText">
-					Tiempo restante para que cierre el sistema
-				</p>
-
-				<br>
-				
-				<article class="autoManageCenter addLeftMarginAlt centerText">
-					<div class="timer">
-			            <div class="titleFontLarge" id="minuto">
-			            	NA
-			            </div>
-			            <div class="titleFontLarge" id="segundo">
-			            	NA
-			            </div>
-			        </div>
-
-					<p style="visibility: hidden;">
-						sp
-					</p>	
-
-					<article class="autoManageStack">
-						Tiempo
-						<select class="buttonInput alignMiddle smallButton" id="timeSetter" onchange="updateTime(value)">
-							<option>
-								50 min
-							</option>
-							<option>
-								30 min
-							</option>
-							<option>
-								10 min
-							</option>
-							<option>
-								5 min
-							</option>
-							<option>
-								3 min
-							</option>
-							<option>
-								1 min
-							</option>
-						</select>
-					</article>
-				</article>
-			</section>
-			
-			<!-- Derecha -->
-			<section class="squareSectionSizeLW addTopMarginAlt">
-				<p class="centerText addLeftMarginAlt addTopMarginAlt">
-					Solicitudes de asistencia pendientes
-				</p>
-
-				<br>
-				
-				<table class="addLeftMarginAlt" cellspacing="0" cellpadding="0">
-					<tr class="title">
-						<th>
-							Boleta
-						</th>
-						<th>
-							Nombre
-						</th>
-						<th>
-							<input class="buttonInput tinyButtonLW green" type="button" name="acceptAll" value="Aceptar todo">
-						</th>
-					</tr>
-					<tr>
-						<td>
-							2019090000
-						</td>
-						<td>
-							Sultano de Tal
-						</td>
-						<td>
-							<article class="autoManageTogether">
-								<input class="buttonInput tinyButton blue" type="button" name="accept" value="Aceptar">
-								<input class="buttonInput tinyButton red" type="button" name="decline" value="Rechazar">
-							</article>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							2019090001
-						</td>
-						<td>
-							Fulano de Tal
-						</td>
-						<td>
-							<article class="autoManageTogether">
-								<input class="buttonInput tinyButton blue" type="button" name="accept" value="Aceptar">
-								<input class="buttonInput tinyButton red" type="button" name="decline" value="Rechazar">
-							</article>
-						</td>
-					</tr>
-				</table>
-			</section>
-		</section>
-	</div>
-</body>
+    </body>
 </html>

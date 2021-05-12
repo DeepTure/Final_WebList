@@ -1,13 +1,3 @@
-<% if(rol == "administrador"){%>
-
-    <%- include('vistas/homeadmin'); %>
-
-<% }else if(rol == "profesor"){%>
-
-    <%- include('vistas/homeprofesor'); %>
-
-<% }else if(rol == "alumno"){%>
-
-    <%- include('vistas/homealumno'); %>
-
-<% }%>
+<% if(rol == "administrador"){%> <%- include('vistas/homeadmin'); %> <% }else
+if(rol == "profesor"){%> <%- include('vistas/homEProfesor'); %> <% }else if(rol
+== "alumno"){%> <%- include('vistas/homEAlumno'); %> <% }%>
