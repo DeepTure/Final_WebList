@@ -90,17 +90,40 @@ model.sendEmail = (req, res)=>{
 
     const token = jwt.sign({email, username, rol},code);
 
-    try{
-        sendEmailCode(email,code);
-        //si el correo se envia satisfactoriamente hay que guardar el token en la bd
-        db.query("INSERT INTO etoken VALUES (?, current_time(), ?)", [token, username], (err, response)=>{
-            if(err) return res.json(err);
-            console.log(response);
-            return res.send(response);
-        });
-    }catch(err){
-        return res.send(err);
-    }
+    //primero revisamos si el usuario ya tiene un token guardado
+    db.query('SELECT idEToken FROM etoken WHERE idMUsuario = ?',[username],(err, idToken)=>{
+        if(err)return res.send(err);
+        if(idToken.length == 0){
+            try{
+                sendEmailCode(email,code);
+                //si el correo se envia satisfactoriamente hay que guardar el token en la bd
+                db.query("INSERT INTO etoken VALUES (?, current_time(), ?)", [token, username], (err, response)=>{
+                    if(err) return res.json(err);
+                    console.log(response);
+                    return res.send(response);
+                });
+            }catch(err){
+                return res.send(err);
+            }
+        }else{
+            //ya existe un token de este usuario // eliminamos el token que ya tenía para crear otro
+            console.log('Ya tiene un token activo');
+            db.query('DELETE FROM etoken WHERE idMUsuario=?',[username],(err, response)=>{
+                if(err)return res.send(err);
+                try{
+                    sendEmailCode(email,code);
+                    //si el correo se envia satisfactoriamente hay que guardar el token en la bd
+                    db.query("INSERT INTO etoken VALUES (?, current_time(), ?)", [token, username], (err, response)=>{
+                        if(err) return res.json(err);
+                        console.log(response);
+                        return res.send(response);
+                    });
+                }catch(err){
+                    return res.send(err);
+                }
+            });
+        }
+    });
 };
 
 function sendEmailCode(email, code){
@@ -139,20 +162,26 @@ model.comprobateCode = (req, res)=>{
     console.log(data);
     db.query('SELECT idEToken FROM etoken WHERE idMUsuario = ?',[data.idUser], (err, tokenDb)=>{
         if(err)return res.send(err);
-        token = tokenDb[0].idEToken;
-        console.log(token);
-        //compriobamos que sea el token
-        jwt.verify(token, data.code, (err, userData)=>{
-            if(err){
-                return res.send('nel');
-            }else{
-                //si entra es porque el codigo es correcto
-                db.query("DELETE FROM etoken WHERE idMUsuario=?",[data.idUser], (err, response)=>{
-                    if(err)return res.json(err);
-                    return res.send(userData);
-                })
-            }
-        });
+        //verificamos si tiene un token activo
+        if(tokenDb.length != 0){
+            token = tokenDb[0].idEToken;
+            console.log(token);
+            //compriobamos que sea el token
+            jwt.verify(token, data.code, (err, userData)=>{
+                if(err){
+                    return res.send('nel');
+                }else{
+                    //si entra es porque el codigo es correcto
+                    db.query("DELETE FROM etoken WHERE idMUsuario=?",[data.idUser], (err, response)=>{
+                        if(err)return res.json(err);
+                        return res.send(userData);
+                    })
+                }
+            });
+        }else{
+            //por ningun motivo debería llegar a esta condición
+            return res.send('nel');
+        }
     });
 };
 

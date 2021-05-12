@@ -45,11 +45,6 @@ function sendCode(email, idUser, rol){
         data:{email, idUser, rol},
         success:function(response){
             console.log(response);
-            //este mensaje de error solo va a funconar para este id especifico
-            /*const aux = response.split(' ');
-            if(aux[0] == 'Duplicate'){
-                popUp('Usted tiene un codigo activo','use el primer codigo que le llegó a su correo', 'error');
-            }*/
         },
         error:function(response){
             popUp('Ha ocurrido un error','esto es un error inesperado', 'error');
@@ -63,20 +58,24 @@ $('#verify').click(function(){
     const idUser = sessionStorage.getItem('idUser');
     //hacemos una validación
 
-    $.ajax({
-        url:'/recovery/comprobateCode',
-        type:'post',
-        data:{code, idUser},
-        success:function(response){
-            console.log(response);
-            if(response == 'nel'){
-                popUp('Acceso denegado','ha ocurrido un error', 'error');
-            }else{
-                popUp('Acceso otorgado','Cambie su contraseña', 'success');
+    if(sessionStorage.getItem('idUser')){
+        $.ajax({
+            url:'/recovery/comprobateCode',
+            type:'post',
+            data:{code, idUser},
+            success:function(response){
+                console.log(response);
+                if(response == 'nel'){
+                    popUp('Acceso denegado','ha ocurrido un error', 'error');
+                }else{
+                    popUp('Acceso otorgado','Cambie su contraseña', 'success');
+                }
+            },
+            error:function(response){
+                console.log(response);
             }
-        },
-        error:function(response){
-            console.log(response);
-        }
-    });
+        });
+    }else{
+        popUp('Acceso denegado por usuario','ha ocurrido un error con su usuario', 'error');
+    }
 });
