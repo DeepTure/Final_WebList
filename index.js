@@ -102,7 +102,7 @@ passport.use(
                 );
             } else if (req.body.rol == "Profesor") {
                 db.query(
-                    "select * from EProfesor profe JOIN CUsuario user on profe.id_usuarios = user.id_usuario where  (profe.id_empleado = ? and user.contrasena = ?);",
+                    "select * from EProfesor profe JOIN CUsuario user on profe.id_usuario = user.id_usuario where  (profe.id_empleado = ? and user.contrasena = ?);",
                     [username, asegurado],
                     (err, profesor) => {
                         if (err) {
