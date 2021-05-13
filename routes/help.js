@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const model = require('../models/helpActionsModel');
 
 //Redireccionamiento al perfil
 router.get('/home/help',(req,res,next)=>{
@@ -37,5 +38,7 @@ router.get("/help", (req, res) => {
 router.get("/helpuno", (req, res) => {
     return res.render("help1");
 });
+
+router.post('/help/sendEmail', model.sendEmail);
 
 module.exports = router;

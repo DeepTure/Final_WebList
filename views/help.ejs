@@ -97,12 +97,43 @@
 			<p class="centerText">¿No encuentras lo que buscas?<br>Estamos aquí para contestar cualquier pregunta</p>
 			<center>
 				<br>
-				<input type="button" value="Contactar a soporte" style="background-color: #0275d8; outline: none;">
+				<input type="button" value="Contactar a soporte" id="toContactButton" style="background-color: #0275d8; outline: none;">
 			</center>
+		</section>
+		<section class="defaultSectionSize addShadow" id="contactSupportActive">
+			<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
+				¿Necesitas más ayuda?
+			</p>
+			
+			<!-- Este form es la parte del correo-->
+			<form>
+				<br>
+				<p class="centertText">
+					<div class="alignMiddle">
+						<img class="inputIcon" src="public/IMG/user.png">
+						<input class="largeInput" id="emailUser" type="email" placeholder="Correo electronico">
+					</div>
+					<br>
+					<center>
+						<label class="centerText">Redacte el problema</label>
+					</center>
+					<br>
+					<div class="alignMiddle">
+						<textarea id="message" rows="4" cols="50">
+							At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.
+						</textarea>
+					</div>
+					<center>
+						<br>
+						<input type="button" value="Enviar correo" id="sendEmailSupport" style="background-color: #0275d8; outline: none;">
+					</center>
+				</p>
+			</form>
 		</section>
 	</div>
 
 	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-	<script src="../public/JS/toGeneral.js"></script>
+	<script src="public/JS/help.js"></script>
+	<script src="public/JS/toGeneral.js"></script>
 </body>
 </html>
