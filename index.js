@@ -28,6 +28,7 @@ const recuperar = require("./routes/recover");
 const studentCrud = require("./routes/studentCrudRoutes");
 const help = require("./routes/help");
 const crud_admin = require("./routes/crud_admin");
+const homeTeacher = require('./routes/homeTeacherRoutes');
 //variables
 
 /*
@@ -238,6 +239,7 @@ app.use(recuperar);
 app.use(crud_admin);
 app.use(help);
 app.use(studentCrud);
+app.use(homeTeacher);
 
 //rutas de emergencia cuando ocurre
 app.use((req, res) => {

@@ -91,7 +91,7 @@
                     >
                         Bienvenido <%= id %>
                     </p>
-
+                    <input type="hidden" value="<%= id %>" id="idTeacher">
                     <br />
 
                     <aside class="addLeftMarginAlt">
@@ -123,16 +123,26 @@
 
                         <br />
 
-                        <aside class="autoManageSpacedAlways">
+                        <aside class="autoManageSpacedAlways" id="settingsCode">
+                            Duración del codigo
+                            <br>
+                            <select
+                                class="buttonInput alignMiddle smallButton"
+                                id="timeSetter">
+                                <option>50 min</option>
+                                <option>30 min</option>
+                                <option>10 min</option>
+                                <option>5 min</option>
+                                <option>3 min</option>
+                                <option>1 min</option>
+                            </select>
+                        </aside>
+
+                        <br>
+                        <aside class="autoManageSpacedAlways" id="showCode">
                             Código de la clase
                             <br />
-                            <input
-                                class="smallInput"
-                                type="text"
-                                name="classCode"
-                                placeholder="Haga click en generar"
-                                readonly
-                            />
+                            <label>556032</label>
                         </aside>
 
                         <br />
@@ -143,25 +153,11 @@
                         type="button"
                         name="generateCode"
                         value="Generar código"
+                        id="generateCode"
                     />
 
                     <br />
                     <br />
-
-                    <p class="addLeftMarginAlt">Seleccione una opción</p>
-
-                    <select class="buttonInput addLeftMarginAlt centerText">
-                        <option class="buttonInput addLeftMarginAlt centerText">
-                            Aceptar todas las solicitudes cuando termine el
-                            tiempo
-                        </option>
-                        <option class="buttonInput addLeftMarginAlt centerText">
-                            Rechazar todas las solicitudes cuando termine el
-                            tiempo
-                        </option>
-                    </select>
-
-                    <br /><br />
 
                     <p class="centerText">
                         Tiempo restante para que cierre el sistema
@@ -179,21 +175,7 @@
 
                         <p style="visibility: hidden">sp</p>
 
-                        <article class="autoManageStack">
-                            Tiempo
-                            <select
-                                class="buttonInput alignMiddle smallButton"
-                                id="timeSetter"
-                                onchange="updateTime(value)"
-                            >
-                                <option>50 min</option>
-                                <option>30 min</option>
-                                <option>10 min</option>
-                                <option>5 min</option>
-                                <option>3 min</option>
-                                <option>1 min</option>
-                            </select>
-                        </article>
+                        
                     </article>
                 </section>
 
@@ -267,4 +249,7 @@
             </section>
         </div>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<script src="../public/JS/toGeneral.js"></script>
+    <script src="public/JS/hometeacher.js"></script>
 </html>
