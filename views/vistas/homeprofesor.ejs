@@ -3,6 +3,7 @@
     <head>
         <title>WebList</title>
         <link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css" />
+        <meta name="viewport" content="width=device-width, user-scalable=no">
         <link
             rel="stylesheet"
             type="text/css"
@@ -47,6 +48,18 @@
                 #navbar.active {
                     width: 25rem;
                 }
+            }
+            #inputShowCode:focus{
+                outline: none;
+            }
+            #inputShowCode::selection{
+                background-color: transparent;
+            }
+            #inputShowCode::moz-selection{
+                background-color: transparent;
+            }
+            #inputShowCode{
+                cursor: pointer;
             }
         </style>
         <nav class="addShadow" id="header">
@@ -95,12 +108,12 @@
                     <br />
 
                     <aside class="addLeftMarginAlt">
-                        Seleccione un grupo
+                        <label class="groupsSection">Seleccione un grupo</label>
                         <br />
 
                         <br />
 
-                        <article class="autoManageCenter" id="groups">
+                        <article class="autoManageCenter groupsSection" id="groups">
                             <input
                                 class="buttonInput smallButton blue"
                                 type="button"
@@ -122,11 +135,10 @@
                         </article>
                         <br>
 
-                        <aside class="autoManageSpacedAlways">
+                        <aside class="autoManageSpacedAlways" id="subjects">
                             Seleccione la materia
                             <br>
-                            <select
-                                class="buttonInput alignMiddle smallButton">
+                            <select class="buttonInput alignMiddle largeInput" id="selectSubjects">
                                 <option>LPTI</option>
                             </select>
                         </aside>
@@ -152,7 +164,15 @@
                         <aside class="autoManageSpacedAlways" id="showCode">
                             Código de la clase
                             <br />
-                            <label>556032</label>
+                            <input type="text" id="inputShowCode" style="outline: none;" readonly>
+                            
+                            <span id="clipButton" style="cursor: pointer;">
+                                <i>Copy</i>
+                            </span>
+                            <span id="copyMessage">
+                                <i>Copied</i>
+                            </span>
+                            <input type="hidden" id="codeToCopy" value="">
                         </aside>
 
                         <br />
