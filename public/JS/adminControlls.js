@@ -1,6 +1,6 @@
 const patron_almn = /^([0-9]{10}){1}$/;
 const patron_prof = /^([0-9]{10}){1}$/;
-const patron_letras = /^([a-zA-Z ])+$/;
+const patron_letras = /^([a-zA-Z ]{1,45}){1}$/;
 
 var groups = [];
 var readyGroups = [];
@@ -23,6 +23,7 @@ $(document).ready(() => {
     $("#groupsList").hide();
     $("#msgBox").hide();
 
+    updateTableProfessor();
     getGroups()
         .then((data) => {
             groups = data;
@@ -100,6 +101,7 @@ $("#addUser").click((ev) => {
                         },
                         success: (res) => {
                             alert(res);
+                            updateTableProfessor();
                         },
                         error: (err) => {
                             console.log(err);
@@ -136,17 +138,7 @@ $("#addUser").click((ev) => {
 
 //Obtener lista de profesores registrados
 $("#bProfessorEntities").click((ev) => {
-    $.ajax({
-        url: "/getProfesor",
-        type: "POST",
-        success: (res) => {
-            console.log(res);
-        },
-        error: (err) => {
-            console.log(err);
-            alert("Algo a salido mal, intentelo mas tarde");
-        },
-    });
+    updateTableProfessor();
 });
 
 //funcion para añadir grupo
@@ -200,7 +192,7 @@ $("#arol").on("change", () => {
     }
 });
 
-//funcion para obtener los grupos que ya se han dado de alta
+//promesa para obtener los grupos que ya se han dado de alta
 function getReadyGroups() {
     return new Promise((resolve, reject) => {
         try {
@@ -227,7 +219,7 @@ function getReadyGroups() {
     });
 }
 
-//funcion para obtener los grupos que no se han dado de alta
+//promesa para obtener los grupos que no se han dado de alta
 function getGroups() {
     return new Promise((resolve, reject) => {
         try {
@@ -277,6 +269,27 @@ function getGroups() {
     });
 }
 
+//promesa para obtener todos los profesores
+function getAllProfessors() {
+    return new Promise((resolve, reject) => {
+        try {
+            $.ajax({
+                url: "/getProfesor",
+                type: "POST",
+                success: (res) => {
+                    resolve(res);
+                },
+                error: (err) => {
+                    reject(err);
+                    alert("Algo a salido mal, intentelo mas tarde");
+                },
+            });
+        } catch (ex) {
+            reject(ex);
+        }
+    });
+}
+
 //funcion para actualizar las cajas de materia grupo cuando se agrega un grupo
 async function updateSubjBox() {
     try {
@@ -298,6 +311,64 @@ async function updateSubjBox() {
         console.log(ex);
         alert(
             "Ocurrio un error al actualizar, Porfavor recarge la pagina o intentelo mas tarde"
+        );
+    }
+}
+
+//funcion para actualizar tablas de profesor
+async function updateTableProfessor() {
+    try {
+        $("#tableMsgBox").empty();
+        let profesores = await getAllProfessors();
+        if (profesores === null) {
+            $("#tableMsgBox").html(
+                "No se pudo obtener la informacion de los profesores, " +
+                    "Intentelo mas tarde"
+            );
+        } else if (profesores.length == 0) {
+            $("#tableMsgBox").html("No se encontraron profesores registrados");
+        } else {
+            let html =
+                '<tr class="title">' +
+                "<th>ID</th>" +
+                "<th>Nombre</th>" +
+                "<th>Materia</th>" +
+                "<th>Ciclo escolar</th>" +
+                "<th>Grupo asignado</th>" +
+                "<th>Acciones</th>" +
+                "</tr>";
+            profesores.forEach((profesor) => {
+                html +=
+                    "<tr>" +
+                    `<td>${profesor.id_empleado}</td>` +
+                    `<td>${profesor.nombre} ${profesor.app} ${profesor.apm}</td>` +
+                    `<td>${profesor.materia}</td>` +
+                    `<td>${profesor.cicloE}</td>` +
+                    `<td>${profesor.id_grupo}</td>` +
+                    "<td>" +
+                    `<article class="autoManageTogether">` +
+                    "<input " +
+                    `class="buttonInput tinyButton blue" ` +
+                    `type="button" ` +
+                    `name="modify" ` +
+                    `value="Modificar"` +
+                    "/>" +
+                    "<input " +
+                    `class="buttonInput tinyButton red" ` +
+                    `type="button" ` +
+                    `name="delete" ` +
+                    `value="Eliminar"` +
+                    "/>" +
+                    "</article>" +
+                    "</td>";
+            });
+            $("#tableUsers").html(html);
+        }
+    } catch (ex) {
+        console.log(ex);
+        $("#tableMsgBox").html(
+            "No se pudo obtener la informacion de los profesores, " +
+                "Intentelo mas tarde"
         );
     }
 }

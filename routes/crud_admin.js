@@ -64,4 +64,14 @@ router.post(
     models.getUpGroups
 );
 
+router.post(
+    "/deleteProfessorById",
+    async (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.send("ERROR");
+    },
+    models.deleteProfessorById
+);
+
 module.exports = router;

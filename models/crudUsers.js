@@ -2,9 +2,6 @@ const model = {};
 const db = require("../database/connection");
 const crypto = require("crypto");
 const validar = require("./validacion");
-const { serialize } = require("v8");
-const { resolve } = require("path");
-const { rejects } = require("assert");
 
 const materiasCode = [
     { code: "MAP", id: "P606" },
@@ -94,7 +91,6 @@ model.addProfesor = async (req, res) => {
                                                         "Ocurrio un error inesperado"
                                                     );
                                                 }
-                                                console.log(rows);
                                                 return res.send(
                                                     "Se a registrado al profesor exitosamente"
                                                 );
@@ -139,15 +135,56 @@ model.addProfesor = async (req, res) => {
 model.getProfesor = (req, res) => {
     try {
         db.query(
-            "SELECT id_empleado, nombre, app, apm, materia FROM EProfesor INNER JOIN CUsuario USING (id_usuario) INNER JOIN EProfesor_Materia USING (id_empleado) INNER JOIN CMateria USING (id_materia);",
+            "SELECT id_empleado, nombre, app, apm, materia, cicloE, id_grupo FROM EProfesor INNER JOIN CUsuario USING (id_usuario) INNER JOIN MPrograma USING (id_empleado) INNER JOIN CMateria USING (id_materia) INNER JOIN EGeneracion USING (id_generacion) ORDER BY id_empleado;",
             (err, rows) => {
                 if (err) {
                     console.log(err);
-                    return res.send("Ocurrio un error inesperado");
+                    return res.send(null);
                 }
                 return res.send(rows);
             }
         );
+    } catch (ex) {
+        console.log(ex);
+        return res.send("A fatal error has ocurred. Please try again later");
+    }
+};
+
+//Borrar un profesor
+model.deleteProfessorById = async (req, res) => {
+    let { id_empleado } = req.body;
+    try {
+        checkAddProfesor(id_empleado)
+            .then(async (data) => {
+                if (!data) {
+                    let id_usuario = await findIdByProfessor(id_empleado);
+                    db.query(
+                        "DELETE FROM CUsuario WHERE (id_usuario = ?)",
+                        [id_usuario],
+                        (err, rows) => {
+                            if (err) {
+                                console.log(err);
+                                return res.send(
+                                    "Algo salio mal, intentelo de nuevo mas tarde"
+                                );
+                            }
+                            return res.send(
+                                "Se a eliminado el usuario exitosamente"
+                            );
+                        }
+                    );
+                } else {
+                    return res.send(
+                        "No existe ese registro, porfavor recarge la pagina"
+                    );
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                return res.send(
+                    "A fatal error has ocurred. Please try again later"
+                );
+            });
     } catch (ex) {
         console.log(ex);
         return res.send("A fatal error has ocurred. Please try again later");
@@ -185,7 +222,6 @@ model.getUpGroups = (req, res) => {
                     console.log(err);
                     return res.send(null);
                 }
-                console.log(rows);
                 return res.send(rows);
             }
         );
@@ -234,6 +270,29 @@ model.upGroup = (req, res) => {
         return res.send("A fatal error has ocurred. Please try again later");
     }
 };
+
+//Obtiene el id de usuario apartir del id del profesor
+function findIdByProfessor(id_empleado) {
+    return new Promise((resolve, reject) => {
+        try {
+            db.query(
+                "SELECT id_usuario FROM CUsuario INNER JOIN EProfesor USING (id_usuario) WHERE id_empleado = ?",
+                [id_empleado],
+                (err, rows) => {
+                    if (err) {
+                        rejects(err);
+                        return;
+                    }
+                    resolve(rows[0].id_usuario);
+                    return;
+                }
+            );
+        } catch (ex) {
+            reject(ex);
+            return;
+        }
+    });
+}
 
 //obtiene el ultimo id y genera el siguiente
 function idGeneratorStandard(userType) {
@@ -432,7 +491,6 @@ function idGeneratorStandardFun(userType, lastID) {
         lastNumberString = "0" + lastNumberString;
     }
     id = id + lastNumberString;
-    console.log(id);
     return id;
 }
 
