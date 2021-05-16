@@ -28,6 +28,8 @@ const recuperar = require("./routes/recover");
 const studentCrud = require("./routes/studentCrudRoutes");
 const help = require("./routes/help");
 const crud_admin = require("./routes/crud_admin");
+const homeTeacher = require('./routes/homeTeacherRoutes');
+const verifyCodeStudent = require('./models/verifyCodeStudentModel');
 //variables
 
 /*
@@ -238,6 +240,7 @@ app.use(recuperar);
 app.use(crud_admin);
 app.use(help);
 app.use(studentCrud);
+app.use(homeTeacher);
 
 //rutas de emergencia cuando ocurre
 app.use((req, res) => {
@@ -279,6 +282,21 @@ app.use((error, req, res, next) => {
 
 //montando el servidor
 
-app.listen(app.get("host"), (req, res) => {
+const server = app.listen(app.get("host"), (req, res) => {
     console.log("Servidor en puerto: " + app.get("host"));
+});
+
+/**
+ * Esta parte del index corresponde a los sockets utilizados para comunicar las interfaces
+ * profesor-servidor-alumno
+ */
+
+ const SocketIO = require('socket.io');
+ const io = SocketIO(server);
+
+io.on('connection', (socket)=>{
+    console.log('new connection ',socket.id);
+
+    //La verificacion del codigo se va a llevar a cabo mediante ajax y segun la respiuesta ya lo mandamos con socket
+    
 });

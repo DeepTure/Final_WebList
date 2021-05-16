@@ -21,15 +21,15 @@ $('#sendEmailSupport').click(()=>{
                 success:function(response){
                     console.log(response);
                     if(response == "ok"){
-                        alert('se ha enviado satisfactoriamente');
+                        popUp('Se Ha enviado su mensje','espere su respuesta', 'success');
                         clerInputsEmailContact(true);
                     }else{
-                        alert('Ha ocurrido un error inesperado');
+                        popUp('Ha ocurrido un error inesperado','pHa ocurrido un error', 'error');
                     }
                 },
                 error:function(response){
                     console.log(response);
-                    alert('error inesperado')
+                    popUp('Ha ocurrido un error inesperado','pHa ocurrido un error', 'error');
                 }
             });
         }else{

@@ -62,12 +62,13 @@
 			<section class="squareSectionSizeLW addTopMarginAlt">
 				<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
 					Bienvenido <%= id %>
+					<input type="hidden" value="<%= id %>" id="idStudent">
 				</p>
 				
 				<br>
 				
 				<aside class="addLeftMarginAlt">
-					Grupos incritos: 6IAB
+					Grupos incritos: <label id="showGroups">6IAB</label>
 					<br>
 					
 					<br>
@@ -75,14 +76,14 @@
 					<aside class="autoManageSpacedAlways">
 						Código de la clase
 						<br>
-						<input class="smallInput" type="text" name="classCode" placeholder="Ingresa el código">
+						<input class="smallInput" type="text" name="classCode" placeholder="Ingresa el código" id="codeAttendance">
 					</aside>
 
 					<br>
 
 				</aside>			
 
-				<input class="buttonInput addLeftMarginAlt blue" type="button" name="applyForAssistance" value="Solicitar registro">
+				<input class="buttonInput addLeftMarginAlt blue" type="button" name="applyForAssistance" value="Registrar mi asistencia" id="registerAttendance">
 
 				<br><br>
 
@@ -181,5 +182,11 @@
 			</section>
 		</section>
 	</div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<script src="/socket.io/socket.io.js"></script>
+    <script src="/public/JS/toGeneral.js"></script>
+	<script src="/public/JS/homeStudentSocket.js"></script>
+	<script src="/public/JS/homeStudent.js"></script>
 </body>
 </html>

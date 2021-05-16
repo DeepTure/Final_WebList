@@ -33,3 +33,5 @@ function fecha(){
 setInterval(function(){
                 fecha();
             },1000)
+
+updateTime('0');

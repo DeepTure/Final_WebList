@@ -73,4 +73,28 @@ model.getStudets = (req, res) => {
     });
 };
 
+/**
+ * Este modulo es para obtener los grupos del alumno, pertenece el home del alumno
+ * NO BORRAR
+ */
+model.getGroups = (req, res)=>{
+    const data = req.body;
+    db.query('SELECT id_generacion FROM minscripcion WHERE boleta = ?',[data.id],(err, idg)=>{
+        if(err)return res.send(err)
+        const querys = processGeneration(idg);
+        db.query(querys, (err, grupos)=>{
+            if(err) return res.json(err);
+            return res.send(grupos);
+        });
+    });
+};
+
+function processGeneration(ids){
+    let querys = '';
+    ids.forEach((id)=>{
+        querys += 'SELECT id_grupo FROM egeneracion WHERE id_generacion = "'+id.id_generacion+'";';
+    });
+    return querys;
+}
+
 module.exports = model;
