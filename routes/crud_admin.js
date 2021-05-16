@@ -16,8 +16,9 @@ router.get(
 
 router.post(
     "/addProfesor",
-    (req, res, next) => {
-        if (req.isAuthenticated()) return next();
+    async (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
         res.send("ERROR");
     },
     models.addProfesor
@@ -26,10 +27,41 @@ router.post(
 router.post(
     "/getProfesor",
     (req, res, next) => {
-        if (req.isAuthenticated()) return next();
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
         res.send("ERROR");
     },
     models.getProfesor
+);
+
+router.post(
+    "/getGroups",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.send("ERROR");
+    },
+    models.getGroups
+);
+
+router.post(
+    "/upGroup",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.send("ERROR");
+    },
+    models.upGroup
+);
+
+router.post(
+    "/getUpGroups",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.send("ERROR");
+    },
+    models.getUpGroups
 );
 
 module.exports = router;

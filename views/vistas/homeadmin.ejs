@@ -134,9 +134,7 @@
                         <tr class="title">
                             <th>ID</th>
                             <th>Nombre</th>
-                            <th>Ap_paterno</th>
-                            <th>Ap_materno</th>
-                            <th>Rol</th>
+                            <th></th>
                             <th></th>
                         </tr>
                         <tr>
@@ -208,6 +206,60 @@
 
                 <!-- Derecha -->
                 <section class="squareSectionSizeLW addTopMarginAlt">
+                    <p
+                        class="
+                            titleFont
+                            centerText
+                            addLeftMarginAlt
+                            addTopMarginAlt
+                        "
+                    >
+                        Dar de alta grupo
+                    </p>
+
+                    <br />
+                    <aside class="addLeftMarginAlt">
+                        <br />
+                        <section id="groupsList">
+                            <aside class="autoManageSpacedAlways">
+                                Grupos
+                                <br />
+                                <select
+                                    class="smallInput centerText"
+                                    id="agroup"
+                                    name="group"
+                                ></select>
+                            </aside>
+                            <br />
+                            <aside class="autoManageSpacedAlways">
+                                <br />
+                                <input
+                                    class="buttonInput blue"
+                                    id="upGroup"
+                                    type="button"
+                                    name="group"
+                                    value="Agregar grupo"
+                                />
+                            </aside>
+                        </section>
+                        <section id="msgBox">
+                            <aside class="autoManageSpacedAlways">
+                                <p
+                                    class="
+                                        titleFont
+                                        centerText
+                                        addLeftMarginAlt
+                                        addTopMarginAlt
+                                    "
+                                    id="pmsg"
+                                ></p>
+                                <br />
+                            </aside>
+                        </section>
+                    </aside>
+
+                    <br />
+
                     <p
                         class="
                             titleFont
@@ -305,71 +357,25 @@
                                 <br />
                             </aside>
                             <br />
-                            <aside
-                                class="autoManageSpacedAlways addLeftMarginAlt"
-                            >
-                                Metodos agiles de programacion
+                            <aside class="autoManageSpacedAlways">
+                                <input
+                                    class="buttonInput blue"
+                                    id="addMat"
+                                    type="button"
+                                    name="addM"
+                                    value="Añadir materia"
+                                />
                                 <br />
                                 <input
-                                    type="checkbox"
-                                    class="checkbox"
-                                    id="amap"
-                                    name="cmap"
+                                    class="buttonInput red"
+                                    id="quitMat"
+                                    type="button"
+                                    name="quitM"
+                                    value="Quitar materia"
                                 />
                             </aside>
                             <br />
-                            <aside
-                                class="autoManageSpacedAlways addLeftMarginAlt"
-                            >
-                                Soporte de software
-                                <br />
-                                <input
-                                    type="checkbox"
-                                    class="checkbox"
-                                    id="ass"
-                                    name="css"
-                                />
-                            </aside>
-                            <br />
-                            <aside
-                                class="autoManageSpacedAlways addLeftMarginAlt"
-                            >
-                                Ingenieria de software basica
-                                <br />
-                                <input
-                                    type="checkbox"
-                                    class="checkbox"
-                                    id="aisb"
-                                    name="cisb"
-                                />
-                            </aside>
-                            <br />
-                            <aside
-                                class="autoManageSpacedAlways addLeftMarginAlt"
-                            >
-                                Lab. de proyectos de tecnologias de la
-                                informacion IV
-                                <br />
-                                <input
-                                    type="checkbox"
-                                    class="checkbox"
-                                    id="alptiiv"
-                                    name="clptiiv"
-                                />
-                            </aside>
-                            <br />
-                            <aside
-                                class="autoManageSpacedAlways addLeftMarginAlt"
-                            >
-                                Proyecto integrador
-                                <br />
-                                <input
-                                    type="checkbox"
-                                    class="checkbox"
-                                    id="api"
-                                    name="cpi"
-                                />
-                            </aside>
+                            <section id="MatElement"></section>
                         </section>
                         <!-- Datos para el alumno -->
                         <section id="otherDataAlumno">
@@ -419,7 +425,7 @@
                         value="Subir archivo CSV"
                     />
 
-                    <!--Codigo de la caja-->>
+                    <!--Codigo de la caja-->
                     <form action="/uploadFiles" class="dropzone" id="dropzone">
                         <div class="fallback">
                             <input

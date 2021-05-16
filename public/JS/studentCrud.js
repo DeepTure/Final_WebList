@@ -1,5 +1,5 @@
 //funciones de inicio
-getStudents();
+/*getStudents();*/
 
 /*$('#addUser').click(function(){
     console.log('add user')

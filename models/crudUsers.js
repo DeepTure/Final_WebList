@@ -3,6 +3,8 @@ const db = require("../database/connection");
 const crypto = require("crypto");
 const validar = require("./validacion");
 const { serialize } = require("v8");
+const { resolve } = require("path");
+const { rejects } = require("assert");
 
 const materiasCode = [
     { code: "MAP", id: "P606" },
@@ -12,13 +14,42 @@ const materiasCode = [
     { code: "PI", id: "P610" },
 ];
 
+const wordsForUse = [
+    "q",
+    "w",
+    "e",
+    "r",
+    "t",
+    "y",
+    "u",
+    "i",
+    "o",
+    "p",
+    "a",
+    "s",
+    "d",
+    "f",
+    "g",
+    "h",
+    "j",
+    "k",
+    "l",
+    "ñ",
+    "z",
+    "x",
+    "c",
+    "v",
+    "b",
+    "n",
+    "m",
+];
+
 // añadir un profesor
-model.addProfesor = (req, res) => {
+model.addProfesor = async (req, res) => {
     try {
-        let { id_empleado, nombre, app, apm, materias } = JSON.parse(
-            req.body.datos
-        );
-        console.log(req.body.datos);
+        let { id_empleado, nombre, app, apm, materias, cicloE } = req.body;
+        materias = JSON.parse(materias);
+        console.log({ id_empleado, nombre, app, apm, materias, cicloE });
 
         var validacionnum = validar.numEmpleado(id_empleado);
         var validacionnom = validar.Nombres(nombre);
@@ -35,82 +66,52 @@ model.addProfesor = (req, res) => {
                             hash.update(id_empleado);
                             var asegurado = hash.digest("hex");
 
-                            let id_usuario = db.query(
-                                "SELECT id_empleado FROM EProfesor WHERE id_empleado = ?",
-                                [id_empleado],
-                                (err, rows) => {
-                                    if (err) {
-                                        console.log(err);
-                                        return res.send(
-                                            "Ocurrio un error inesperado"
-                                        );
-                                    } else {
-                                        if (rows.length == 0) {
-                                            db.query(
-                                                "SELECT id_usuario FROM CUsuario WHERE id_usuario LIKE 'PR%'  ORDER BY id_usuario DESC LIMIT 1",
-                                                (err, rows) => {
-                                                    let id_usuario = "";
-                                                    if (err) {
-                                                        console.log(err);
-                                                        return res.send(
-                                                            "Ocurrio un error inesperado"
-                                                        );
-                                                    } else if (
-                                                        rows.length == 0
-                                                    ) {
-                                                        id_usuario = "PR0001";
-                                                    } else {
-                                                        id_usuario =
-                                                            idGeneratorStandard(
-                                                                "PR",
-                                                                rows[0]
-                                                                    .id_usuario
-                                                            );
-                                                    }
-                                                    let querys =
-                                                        QueryGeneratorAddProfesor(
-                                                            {
-                                                                id_empleado,
-                                                                nombre,
-                                                                app,
-                                                                apm,
-                                                                materiasID:
-                                                                    check.materiasID,
-                                                                id_usuario,
-                                                                correo: "correo@gmail.com",
-                                                                contrasena:
-                                                                    asegurado,
-                                                            }
-                                                        );
+                            checkAddProfesor(id_empleado)
+                                .then(async (data) => {
+                                    if (data) {
+                                        let id_usuario =
+                                            await idGeneratorStandard("PR");
+                                        let querys = QueryGeneratorAddProfesor({
+                                            id_empleado,
+                                            nombre,
+                                            app,
+                                            apm,
+                                            materiasID: check.materiasID,
+                                            id_usuario,
+                                            correo: "correo@gmail.com",
+                                            contrasena: asegurado,
+                                            cicloE,
+                                            materias,
+                                        });
 
-                                                    db.query(
-                                                        querys.query,
-                                                        querys.queryData,
-                                                        (err, rows) => {
-                                                            if (err) {
-                                                                console.log(
-                                                                    err
-                                                                );
-                                                                return res.send(
-                                                                    "Ocurrio un error inesperado"
-                                                                );
-                                                            }
-                                                            console.log(rows);
-                                                            return res.send(
-                                                                "Se a registrado al profesor exitosamente"
-                                                            );
-                                                        }
+                                        db.query(
+                                            querys.query,
+                                            querys.queryData,
+                                            (err, rows) => {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return res.send(
+                                                        "Ocurrio un error inesperado"
                                                     );
                                                 }
-                                            );
-                                        } else {
-                                            return res.send(
-                                                "Ya existe ese registro"
-                                            );
-                                        }
+                                                console.log(rows);
+                                                return res.send(
+                                                    "Se a registrado al profesor exitosamente"
+                                                );
+                                            }
+                                        );
+                                    } else {
+                                        return res.send(
+                                            "Ya existe ese registro"
+                                        );
                                     }
-                                }
-                            );
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    return res.send(
+                                        "Ocurrio un error inesperado"
+                                    );
+                                });
                         } else {
                             return res.send(
                                 "Ocurrio un error con los datos de las materias"
@@ -153,6 +154,179 @@ model.getProfesor = (req, res) => {
     }
 };
 
+//obtener grupos que no se han dado de alta en dicho ciclo escolar
+model.getGroups = (req, res) => {
+    try {
+        db.query(
+            "select id_grupo from CGrupo where id_grupo NOT IN (select distinct id_grupo from EGeneracion where cicloE = ?)",
+            [req.body.cicloE],
+            (err, rows) => {
+                if (err) {
+                    console.log(err);
+                    return res.send(null);
+                }
+                return res.send(rows);
+            }
+        );
+    } catch (ex) {
+        console.log(ex);
+        return res.send("A fatal error has ocurred. Please try again later");
+    }
+};
+
+//obtener grupos que ya se han dado de alta en dicho ciclo escolar
+model.getUpGroups = (req, res) => {
+    try {
+        db.query(
+            "select id_grupo from EGeneracion where cicloE = ?",
+            [req.body.cicloE],
+            (err, rows) => {
+                if (err) {
+                    console.log(err);
+                    return res.send(null);
+                }
+                console.log(rows);
+                return res.send(rows);
+            }
+        );
+    } catch (ex) {
+        console.log(ex);
+        return res.send("A fatal error has ocurred. Please try again later");
+    }
+};
+
+//Dar de alta un grupo en dicho ciclo escolar
+model.upGroup = (req, res) => {
+    try {
+        let { id_grupo, cicloE } = req.body;
+        checkUpGroup(id_grupo, cicloE)
+            .then((data) => {
+                if (data) {
+                    db.query(
+                        "insert into EGeneracion values(?,?,?)",
+                        [cicloE + id_grupo, cicloE, id_grupo],
+                        (err, rows) => {
+                            if (err) {
+                                console.log(err);
+                                return res.send(
+                                    "Algo salio mal, intentelo de nuevo mas tarde"
+                                );
+                            }
+                            return res.send(
+                                "Se a dado de alta al grupo exitosamente"
+                            );
+                        }
+                    );
+                } else {
+                    return res.send(
+                        "Algo salio mal, porfavor recarge la pagina e intentlo de nuevo"
+                    );
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                return res.send(
+                    "A fatal error has ocurred. Please try again later"
+                );
+            });
+    } catch (ex) {
+        console.log(ex);
+        return res.send("A fatal error has ocurred. Please try again later");
+    }
+};
+
+//obtiene el ultimo id y genera el siguiente
+function idGeneratorStandard(userType) {
+    return new Promise((resolve, rejects) => {
+        try {
+            if (userType == "PR") {
+                db.query(
+                    "SELECT id_usuario FROM CUsuario WHERE id_usuario LIKE 'PR%'  ORDER BY id_usuario DESC LIMIT 1",
+                    (err, rows) => {
+                        if (err) {
+                            rejects(err);
+                            return;
+                        }
+                        let id_usuario = "";
+                        if (rows.length == 0) {
+                            id_usuario = "PR0001";
+                        } else {
+                            id_usuario = idGeneratorStandardFun(
+                                userType,
+                                rows[0].id_usuario
+                            );
+                        }
+                        resolve(id_usuario);
+                        return;
+                    }
+                );
+            } else {
+                rejects("No existe dicho usuario");
+                return;
+            }
+        } catch (ex) {
+            rejects(ex);
+            return;
+        }
+    });
+}
+
+//revisa si no existe aun dicho profesor
+function checkAddProfesor(id_empleado) {
+    return new Promise((resolve, rejects) => {
+        try {
+            db.query(
+                "select id_empleado from EProfesor where id_empleado = ?",
+                [id_empleado],
+                (err, rows) => {
+                    if (err) {
+                        rejects(err);
+                        return;
+                    }
+                    if (rows.length == 0) {
+                        resolve(true);
+                        return;
+                    }
+                    resolve(false);
+                    return;
+                }
+            );
+        } catch (ex) {
+            rejects(err);
+            return;
+        }
+    });
+}
+
+//revisa si no existe un grupo ya dado de alta
+function checkUpGroup(cicloE, id_grupo) {
+    return new Promise((resolve, rejects) => {
+        try {
+            db.query(
+                "select id_generacion from EGeneracion where id_generacion = ? AND cicloE = ? AND id_grupo = ?",
+                [cicloE + id_grupo, cicloE, id_grupo],
+                (err, rows) => {
+                    if (err) {
+                        rejects(err);
+                        return;
+                    }
+                    if (rows.length == 0) {
+                        resolve(true);
+                        return;
+                    }
+                    resolve(false);
+                    return;
+                }
+            );
+        } catch (err) {
+            rejects(err);
+            return;
+        }
+    });
+}
+
+//obtiene todos los grupos que
+
 //genera la query para insertar los datos del profesor
 function QueryGeneratorAddProfesor(data) {
     let {
@@ -164,25 +338,36 @@ function QueryGeneratorAddProfesor(data) {
         id_usuario,
         correo,
         contrasena,
+        cicloE,
     } = data;
     let query = "";
     let queryData = [];
 
+    //id_programa
+    materiasID.forEach((materiaID) => {
+        materiaID.id_programa = idGeneratorProgram(
+            cicloE + materiaID.id_grupo,
+            materiaID.materiaCode,
+            id_empleado
+        );
+    });
+
     //CUsuario
-    query = query + "INSERT INTO CUsuario SET ?;";
+    query += "INSERT INTO CUsuario SET ?;";
     queryData.push({ id_usuario, nombre, app, apm, email: correo, contrasena });
 
     //EProfesor
-    query = query + "INSERT INTO EProfesor SET ?;";
+    query += "INSERT INTO EProfesor SET ?;";
     queryData.push({ id_empleado, id_usuario });
 
-    //EProfesor_Materia
+    //EPrograma
     materiasID.forEach((materiaID) => {
-        query = query + "INSERT INTO EProfesor_Materia SET ?;";
+        query += "INSERT INTO MPrograma SET ?;";
         queryData.push({
-            id_profesor_materia: id_empleado + materiaID,
+            id_programa: materiaID.id_programa,
             id_empleado,
-            id_materia: materiaID,
+            id_materia: materiaID.materiaCode,
+            id_generacion: cicloE + materiaID.id_grupo,
         });
     });
 
@@ -193,15 +378,23 @@ function QueryGeneratorAddProfesor(data) {
 function checadorMaterias(materias) {
     let check = true;
     let materiasID = [];
+    let tempMaterias = [];
+
+    materiasCode.forEach((materiaCode) => {
+        tempMaterias.push(materiaCode.code);
+    });
 
     materias.forEach((materia) => {
         materiasCode.forEach((materiaCode) => {
-            if (materiaCode.code == materia) {
-                if (materiasID.includes(materiaCode.id)) {
+            if (materiaCode.code == materia.materia) {
+                if (!tempMaterias.includes(materia.materia)) {
                     check = false;
                     return;
                 }
-                materiasID.push(materiaCode.id);
+                materiasID.push({
+                    materiaCode: materiaCode.id,
+                    id_grupo: materia.grupo,
+                });
             }
         });
     });
@@ -211,8 +404,21 @@ function checadorMaterias(materias) {
     return { check: check, materiasID: materiasID };
 }
 
+//Generador de ids para programas
+function idGeneratorProgram(id_generacion, id_materia, id_empleado) {
+    let id = id_generacion + id_materia;
+
+    id += id_empleado.slice(6, 10);
+
+    id +=
+        wordsForUse[Math.floor(Math.random() * wordsForUse.length - 1 + 1)] +
+        wordsForUse[Math.floor(Math.random() * wordsForUse.length - 1 + 1)];
+
+    return id;
+}
+
 //Generador de ids para usuarios
-function idGeneratorStandard(userType, lastID) {
+function idGeneratorStandardFun(userType, lastID) {
     let id = userType;
 
     let lastNumber = parseInt(lastID.slice(2, 6));
@@ -226,6 +432,7 @@ function idGeneratorStandard(userType, lastID) {
         lastNumberString = "0" + lastNumberString;
     }
     id = id + lastNumberString;
+    console.log(id);
     return id;
 }
 
