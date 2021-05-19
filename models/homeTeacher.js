@@ -22,9 +22,13 @@ model.addToken = (req, res)=>{
     const time = new Date();
     const code = generateCode(6);
     const token = jwt.sign({ idPrograma:data.program}, code);
-    db.query("INSERT INTO etokenlista VALUES(?,?,?,?)",[token, processDuration(data.duration), time, data.program], (err, response)=>{
-        if(err)return res.json(err)
-        return res.json({response,code});
+    db.query("INSERT INTO etokenlista VALUES(?,?,?,?)",[token, processDuration(data.duration), time, data.program], (err, responseT)=>{
+        if(err)return res.json(err);
+        const idSala = generateIdRoom(data.program, data.idEmpleado);
+        db.query('INSERT INTO esala VALUES(?,?)',[idSala, data.program],(err, responseS)=>{
+            if(err)return res.json(err);
+            return res.json({responseT,responseS,code});
+        });
     });
 };
 
@@ -70,6 +74,18 @@ function generateCode(n) {
 function processDuration(duration){
     let aux = duration.split(' ');
     return aux[0];
+}
+
+function generateIdRoom(program, idEmpleado){
+    let id = idEmpleado;
+    const letters = program.split('');
+    letters.forEach((letter, i)=>{
+        if(i<=5){
+            id+=letter;
+        }
+    });
+    console.log(id);
+    return id;
 }
 
 module.exports = model;

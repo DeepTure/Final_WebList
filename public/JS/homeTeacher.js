@@ -50,7 +50,7 @@ $('#generateCode').click(function(){
         data:{duration, matter, generation, group, program, idEmpleado},
         success:function(response){
             console.log(response);
-            if(response.response.protocol41==true){
+            if(response.responseT.protocol41==true && response.responseS.protocol41==true){
                 showToken(response.code, duration);
             }else{
                 alert('Un error inesperado a ocurrido')
