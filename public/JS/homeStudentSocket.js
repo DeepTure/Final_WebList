@@ -1,14 +1,6 @@
 const socket = io();
 
-$('#registerAttendance').click(function(){
-    const code = $('#codeAttendance').val();
-    const id = $('#idStudent').val();
-
-    if(true){
-        socket.emit('register:attendance', {
-            code, id
-        });
-    }else{
-        alert('el dato es incorrecto');
-    }
-});
+function sendMyAssistences(tokenData){
+    const boleta = $('#idStudent').val();
+    socket.emit('assistences:send',{tokenData, boleta});
+}
