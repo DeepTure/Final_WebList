@@ -16,6 +16,7 @@ var subjects = [
 ];
 
 var subjectsItems = [];
+var groupsItems = [];
 
 //Funciones de JQuery a ejecutar cuando se carge completamente la pagina
 $(document).ready(() => {
@@ -29,17 +30,28 @@ $(document).ready(() => {
             groups = data;
             $("#groupsList").show();
             createSubjBox();
+            createGroupBox();
         })
         .catch((err) => {
             console.log(err);
             $("#msgBox").show();
             createSubjBox();
+            createGroupBox();
         });
 });
 
 //listener para añadir caja para materia y grupo
 $("#addMat").click((ev) => {
     createSubjBox();
+});
+
+//listener para añadir caja para grupo en inscriṕcion
+$("#addGrp").click((ev) => {
+    if (groupsItems.length < readyGroups.length) {
+        createGroupBox();
+    } else {
+        alert("No se pueden añadir mas grupos");
+    }
 });
 
 //listener para elimnar caja para materia y grupo
@@ -49,6 +61,16 @@ $("#quitMat").click((ev) => {
     } else {
         $(`#${subjectsItems[subjectsItems.length - 1].section}`).remove();
         subjectsItems.pop();
+    }
+});
+
+//listener para elimnar caja para grupo en inscriṕcion
+$("#quitGrp").click((ev) => {
+    if (groupsItems.length <= 1) {
+        alert("No se pueden eliminar mas grupos");
+    } else {
+        $(`#${groupsItems[groupsItems.length - 1].section}`).remove();
+        groupsItems.pop();
     }
 });
 
@@ -117,18 +139,60 @@ $("#addUser").click((ev) => {
                 alert("Aun no se han añadido materias");
             }
         } else {
-            /*let Year = new Date().getFullYear();
-                    let cicle = new Date().getMonth() <= 5 ? 1 : 2;
-        
-                    let datos = JSON.stringify({
-                        id_empleado: $("#aid").val(),
-                        nombre: $("#aname").val(),
-                        app: $("#alastf").val(),
-                        apm: $("#alastm").val(),
-                        id_CicloE: Year + "-" + cicle,
-                        id_Grupo: $("#arol option:selected").val(),
-                    });*/
-            alert("Esta opcion se encuentra en mantenimiento");
+            if (groupsItems.length != 0) {
+                let dataToSend = [];
+                let check = true;
+                let tempData = [];
+                groupsItems.forEach((item) => {
+                    if (
+                        tempData.includes(
+                            `${$(`#${item.selectG} option:selected`).val()}`
+                        )
+                    ) {
+                        check = false;
+                        return;
+                    }
+                    dataToSend.push({
+                        grupo: $(`#${item.selectG} option:selected`).val(),
+                    });
+                    tempData.push(
+                        `${$(`#${item.selectG} option:selected`).val()}`
+                    );
+                });
+
+                if (!check) {
+                    alert("No repita los mismos grupos");
+                    return;
+                }
+                if (validar(dataToSend)) {
+                    $.ajax({
+                        url: "/addStudent",
+                        type: "POST",
+                        data: {
+                            boleta: $("#aid").val(),
+                            nombre: $("#aname").val(),
+                            app: $("#alastf").val(),
+                            apm: $("#alastm").val(),
+                            grupos: JSON.stringify(dataToSend),
+                            cicloE: generateCicloEscolar(),
+                        },
+                        success: (res) => {
+                            alert(res);
+                            updateTableStudent();
+                        },
+                        error: (err) => {
+                            console.log(err);
+                            alert("Algo a salido mal, intentelo mas tarde");
+                        },
+                    });
+                } else {
+                    alert(
+                        "Por favor revise que los campos sean correctos e intentelo de nuevo"
+                    );
+                }
+            } else {
+                alert("Aun no se han añadido grupos");
+            }
         }
     } catch (ex) {
         console.log(ex);
@@ -139,6 +203,15 @@ $("#addUser").click((ev) => {
 //Obtener lista de profesores registrados
 $("#bProfessorEntities").click((ev) => {
     updateTableProfessor();
+    $("#bStudentEntities").attr("class", "buttonInput smallButton blue");
+    $("#bProfessorEntities").attr("class", "buttonInput smallButton red");
+});
+
+//Obtener lista de alumnos registrados
+$("#bStudentEntities").click((ev) => {
+    updateTableStudent();
+    $("#bProfessorEntities").attr("class", "buttonInput smallButton blue");
+    $("#bStudentEntities").attr("class", "buttonInput smallButton red");
 });
 
 //funcion para añadir grupo
@@ -165,6 +238,7 @@ $("#upGroup").click((ev) => {
                 if (subjectsItems.length == 0) {
                     $("#MatElement").empty();
                     createSubjBox();
+                    createGroupBox();
                 } else {
                     updateSubjBox();
                 }
@@ -281,11 +355,54 @@ function getAllProfessors() {
                 },
                 error: (err) => {
                     reject(err);
-                    alert("Algo a salido mal, intentelo mas tarde");
                 },
             });
         } catch (ex) {
             reject(ex);
+        }
+    });
+}
+
+//promesa para obtener todos los alumnos
+function getAllStudents() {
+    return new Promise((resolve, reject) => {
+        try {
+            $.ajax({
+                url: "/getStudent",
+                type: "POST",
+                success: (res) => {
+                    resolve(res);
+                },
+                error: (err) => {
+                    reject(err);
+                },
+            });
+        } catch (ex) {
+            reject(ex);
+        }
+    });
+}
+
+//promesa para obtener informacion del profesor por id
+function getProfessor(id_empleado, cicloE) {
+    return new Promise((resolve, reject) => {
+        try {
+            $.ajax({
+                url: "/getProfesorById",
+                type: "POST",
+                data: {
+                    id_empleado,
+                    cicloE,
+                },
+                success: (res) => {
+                    resolve(res);
+                },
+                error: (err) => {
+                    throw err;
+                },
+            });
+        } catch (ex) {
+            reject({ code: 0, msg: ex });
         }
     });
 }
@@ -307,6 +424,33 @@ async function updateSubjBox() {
                 $(`#${item.selectG}`).html(html);
             });
         }
+        readyGroups = tempGroups;
+    } catch (ex) {
+        console.log(ex);
+        alert(
+            "Ocurrio un error al actualizar, Porfavor recarge la pagina o intentelo mas tarde"
+        );
+    }
+}
+
+//funcion para actualizar las cajas de grupo en inscripcion cuando se agrega un grupo
+async function updateGroupBox() {
+    try {
+        let tempGroups = await getReadyGroups();
+        if (groupsItems.length != 0 && tempGroups.length != 0) {
+            let html = "";
+            tempGroups.forEach((group) => {
+                html +=
+                    "<option " +
+                    'class="smallInput centerText">' +
+                    group +
+                    "</option>";
+            });
+            groupsItems.forEach((item) => {
+                $(`#${item.selectG}`).html(html);
+            });
+        }
+        readyGroups = tempGroups;
     } catch (ex) {
         console.log(ex);
         alert(
@@ -321,11 +465,13 @@ async function updateTableProfessor() {
         $("#tableMsgBox").empty();
         let profesores = await getAllProfessors();
         if (profesores === null) {
+            $("#tableUsers").empty();
             $("#tableMsgBox").html(
                 "No se pudo obtener la informacion de los profesores, " +
                     "Intentelo mas tarde"
             );
         } else if (profesores.length == 0) {
+            $("#tableUsers").empty();
             $("#tableMsgBox").html("No se encontraron profesores registrados");
         } else {
             let html =
@@ -347,17 +493,22 @@ async function updateTableProfessor() {
                     `<td>${profesor.id_grupo}</td>` +
                     "<td>" +
                     `<article class="autoManageTogether">` +
+                    '<form action="/homeModify" method="POST">' +
+                    `<input name="id_empleado" value="${profesor.id_empleado}" type="hidden"/>` +
+                    `<input name="cicloE" value="${profesor.cicloE}" type="hidden"/>` +
                     "<input " +
                     `class="buttonInput tinyButton blue" ` +
-                    `type="button" ` +
+                    `type="submit" ` +
                     `name="modify" ` +
                     `value="Modificar"` +
                     "/>" +
+                    "</form>" +
                     "<input " +
                     `class="buttonInput tinyButton red" ` +
                     `type="button" ` +
                     `name="delete" ` +
-                    `value="Eliminar"` +
+                    `value="Eliminar" ` +
+                    `onclick="deleteByIdProfessor('${profesor.id_empleado}')"` +
                     "/>" +
                     "</article>" +
                     "</td>";
@@ -366,8 +517,73 @@ async function updateTableProfessor() {
         }
     } catch (ex) {
         console.log(ex);
+        $("#tableUsers").empty();
         $("#tableMsgBox").html(
             "No se pudo obtener la informacion de los profesores, " +
+                "Intentelo mas tarde"
+        );
+    }
+}
+
+//funcion para actualizar tablas de alumnos
+async function updateTableStudent() {
+    try {
+        $("#tableMsgBox").empty();
+        let estudiantes = await getAllStudents();
+        if (estudiantes === null) {
+            $("#tableUsers").empty();
+            $("#tableMsgBox").html(
+                "No se pudo obtener la informacion de los alumnos, " +
+                    "Intentelo mas tarde"
+            );
+        } else if (estudiantes.length == 0) {
+            $("#tableUsers").empty();
+            $("#tableMsgBox").html("No se encontraron alumnos registrados");
+        } else {
+            let html =
+                '<tr class="title">' +
+                "<th>ID</th>" +
+                "<th>Nombre</th>" +
+                "<th>Ciclo escolar</th>" +
+                "<th>Grupo asignado</th>" +
+                "<th>Acciones</th>" +
+                "</tr>";
+            estudiantes.forEach((profesor) => {
+                html +=
+                    "<tr>" +
+                    `<td>${profesor.boleta}</td>` +
+                    `<td>${profesor.nombre} ${profesor.app} ${profesor.apm}</td>` +
+                    `<td>${profesor.cicloE}</td>` +
+                    `<td>${profesor.id_grupo}</td>` +
+                    "<td>" +
+                    `<article class="autoManageTogether">` +
+                    '<form action="/homeModify" method="POST">' +
+                    `<input name="boleta" value="${profesor.boleta}" type="hidden"/>` +
+                    `<input name="cicloE" value="${profesor.cicloE}" type="hidden"/>` +
+                    "<input " +
+                    `class="buttonInput tinyButton blue" ` +
+                    `type="submit" ` +
+                    `name="modify" ` +
+                    `value="Modificar"` +
+                    "/>" +
+                    "</form>" +
+                    "<input " +
+                    `class="buttonInput tinyButton red" ` +
+                    `type="button" ` +
+                    `name="delete" ` +
+                    `value="Eliminar" ` +
+                    `onclick="deleteByIdStudent('${profesor.boleta}')"` +
+                    "/>" +
+                    "</article>" +
+                    "</td>";
+            });
+            $("#tableUsers").html(html);
+        }
+    } catch (ex) {
+        console.log(ex);
+        $("#tableUsers").empty();
+        $("#tableMsgBox").html(
+            "No se pudo obtener la informacion de los alumnos, " +
                 "Intentelo mas tarde"
         );
     }
@@ -376,11 +592,7 @@ async function updateTableProfessor() {
 //añadir caja para materia y grupo
 async function createSubjBox() {
     try {
-        if (groups.length == 0) {
-            throw "No hay grupos para ingresar";
-        }
         let tempGroups = await getReadyGroups();
-
         if (tempGroups.length == 0) {
             $("#MatElement").html(
                 '<aside class="autoManageSpacedAlways">' +
@@ -463,6 +675,190 @@ async function createSubjBox() {
     }
 }
 
+//añadir caja para grupo del alumno
+async function createGroupBox() {
+    try {
+        let tempGroups = await getReadyGroups();
+        if (tempGroups.length == 0) {
+            $("#GrpElement").html(
+                '<aside class="autoManageSpacedAlways">' +
+                    "<p " +
+                    'class="' +
+                    "titleFont " +
+                    "centerText " +
+                    "addLeftMarginAlt " +
+                    'addTopMarginAlt" ' +
+                    ">" +
+                    "No hay grupos dados de alta en este semestre" +
+                    "</p>" +
+                    "<br />" +
+                    "</aside>"
+            );
+        } else {
+            let counter = groupsItems.length + 1;
+            html =
+                `<section id="boxG${counter}"` +
+                "<br>" +
+                "<aside " +
+                "class=" +
+                '"autoManageSpacedAlways ' +
+                'addLeftMarginAlt "' +
+                `id="boxgrp${counter}"` +
+                ">" +
+                "<br>" +
+                "<select " +
+                'class="smallInput centerText" ' +
+                `id="agroup${counter}"` +
+                `name="group${counter}"` +
+                ">";
+            tempGroups.forEach((group) => {
+                html +=
+                    "<option " +
+                    'class="smallInput centerText">' +
+                    group +
+                    "</option>";
+            });
+            html += "</select>" + "</aside>" + "<br>" + "</section>";
+            $("#GrpElement").append(html);
+            groupsItems.push({
+                section: `boxG${counter}`,
+                selectG: `agroup${counter}`,
+            });
+            readyGroups = tempGroups;
+        }
+    } catch (ex) {
+        console.log(ex);
+        $("#GrpElement").html(
+            '<aside class="autoManageSpacedAlways">' +
+                "<p " +
+                'class="' +
+                "titleFont " +
+                "centerText " +
+                "addLeftMarginAlt " +
+                'addTopMarginAlt" ' +
+                ">" +
+                "Ocurrio un error inesperado, por favor recarge la pagina o intentelo mas tarde" +
+                "</p>" +
+                "<br />" +
+                "</aside>"
+        );
+    }
+}
+
+//funcion para cambiar a modo de modificacion profesor
+function changeProfessorMode(id_empleado, cicloE) {
+    try {
+        getProfessor(id_empleado, cicloE)
+            .then((data) => {
+                if (data.code == 3) {
+                    alert("Algo salio mal, intentelo mas tarde");
+                } else if (data.code == 4) {
+                    let materiaGrupo = [];
+                    data.msg.forEach((item) => {
+                        materiaGrupo.push(item.materia, item.id_grupo);
+                    });
+                    $("#modeN").hide();
+                    $("#Eaid").text(`${data.msg[0].id_profesor}`);
+                    $("#Eaname").text(`${data.msg[0].nombre}`);
+                    $("#Ealastf").text(`${data.msg[0].app}`);
+                    $("#Ealastm").text(`${data.msg[0].apm}`);
+                    $("#Erol").text(`Profesor`);
+                    html +=
+                        '<aside class="autoManageSpacedAlways">' +
+                        "Clase(s) que imparte" +
+                        "<br />" +
+                        "</aside>" +
+                        "<br />" +
+                        '<aside class="autoManageSpacedAlways">' +
+                        "<input" +
+                        'class="buttonInput blue" ' +
+                        'id="EaddMat" ' +
+                        'type="button" ' +
+                        'name="EaddM" ' +
+                        'value="Añadir materia" ' +
+                        "/>" +
+                        "<br />" +
+                        "<input" +
+                        'class="buttonInput red" ' +
+                        'id="EquitMat" ' +
+                        'type="button" ' +
+                        'name="EquitM" ' +
+                        'value="Quitar materia" ' +
+                        "/>" +
+                        "</aside>" +
+                        "<br />" +
+                        '<section id="EMatElement"></section>';
+                    $("#");
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                alert("Algo salio mal, intentelo mas tarde");
+            });
+    } catch (ex) {
+        console.log(ex);
+        alert("Algo salio mal, intentelo mas tarde");
+    }
+}
+
+//funcion para elimar profesor por id
+function deleteByIdProfessor(id_empleado) {
+    try {
+        let ask = confirm("¿Estas seguro que deseas eliminar ese usuario?");
+        if (ask) {
+            $.ajax({
+                url: "/deleteProfessorById",
+                type: "POST",
+                data: {
+                    id_empleado,
+                },
+                success: (res) => {
+                    alert(res);
+                    updateTableProfessor();
+                },
+                error: (err) => {
+                    console.log(err);
+                    alert("Algo a salido mal, intentelo mas tarde");
+                },
+            });
+        }
+    } catch (ex) {
+        console.log(ex);
+        alert(
+            "Ocurrio un error inesperado, recarge la pagina o intentelo mas tarde"
+        );
+    }
+}
+
+//funcion para elimar profesor por id
+function deleteByIdStudent(boleta) {
+    try {
+        let ask = confirm("¿Estas seguro que deseas eliminar ese usuario?");
+        if (ask) {
+            $.ajax({
+                url: "/deleteStudentById",
+                type: "POST",
+                data: {
+                    boleta,
+                },
+                success: (res) => {
+                    alert(res);
+                    updateTableStudent();
+                },
+                error: (err) => {
+                    console.log(err);
+                    alert("Algo a salido mal, intentelo mas tarde");
+                },
+            });
+        }
+    } catch (ex) {
+        console.log(ex);
+        alert(
+            "Ocurrio un error inesperado, recarge la pagina o intentelo mas tarde"
+        );
+    }
+}
+
 //valida si el grupo esta en la lista original
 function existGroup(groupToUp) {
     let check = false;
@@ -485,12 +881,14 @@ function validar(data) {
             if (patron_almn.test($("#aid").val())) {
                 check++;
             }
-            if (
-                $("#arol option:selected").val() == "6IV9" ||
-                $("#arol option:selected").val() == "6IV7" ||
-                $("#arol option:selected").val() == "6IV8"
-            ) {
+            if (data) {
                 check++;
+                data.forEach((dat) => {
+                    if (!readyGroups.includes(dat.grupo)) {
+                        check--;
+                        return;
+                    }
+                });
             }
         } else if ($("#arol option:selected").val() == "Profesor") {
             if (patron_prof.test($("#aid").val())) {

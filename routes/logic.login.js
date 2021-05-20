@@ -4,18 +4,18 @@ const db = require("../database/connection");
 
 //Preparado para redireccionar a las vistas correspondientes dependiendo el rol
 router.post(
-    "/InicioSesionController", 
+    "/InicioSesionController",
     passport.authenticate("local", {
         failureRedirect: "/",
         failureFlash: true,
-        badRequestMessage:'No ha introducido los datos correspondientes'
+        badRequestMessage: "No ha introducido los datos correspondientes",
     }),
     function (req, res) {
         req.session.save((err) => {
             if (err) {
                 return res.json(err);
             }
-            res.redirect('/home');
+            res.redirect("/home");
         });
     }
 );
@@ -30,15 +30,18 @@ router.get("/logout", (req, res) => {
     });
 });
 
-router.get("/home", (req,res,next) =>{
-    if (req.isAuthenticated()) return next();
+router.get(
+    "/home",
+    (req, res, next) => {
+        if (req.isAuthenticated()) return next();
         res.redirect("/");
-},
-(req,res)=>{
-    let rol=req.user.rol;
-    let id =req.user.id[1];
-    console.log(req.user)
-    res.render("home",{rol, id});
-});
+    },
+    (req, res) => {
+        let rol = req.user.rol;
+        let id = req.user.id[1];
+        console.log(req.user);
+        res.render("home", { rol, id });
+    }
+);
 
 module.exports = router;
