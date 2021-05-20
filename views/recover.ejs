@@ -62,8 +62,8 @@
 					<!-- Primera parte del recovery-->
 					<br class="first-action">
 					<div class="alignMiddle first-action">
-						<img class="inputIcon" src="../public/IMG/mail.png">
-						<input class="largeInput" id="username" type="text" name="username" placeholder="Numero de usuario">
+						<img class="inputIcon" src="../public/IMG/user.png">
+						<input class="largeInput" id="user" type="text" name="user" placeholder="Numero de usuario">
 					</div>
 					<br class="first-action">
 					<div class="alignMiddle first-action">
@@ -92,17 +92,21 @@
 						<br>
 						<input class="buttonInput fullLargeButton submit" id="sendEmail" type="button" name="sent" value="Enviarme codigo de acceso">
 					</p>
+				</form>
 					<!-- Segunda parte del recovery-->
 					<br>
 					<br>
+					<form action="/recovery/comprobateCode" method="post"></form>
 					<div class="alignMiddle second-action">
+						<input class="largeInput" type="hidden" id="usernamesav" name="username"><br>
 						<img class="inputIcon" src="../public/IMG/key.png">
-						<input class="largeInput" type="text" name="password" id="codeKey" placeholder="Código de acceso temporal">
+						<input class="largeInput" type="text" name="password" id="codeKey" placeholder="Código de acceso temporal"><br>
+						<input class="largeInput" type="hidden" id="rolsav" name="rolsave">
 					</div>
 					<br>
 				</p>
 				<p class="centerText second-action">
-					<input class="buttonInput fullLargeButton submit" id="verify" type="button" name="login" value="Verificar">
+					<input class="buttonInput fullLargeButton submit" id="verify" type="submit" name="login" value="Verificar">
 				</p>
 			</form>
 		</section>

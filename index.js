@@ -18,6 +18,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const Passportlocal = require("passport-local").Strategy;
 const flash = require("connect-flash");
+const jwt = require("jsonwebtoken");
 
 //routers
 const main = require("./routes/main");
@@ -158,6 +159,101 @@ passport.use(
             } else {
                 return done(null, false, {
                     message: "Debe de seleccionar un usuario",
+                });
+            }
+        }
+    )
+);
+
+passport.use(
+    "recover-count",
+    new Passportlocal(
+        {
+            usernameField: "username",
+            passwordField: "password",
+            passReqToCallback: true,
+        },
+        (req,username,password, done) =>{
+            console.log(req.body);
+            let token = 0;
+            try{
+                db.query(
+                    "SELECT id_token FROM EToken WHERE id_usuario = ?",
+                    [username],
+                    (err, tokenDb) => {
+                        if (err) return done(null, false, {message: "Hubo un fallo en el proceso",});
+                        //verificamos si tiene un token activo
+                        if (tokenDb.length != 0) {
+                            token = tokenDb[0].id_token;
+                            console.log(token);
+                            //compriobamos que sea el token
+                            jwt.verify(token, password, (err, userData) => {
+                                if (err) {
+                                    console.log(err)
+                                    return done(null, false, {
+                                        message: "Hubo un fallo en el proceso",
+                                    });
+                                } else {
+                                    //si entra es porque el codigo es correcto*/
+                                    db.query(
+                                        "DELETE FROM EToken WHERE id_usuario=?",
+                                        [username],
+                                        (err, response) => {
+                                            console.log("Token eliminado")
+                                            if (err) return res.json(err);
+                                            //Busqueda del id del rol de usuario
+                                            if (req.body.rolsave == "Alumno") {
+                                                db.query("select * from EAlumno alumn JOIN CUsuario user on alumn.id_usuario = user.id_usuario where  (alumn.id_usuario = ?);",
+                                                [username],
+                                                (err,alumno) => {
+                                                    ids=[username,alumno[0].boleta]
+                                                    return done(null, {
+                                                        rol: "alumno",
+                                                        id: ids
+                                                    });
+                                                });
+                                            } else if(req.body.rolsave == "Profesor") {
+                                                db.query("select * from EProfesor profe JOIN CUsuario user on profe.id_usuario = user.id_usuario where  (profe.id_usuario = ?);",
+                                                [username],
+                                                (err,profesor) =>{
+                                                    ids=[username,profesor[0].id_empleado]
+                                                    return done(null,{
+                                                        rol:"profesor",
+                                                        id: ids
+                                                    });
+                                                });
+                                            } else if(req.body.rolsave == "Administrador"){
+                                                db.query("select * from EAdministrador admin JOIN CUsuario user on admin.id_usuario = user.id_usuario where  (admin.id_usuario = ?);",
+                                                [username],
+                                                (err, administrador) =>{
+                                                    ids=[username,administrador[0].id_administrador]
+                                                    return done(null,{
+                                                        rol: "administrador",
+                                                        id: ids
+                                                    });
+                                                })
+                                            }else{
+                                                return done(null, false, {
+                                                    message: "No hay rol guardado",
+                                                });
+                                            }
+                                            
+                                        }
+                                    );
+                                }
+                            });
+                        } else {
+                            //por ningun motivo debería llegar a esta condición
+                            return done(null, false, {
+                                message: "Token no encontrado",
+                            });
+                        }
+                    }
+                );
+            }catch(ex){
+                console.log(ex)
+                return done(null, false, {
+                    message: "Hubo un fallo en el proceso",
                 });
             }
         }
