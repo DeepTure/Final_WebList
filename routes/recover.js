@@ -1,7 +1,7 @@
 const router = require("express").Router();
 //const db = require("../database/connection");
 const crypto = require("crypto");
-
+const passport = require("passport");
 const model = require('../models/recovery.js');
 
 //Rutas
