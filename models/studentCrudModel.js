@@ -1,5 +1,7 @@
 const model = {};
 const db = require("../database/connection");
+const jwt = require("jsonwebtoken");
+const { comprobateCode } = require("./recovery");
 
 model.addStudent = (req, res) => {
     const data = req.body;
@@ -93,6 +95,55 @@ function processGeneration(ids){
     let querys = '';
     ids.forEach((id)=>{
         querys += 'SELECT id_grupo FROM egeneracion WHERE id_generacion = "'+id.id_generacion+'";';
+    });
+    return querys;
+}
+
+//obtenemos el codigo que pueda tener activo el alumno y lo verificamos
+model.verifyCode = (req, res)=>{
+    const data = req.body;
+    db.query('SELECT id_generacion FROM minscripcion WHERE boleta = ?',[data.boleta], (err, idg)=>{
+        if(err)return res.json(err);
+        const querys = processGenerationQuerysForprogram(idg);
+        db.query(querys,(err, idp)=>{
+            if(err)return res.json(err);
+            const querys = processPrgramsForToken(idp);
+            db.query(querys,(err, token)=>{
+                if(err)return res.json(err);
+                //no debe tener varios tokens activos
+                if(token.length==1){
+                    jwt.verify(token[0].id_token, data.code, (err, tokenData)=>{
+                        if(err){
+                            return res.json({success:false});
+                        }else{
+                            /**
+                             * Una vez verificado que el codigo sea correcto nos va a mandar aquí
+                             * pero hasta el momento de puesto este comentario aun no verifica la hora de creacion
+                             */
+                            console.log(tokenData);
+                            return res.json({success:true, tokenData});
+                        }
+                    });
+                }else{
+                    return res.json({success:false});
+                }
+            });
+        });
+    });
+};
+
+function processGenerationQuerysForprogram(ids){
+    let querys = '';
+    ids.forEach((id)=>{
+        querys += 'SELECT id_programa FROM mprograma WHERE id_generacion="'+id.id_generacion+'";';
+    });
+    return querys;
+}
+
+function processPrgramsForToken(ids){
+    let querys = '';
+    ids.forEach((id)=>{
+        querys += 'SELECT * FROM etokenlista WHERE id_programa="'+id.id_programa+'";';
     });
     return querys;
 }

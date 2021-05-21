@@ -18,6 +18,7 @@ model.recovery = (req, res) => {
     return res.render("recover");
 };
 
+//Comprobar correo electrónico en la base de datos
 model.comprobateEmail = (req, res) => {
     const data = req.body;
     //comprobamos que rol tiene
@@ -63,14 +64,18 @@ model.comprobateEmail = (req, res) => {
         );
     } else if (data.rol === "Profesor") {
         db.query(
-            "SELECT id_usuarios FROM EProfesor WHERE id_empleado = ?",
+            "SELECT id_usuario FROM EProfesor WHERE id_empleado = ?",
             [data.username],
             (err, id_usuario) => {
-                if (err) return res.json(err);
+                if (err){
+                    console.log(err)
+                    return res.json(err);
+                }
+                console.log(id_usuario)
                 if (id_usuario.length != 0) {
                     db.query(
                         "SELECT email FROM CUsuario WHERE id_usuario = ?",
-                        [id_usuario[0].id_usuarios],
+                        [id_usuario[0].id_usuario],
                         (err, emailDb) => {
                             if (err) return res.json(err);
                             if (emailDb.length != 0) {
@@ -85,18 +90,18 @@ model.comprobateEmail = (req, res) => {
                                 if (data.email == emailDb[0].email) {
                                     return res.send({
                                         success: true,
-                                        idUser: id_usuario[0].id_usuarios,
+                                        idUser: id_usuario[0].id_usuario,
                                     });
                                 } else {
                                     return res.send({
                                         success: false,
-                                        idUser: id_usuario[0].id_usuarios,
+                                        idUser: id_usuario[0].id_usuario,
                                     });
                                 }
                             } else {
                                 return res.send({
                                     success: false,
-                                    idUser: id_usuario[0].id_usuarios,
+                                    idUser: id_usuario[0].id_usuario,
                                 });
                             }
                         }
@@ -153,7 +158,6 @@ model.sendEmail = (req, res) => {
     const username = data.idUser;
     const email = data.email;
     const rol = data.rol;
-
     const token = jwt.sign({ email, username, rol }, code);
 
     //primero revisamos si el usuario ya tiene un token guardado
@@ -170,7 +174,10 @@ model.sendEmail = (req, res) => {
                         "INSERT INTO EToken VALUES (?, current_time(), ?)",
                         [token, username],
                         (err, response) => {
-                            if (err) return res.json(err);
+                            if (err){
+                                console.log(err);
+                                return res.json(err);
+                            } 
                             console.log(response);
                             return res.send(response);
                         }
@@ -240,41 +247,6 @@ function generateCode() {
     return code;
 }
 
-model.comprobateCode = (req, res) => {
-    const data = req.body;
-    let token = 0;
-    console.log(data);
-    db.query(
-        "SELECT id_token FROM EToken WHERE id_usuario = ?",
-        [data.idUser],
-        (err, tokenDb) => {
-            if (err) return res.send(err);
-            //verificamos si tiene un token activo
-            if (tokenDb.length != 0) {
-                token = tokenDb[0].id_token;
-                console.log(token);
-                //compriobamos que sea el token
-                jwt.verify(token, data.code, (err, userData) => {
-                    if (err) {
-                        return res.send("nel");
-                    } else {
-                        //si entra es porque el codigo es correcto
-                        db.query(
-                            "DELETE FROM EToken WHERE id_usuario=?",
-                            [data.idUser],
-                            (err, response) => {
-                                if (err) return res.json(err);
-                                return res.send(userData);
-                            }
-                        );
-                    }
-                });
-            } else {
-                //por ningun motivo debería llegar a esta condición
-                return res.send("nel");
-            }
-        }
-    );
-};
+
 
 module.exports = model;

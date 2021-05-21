@@ -4,7 +4,7 @@ $('.second-action').hide();
 
 $('#sendEmail').click(function(){
     const email = document.getElementById('email').value;
-    const username = document.getElementById('username').value;
+    const username = document.getElementById('user').value;
     const rol = document.getElementById('rol').value;
     //validamos si el correo es correcto
     let vemail = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/i;
@@ -37,7 +37,10 @@ $('#sendEmail').click(function(){
 function sendCode(email, idUser, rol){
     $('.second-action').show();
     $('.first-action').hide();
-    console.log(idUser);
+    document.getElementById('usernamesav').value = idUser
+    document.getElementById('rolsav').value = rol
+    console.log(idUser,rol,email)
+    sessionStorage.setItem('rolsave', rol);
     sessionStorage.setItem('idUser', idUser);
     $.ajax({
         url:'/recovery/comprobateEmail/sendEmail',
@@ -52,30 +55,3 @@ function sendCode(email, idUser, rol){
         }
     });
 }
-
-$('#verify').click(function(){
-    const code = document.getElementById('codeKey').value;
-    const idUser = sessionStorage.getItem('idUser');
-    //hacemos una validación
-
-    if(sessionStorage.getItem('idUser')){
-        $.ajax({
-            url:'/recovery/comprobateCode',
-            type:'post',
-            data:{code, idUser},
-            success:function(response){
-                console.log(response);
-                if(response == 'nel'){
-                    popUp('Acceso denegado','ha ocurrido un error', 'error');
-                }else{
-                    popUp('Acceso otorgado','Cambie su contraseña', 'success');
-                }
-            },
-            error:function(response){
-                console.log(response);
-            }
-        });
-    }else{
-        popUp('Acceso denegado por usuario','ha ocurrido un error con su usuario', 'error');
-    }
-});
