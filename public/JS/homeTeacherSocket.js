@@ -4,7 +4,7 @@ socket.on('assistences:recive', (tokenData)=>{
     console.log('Recibe sistencia');
     console.log(tokenData);
     const table = document.getElementById('attendanceRegistration');
-    table.innerHTML = `<td>`+(tokenData.boleta)+`</td>
+    let code = `<td>`+(tokenData.boleta)+`</td>
         <td>Sultano de Tal</td>
         <td>
             <article class="autoManageTogether">
@@ -22,4 +22,11 @@ socket.on('assistences:recive', (tokenData)=>{
                 />
             </article>
         </td>`;
+
+        table.insertAdjacentHTML('beforeend', code);
 });
+
+//nos unimos a la sala
+function joinRoomSocket(room){
+    socket.emit('room:join',{room});
+}

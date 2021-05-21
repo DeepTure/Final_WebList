@@ -39,11 +39,14 @@ $('#registerAttendance').click(function(){
                 if(response.success){
                     console.log(response.tokenData);
                     //ahora mandamos a llamar una funcion del student socket
-                    //IMPORTANTE, hasta el momento de este mensaje aun falta la sala y comprobar la duración
-                    sendMyAssistences(response.tokenData);
+                    sendMyAssistences(response.tokenData, response.sala);
                 }else{
                     console.log(response);
-                    alert('El codigo es incorrecto');
+                    if(response.many){
+                        alert('Usted tiene muchos tokens activos');
+                    }else{
+                        alert('El codigo es incorrecto o ya caducó');
+                    }
                 }
             },
             error:function(response){

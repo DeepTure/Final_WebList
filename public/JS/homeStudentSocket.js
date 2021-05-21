@@ -1,6 +1,6 @@
 const socket = io();
 
-function sendMyAssistences(tokenData){
+function sendMyAssistences(tokenData, room){
     const boleta = $('#idStudent').val();
-    socket.emit('assistences:send',{tokenData, boleta});
+    socket.emit('assistences:send',{tokenData, boleta, room});
 }

@@ -6,16 +6,15 @@ model.verifyCode = (code, id)=>{
     //Necesitamos primero su generacion y luego su prohgrama para obtener el id_token
     db.query('SELECT id_generacion FROM minscripcion WHERE boleta = ?',[id],(err, idg)=>{
         if(err)return err;
-        console.log('Entra al primer query ',idg);
         //ahora buscamos sus programas pero puede tener varias generaciones
         const querys = processQuerysProgramsByGeneration(idg);
         db.query(querys, (err, programs)=>{
             if(err)return err;
-            console.log('Entra al segundo query ', programs);
+            //ahora buscamos sus tokens que pueda tener
             const querys = processQuerysTokenByPrograms(programs);
             db.query(querys, (err, tokenBd)=>{
                 if(err)return err;
-                console.log('Entra al ultimo query ',tokenBd.length);
+                //solo debe tener 1 token
                 if(tokenBd.length != 0){
                     const token = tokenBd.id_token;
                     jwt.verify(token, code, (err, res)=>{
@@ -26,7 +25,6 @@ model.verifyCode = (code, id)=>{
                         }
                     });
                 }else{
-                    console.log('retoirna false')
                     return false;
                 }
             });

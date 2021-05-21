@@ -394,7 +394,17 @@ io.on('connection', (socket)=>{
     console.log('new connection ',socket.id);
 
     //La verificacion del codigo se va a llevar a cabo mediante ajax y segun la respiuesta ya lo mandamos con socket
-    socket.on('assistences:send',(tokenData)=>{
-        io.sockets.emit('assistences:recive',tokenData);
+    socket.on('assistences:send',(data)=>{
+        console.log(data);
+        socket.join(data.room);
+        io.sockets.in(data.room).emit('assistences:recive',data);
+    });
+
+    /**
+     * Comenzamos con la programacion del profesor
+     */
+    socket.on('room:join',(room)=>{
+        socket.join(room.room);
+        console.log('new room ',room.room);
     });
 });

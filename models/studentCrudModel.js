@@ -104,9 +104,11 @@ model.verifyCode = (req, res)=>{
     const data = req.body;
     db.query('SELECT id_generacion FROM minscripcion WHERE boleta = ?',[data.boleta], (err, idg)=>{
         if(err)return res.json(err);
+        //procesamos las querys para buscar todas las generaciones que pueda tener
         const querys = processGenerationQuerysForprogram(idg);
         db.query(querys,(err, idp)=>{
             if(err)return res.json(err);
+            //buscamos los tokens por los programas
             const querys = processPrgramsForToken(idp);
             db.query(querys,(err, token)=>{
                 if(err)return res.json(err);
@@ -114,18 +116,26 @@ model.verifyCode = (req, res)=>{
                 if(token.length==1){
                     jwt.verify(token[0].id_token, data.code, (err, tokenData)=>{
                         if(err){
-                            return res.json({success:false});
+                            return res.json({success:false, many:false});
                         }else{
                             /**
                              * Una vez verificado que el codigo sea correcto nos va a mandar aquí
-                             * pero hasta el momento de puesto este comentario aun no verifica la hora de creacion
+                             * Nos falta regresarle la sala al fronted
                              */
+                            const valid = tokenActive(token);
                             console.log(tokenData);
-                            return res.json({success:true, tokenData});
+                            if(valid){
+                                db.query('SELECT id_Sala FROM esala WHERE id_programa=?',[token[0].id_programa],(err, idSala)=>{
+                                    if(err)return res.json(err);
+                                    return res.json({success:true, tokenData, many:false, sala:idSala[0].id_Sala});
+                                });
+                            }else{
+                                return res.json({success:false, tokenData, many:false});
+                            }
                         }
                     });
                 }else{
-                    return res.json({success:false});
+                    return res.json({success:false, many:true});
                 }
             });
         });
@@ -146,6 +156,23 @@ function processPrgramsForToken(ids){
         querys += 'SELECT * FROM etokenlista WHERE id_programa="'+id.id_programa+'";';
     });
     return querys;
+}
+
+/**
+ * 
+ * @param {Recibe el registro de la bd etoken} token 
+ * Se encarga de procesar las fechas para compararlas y saber si el token aun esta activo o ya caduó
+ * Es importante resaltar que time y creacion son tipo date y duracion es INT
+ */
+function tokenActive(token){
+    const time = new Date();
+    const duracion = token[0].duracion;
+    const creacion = new Date(token[0].creacion);
+    let auxMinutes = creacion.getMinutes();
+    auxMinutes += parseInt(duracion);
+    const caducidad = new Date(token[0].creacion);
+    caducidad.setMinutes(auxMinutes);
+    return (time<=caducidad);
 }
 
 module.exports = model;

@@ -50,10 +50,16 @@ $('#generateCode').click(function(){
         data:{duration, matter, generation, group, program, idEmpleado},
         success:function(response){
             console.log(response);
-            if(response.responseT.protocol41==true && response.responseS.protocol41==true){
-                showToken(response.code, duration);
-            }else{
-                alert('Un error inesperado a ocurrido')
+            try{
+                if(response.responseT.protocol41==true && response.responseS.protocol41==true){
+                    showToken(response.code, duration);
+                    joinRoomSocket(response.room);
+                }else{
+                    alert('Un error inesperado a ocurrido')
+                }
+            }catch(e){
+                console.log(e);
+                alert('Un error inesperado a ocurrido');
             }
         },
         error:function(response){

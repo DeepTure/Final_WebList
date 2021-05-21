@@ -27,7 +27,7 @@ model.addToken = (req, res)=>{
         const idSala = generateIdRoom(data.program, data.idEmpleado);
         db.query('INSERT INTO esala VALUES(?,?)',[idSala, data.program],(err, responseS)=>{
             if(err)return res.json(err);
-            return res.json({responseT,responseS,code});
+            return res.json({responseT,responseS,code, room:idSala});
         });
     });
 };
