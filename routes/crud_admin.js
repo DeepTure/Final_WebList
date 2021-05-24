@@ -1,18 +1,6 @@
 const router = require("express").Router();
 
-const model = require("../models/crudUsers");
 const models = require("../models/crudUsers");
-
-router.get(
-    "/home/modify",
-    (req, res, next) => {
-        if (req.isAuthenticated()) return next();
-        res.redirect("/");
-    },
-    (req, res) => {
-        return res.render("modify");
-    }
-);
 
 router.post(
     "/addProfesor",
@@ -25,13 +13,33 @@ router.post(
 );
 
 router.post(
-    "/getProfesor",
-    (req, res, next) => {
+    "/addStudent",
+    async (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
         res.send("ERROR");
     },
+    models.addStudent
+);
+
+router.post(
+    "/getProfesor",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.send(null);
+    },
     models.getProfesor
+);
+
+router.post(
+    "/getStudent",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.send(null);
+    },
+    models.getStudents
 );
 
 router.post(
@@ -39,7 +47,7 @@ router.post(
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send("ERROR");
+        res.send(null);
     },
     models.getGroups
 );
@@ -59,7 +67,7 @@ router.post(
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send("ERROR");
+        res.send(null);
     },
     models.getUpGroups
 );
@@ -72,6 +80,46 @@ router.post(
         res.send("ERROR");
     },
     models.deleteProfessorById
+);
+
+router.post(
+    "/deleteStudentById",
+    async (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.send("ERROR");
+    },
+    models.deleteStudentById
+);
+
+router.post(
+    "/homeModify",
+    async (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.redirect("/");
+    },
+    models.goToModify
+);
+
+router.post(
+    "/modifyProfesor",
+    async (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.redirect("/");
+    },
+    models.modifyProfesor
+);
+
+router.post(
+    "/modifyStudent",
+    async (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.redirect("/");
+    },
+    models.modifyStudent
 );
 
 module.exports = router;

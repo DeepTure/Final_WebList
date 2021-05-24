@@ -100,7 +100,7 @@
                     <article class="autoManageSpaced addLeftMarginAlt">
                         <aside class="autoManageTogether">
                             <input
-                                class="buttonInput smallButton blue"
+                                class="buttonInput smallButton red"
                                 type="button"
                                 name="professorEntities"
                                 id="bProfessorEntities"
@@ -144,7 +144,6 @@
                         }
                     </style>
                 </section>
-
                 <!-- Derecha -->
                 <section class="squareSectionSizeLW addTopMarginAlt">
                     <p
@@ -321,24 +320,29 @@
                         <!-- Datos para el alumno -->
                         <section id="otherDataAlumno">
                             <aside class="autoManageSpacedAlways">
-                                Grupo
+                                Grupos incritos
                                 <br />
-                                <select
-                                    class="smallInput centerText"
-                                    id="agrupo"
-                                    name="grupo"
-                                >
-                                    <option class="smallInput centerText">
-                                        6IV9
-                                    </option>
-                                    <option class="smallInput centerText">
-                                        6IV8
-                                    </option>
-                                    <option class="smallInput centerText">
-                                        6IV7
-                                    </option>
-                                </select>
                             </aside>
+                            <br />
+                            <aside class="autoManageSpacedAlways">
+                                <input
+                                    class="buttonInput blue"
+                                    id="addGrp"
+                                    type="button"
+                                    name="addG"
+                                    value="Añadir grupo"
+                                />
+                                <br />
+                                <input
+                                    class="buttonInput red"
+                                    id="quitGrp"
+                                    type="button"
+                                    name="quitG"
+                                    value="Quitar grupo"
+                                />
+                            </aside>
+                            <br />
+                            <section id="GrpElement"></section>
                         </section>
                         <br />
                     </aside>
