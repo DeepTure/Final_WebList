@@ -142,9 +142,11 @@ function verifyTokenSaved(){
         data:{id},
         success:function(response){
             console.log(response);
-            if(response.length != 0){
+            if((response.length != 0) && (!response.isNotActive)){
                 //tiene un token activo
-                showToken('Token activo', (response.duracion+''));
+                showToken('Token activo', (response[0].duracion+''));
+            }else{
+                alert('El token ah caducado');
             }
         },
         error:function(response){

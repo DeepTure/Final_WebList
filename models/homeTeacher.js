@@ -39,7 +39,13 @@ model.verifyToken = (req, res)=>{
         const querys = getStringQueryTokensByPrograms(programas);
         db.query(querys, (err, coincidencias)=>{
             if(err)return res.json(err);
-            res.send(coincidencias);
+            //Verificamos que el token aun esté activo
+            const isActive = tokenIsActive(coincidencias);
+            if(isActive){
+                res.send(coincidencias);
+            }else{
+                res.send({isNotActive:true});
+            }
         });
     });
 };
@@ -57,7 +63,7 @@ function getSyringGroupsByPrograms(programas){
 function getStringQueryTokensByPrograms(programas){
     let querys = '';
     programas.forEach((programa)=>{
-        let aux = 'SELECT id_token, duracion FROM etokenlista WHERE id_programa = "'+programa.id_programa+'";';
+        let aux = 'SELECT * FROM etokenlista WHERE id_programa = "'+programa.id_programa+'";';
         querys += aux;
     });
     return querys;
@@ -86,6 +92,22 @@ function generateIdRoom(program, idEmpleado){
     });
     console.log(id);
     return id;
+}
+
+/**
+ * verificamos si el tiempo de creacion más la duracion es menor o igual a la fecha actual
+ * @param {Rescive un token de la bd} token 
+ */
+function tokenIsActive(token){
+    const time = new Date();
+    const duration = token[0].duracion;
+    const creation = new Date(token[0].creacion);
+    
+    let minutes = creation.getMinutes();
+    minutes += duration;
+    const expiration = creation.setMinutes(minutes);
+
+    return (time <= expiration);
 }
 
 module.exports = model;
