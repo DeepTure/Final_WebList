@@ -9,17 +9,6 @@ $('#settingsCode').hide();
 getGroupsTeacher();
 verifyTokenSaved();
 
-//comprobamos si tiene un token activo si es que no ha cerrado sesion
-/*if(sessionStorage.getItem('tokenActive')){
-    if(sessionStorage.getItem('tokenActive')=='true'){
-        showToken(sessionStorage.getItem('code'), sessionStorage.getItem('duration'));
-    }else{
-        verifyTokenSaved()
-    }
-}else{
-    verifyTokenSaved()
-}*/
-
 
 function getGroupsTeacher(){
     const id = $('#idTeacher').val();
@@ -55,6 +44,7 @@ $('#generateCode').click(function(){
                 if(response.responseT.protocol41==true && response.responseS.protocol41==true){
                     showToken(response.code, duration);
                     joinRoomSocket(response.room);
+                    toast('Codigo generado', 'No cierre esta ventana');
                 }else{
                     alert('Un error inesperado a ocurrido')
                 }
