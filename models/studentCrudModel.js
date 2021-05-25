@@ -109,7 +109,7 @@ model.verifyCode = (req, res)=>{
         db.query(querys,(err, idp)=>{
             if(err)return res.json(err);
             //buscamos los tokens por los programas
-            const querys = processPrgramsForToken(idp);
+            const querys = processProgramsForToken(idp);
             db.query(querys,(err, token)=>{
                 if(err)return res.json(err);
                 //no debe tener varios tokens activos
@@ -120,14 +120,19 @@ model.verifyCode = (req, res)=>{
                         }else{
                             /**
                              * Una vez verificado que el codigo sea correcto nos va a mandar aquí
-                             * Nos falta regresarle la sala al fronted
                              */
                             const valid = tokenActive(token);
                             console.log(tokenData);
                             if(valid){
                                 db.query('SELECT id_Sala FROM esala WHERE id_programa=?',[token[0].id_programa],(err, idSala)=>{
                                     if(err)return res.json(err);
-                                    return res.json({success:true, tokenData, many:false, sala:idSala[0].id_Sala});
+                                    db.query('SELECT id_usuario FROM ealumno WHERE boleta=?',[data.boleta],(err,idu)=>{
+                                        if(err)return res,json(err);
+                                        db.query('SELECT nombre, app FROM cusuario WHERE id_usuario = ?',[idu[0].id_usuario],(err, userData)=>{
+                                            if(err)return res.json(err);
+                                            return res.json({success:true, tokenData, many:false, sala:idSala[0].id_Sala, userData:userData[0]});
+                                        });
+                                    });
                                 });
                             }else{
                                 return res.json({success:false, tokenData, many:false});
@@ -150,7 +155,7 @@ function processGenerationQuerysForprogram(ids){
     return querys;
 }
 
-function processPrgramsForToken(ids){
+function processProgramsForToken(ids){
     let querys = '';
     ids.forEach((id)=>{
         querys += 'SELECT * FROM etokenlista WHERE id_programa="'+id.id_programa+'";';

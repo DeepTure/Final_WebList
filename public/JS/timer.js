@@ -1,31 +1,37 @@
+var temp = new Date().getTime() + (60000 * 50);
 
-function fecha(time){
+function updateTime(newTime) {
+    var timeToAdd = parseInt(newTime.charAt(0) + "" + newTime.charAt(1));
+    if (timeToAdd > 50){
+        timeToAdd = 50;
+    }
 
-    if(time){
-        var actual = new Date().getTime();
-        gap = (time.getTime() + (60000 * 50)) - actual;
+    temp = new Date().getTime() + (60000 * timeToAdd);
+}
 
-        var segundo= 1000;
-        var minuto = segundo * 60;
-        var hora = minuto * 60;
-        var dia = hora * 24;
+function fecha(){
 
-        var d = Math.floor(gap / dia);
-        var h = Math.floor((gap % (dia)) / (hora));
-        var m = Math.floor((gap % (hora)) / (minuto));
-        var s = Math.floor((gap % (minuto)) / segundo);
+    var actual = new Date().getTime();
+    gap = temp - actual;
 
-        if (m >= 0 || s >= 0){
-            document.getElementById('minuto').innerText = m;
-            document.getElementById('segundo').innerText = s;
-        }
+    var segundo= 1000;
+    var minuto = segundo * 60;
+    var hora = minuto * 60;
+    var dia = hora * 24;
+
+    var d = Math.floor(gap / dia);
+    var h = Math.floor((gap % (dia)) / (hora));
+    var m = Math.floor((gap % (hora)) / (minuto));
+    var s = Math.floor((gap % (minuto)) / segundo);
+
+    if (m >= 0 || s >= 0){
+        document.getElementById('minuto').innerText = m;
+        document.getElementById('segundo').innerText = s;
     }
 }
 
 setInterval(function(){
-                fecha(a);
+                fecha();
             },1000)
 
-var a = new Date();
-let b = a.getMinutes();
-fecha(a);
+updateTime('0');

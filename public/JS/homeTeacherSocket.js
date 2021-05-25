@@ -5,7 +5,7 @@ socket.on('assistences:recive', (tokenData)=>{
     console.log(tokenData);
     const table = document.getElementById('attendanceRegistration');
     let code = `<td>`+(tokenData.boleta)+`</td>
-        <td>Sultano de Tal</td>
+        <td>${tokenData.name} ${tokenData.last}</td>
         <td>
             <article class="autoManageTogether">
                 <input

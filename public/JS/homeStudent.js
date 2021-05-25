@@ -39,7 +39,8 @@ $('#registerAttendance').click(function(){
                 if(response.success){
                     console.log(response.tokenData);
                     //ahora mandamos a llamar una funcion del student socket
-                    sendMyAssistences(response.tokenData, response.sala);
+                    sendMyAssistences(response.tokenData, response.sala, response.userData);
+                    $('#registerAttendance').hide();
                 }else{
                     console.log(response);
                     if(response.many){
