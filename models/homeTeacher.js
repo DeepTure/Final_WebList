@@ -1,3 +1,4 @@
+//@ts-check
 const model = {};
 const jwt = require("jsonwebtoken");
 const db = require("../database/connection");
@@ -37,14 +38,27 @@ model.verifyToken = (req, res)=>{
     db.query('SELECT id_programa FROM mprograma WHERE id_empleado = ?', [data.id], (err, programas)=>{
         if(err)return res.json(err)
         const querys = getStringQueryTokensByPrograms(programas);
+        //las coincidencias son los registros donde haya un token
         db.query(querys, (err, coincidencias)=>{
             if(err)return res.json(err);
-            //Verificamos que el token aun esté activo
-            const isActive = tokenIsActive(coincidencias);
-            if(isActive){
-                res.send(coincidencias);
+            if(coincidencias.length == 1){
+                //Verificamos que el token aun esté activo
+                const isActive = tokenIsActive(coincidencias);
+                if(isActive){
+                    const minutesRemaining = timeToExpire(coincidencias);
+                    res.send({minutesRemaining});
+                }else{
+                    //hay que eliminar el token y su sala
+                    db.query('DELETE FROM etokenlista WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
+                        if(err)return res.json(err);
+                        db.query('DELETE FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
+                            if(err)return res.json(err);
+                            res.send({isNotActive:true});
+                        }); 
+                    });
+                }
             }else{
-                res.send({isNotActive:true});
+                res.send({noToken:true, long:coincidencias.length});
             }
         });
     });
@@ -60,6 +74,11 @@ function getSyringGroupsByPrograms(programas){
     return querys;
 }
 
+/**
+ * Construye un string con todas las consultas para los tokens que pueda tener el usuario
+ * @param {array} programas todos los programas del usuario
+ * @returns {String}
+ */
 function getStringQueryTokensByPrograms(programas){
     let querys = '';
     programas.forEach((programa)=>{
@@ -95,8 +114,9 @@ function generateIdRoom(program, idEmpleado){
 }
 
 /**
- * verificamos si el tiempo de creacion más la duracion es menor o igual a la fecha actual
- * @param {Rescive un token de la bd} token 
+ * esta funcion se encarga de verificar que el token aun este activo
+ * @param {object} token todos los datos de un token en la bd
+ * @returns {boolean} returna si el tiempo actual es menor al tiempo de caducidad
  */
 function tokenIsActive(token){
     const time = new Date();
@@ -105,9 +125,27 @@ function tokenIsActive(token){
     
     let minutes = creation.getMinutes();
     minutes += duration;
-    const expiration = creation.setMinutes(minutes);
+    const expiration = creation;
+    expiration.setMinutes(minutes);
 
     return (time <= expiration);
+}
+
+function timeToExpire(token){
+    const time = new Date();
+    const duration = token[0].duracion;
+    const creation = new Date(token[0].creacion);
+    
+    if(time.getHours()==creation.getHours()){
+        let minutesElapsed = time.getMinutes()-creation.getMinutes();
+        let minutesRemaining = duration-minutesElapsed;
+        return minutesRemaining;
+    }else if(time.getHours()>creation.getHours()){
+        let minutesLeftForHour = 60-creation.getMinutes();
+        let minutesElapsed = time.getMinutes()+minutesLeftForHour;
+        let minutesRemaining = duration-minutesElapsed;
+        return minutesRemaining;
+    }
 }
 
 module.exports = model;

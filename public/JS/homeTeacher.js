@@ -7,9 +7,10 @@ $('#copyMessage').hide();
 $('#generateCode').hide();
 $('#settingsCode').hide();
 getGroupsTeacher();
+verifyTokenSaved();
 
 //comprobamos si tiene un token activo si es que no ha cerrado sesion
-if(sessionStorage.getItem('tokenActive')){
+/*if(sessionStorage.getItem('tokenActive')){
     if(sessionStorage.getItem('tokenActive')=='true'){
         showToken(sessionStorage.getItem('code'), sessionStorage.getItem('duration'));
     }else{
@@ -17,7 +18,7 @@ if(sessionStorage.getItem('tokenActive')){
     }
 }else{
     verifyTokenSaved()
-}
+}*/
 
 
 function getGroupsTeacher(){
@@ -142,9 +143,23 @@ function verifyTokenSaved(){
         data:{id},
         success:function(response){
             console.log(response);
+            //verificamos que este activo y que el tamaño sea correcto
             if((response.length != 0) && (!response.isNotActive)){
-                //tiene un token activo
-                showToken('Token activo', (response[0].duracion+''));
+                if(!response.noToken){
+                    //tiene un token activo
+                    let code = '';
+                    if(sessionStorage.getItem('tokenActive')=='true'){
+                        code = sessionStorage.getItem('code');
+                    }else{
+                        code = 'Codigo activo';
+                    }
+                    showToken(code, (response.minutesRemaining+''));
+                }else{
+                    console.log('No hay un token');
+                    if(response.long>1){
+                        alert('Tiene multiples tokens activos');
+                    }
+                }
             }else{
                 alert('El token ah caducado');
             }
