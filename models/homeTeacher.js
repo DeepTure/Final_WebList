@@ -29,6 +29,7 @@ model.addToken = (req, res)=>{
         db.query('INSERT INTO esala VALUES(?,?)',[idSala, data.program],(err, responseS)=>{
             if(err)return res.json(err);
             const expire = timeToExpire(parseInt(data.duration), time);
+            putGenerationAbsent(data.generation, data.program, data.nowTime);
             return res.json({responseT,responseS,code, room:idSala, expire});
         });
     });
@@ -135,34 +136,58 @@ function tokenIsActive(token){
 
 /**
  * Se encarga de calcular el tiempo faltante para que expire
- * @param {number} duracion Es la duracion en minutos del token
- * @param {Date} creacion es la fecha en que fue creado
- * @returns {Date}  las horas no importan, solo los minutos y segundos que empieza a contar hacia atras
+ * @param {number} duration es la duracion del token
+ * @param {Date} creation es la fecha en que fue creado
+ * @returns {Date}  
  */
-function timeToExpire(duracion, creacion){
-    const time = new Date();
-    const duration = duracion;
-    const creation = new Date(creacion);
-    
-    //esta parte del codigo si se puede hacer mas corta, pero de momento se queda así
-    if(time.getHours()==creation.getHours()){
-        let minutesElapsed = time.getMinutes()-creation.getMinutes();
-        let minutesRemaining = duration-minutesElapsed;
-        let secondsRemaining = time.getSeconds()-creation.getSeconds();
-        const expire = new Date();
-        expire.setMinutes(minutesRemaining)
-        expire.setSeconds(secondsRemaining);
-        return expire;
-    }else if(time.getHours()>creation.getHours()){
-        let minutesLeftForHour = 60-creation.getMinutes();
-        let minutesElapsed = time.getMinutes()+minutesLeftForHour;
-        let minutesRemaining = duration-minutesElapsed;
-        let secondsRemaining = time.getSeconds()-creation.getSeconds();
-        const expire = new Date();
-        expire.setMinutes(minutesRemaining)
-        expire.setSeconds(secondsRemaining);
-        return expire;
+function timeToExpire(duration, creation){
+    creation = new Date(creation);
+    const nowTime = new Date();
+
+    const expireTime = (creation.setMinutes(creation.getMinutes()+duration));
+    const missingTime = expireTime-nowTime.getTime();
+
+    if(missingTime>0){
+        return new Date(missingTime);
+    }else{
+        //nunca debería retornar esto
+        console.log('ah caducado');
+        return new Date(0);
     }
+}
+
+/**
+ * Esta funcion le pone inasistencia a todos en un programa y geberacion
+ * @param {String} generation id de la generacion a la que se va a poner inasistencia
+ * @param {String} nowTime Es la fecha actual del registro
+ * @param {String} program Es el programa en el que se esta pasando asistencia
+ */
+function putGenerationAbsent(generation, program, nowTime){
+    //obtenemos todas las inscripciones de esta generacion
+    db.query('SELECT * FROM minscripcion WHERE id_generacion = ?',[generation],(err,idi)=>{
+        if(err)console.log(err);
+        const querys = processQuerysInasistenciaByInscripcion(idi, program, nowTime);
+        db.query(querys,(err,res)=>{
+            if(err)console.log(err);
+            console.log('todos con falta alv');
+        });
+    });
+}
+
+/*- Reglas para id de MInasistencia
+
+Se crea como llave compuesta a partir de fecha (en formato '1000-01-01 00:00:00'), id_inscripcion e id_programa respectivamente.
+
+En total son 55 caracteres.*/
+function processQuerysInasistenciaByInscripcion(ids, program, nowTime){
+    let querys = '';
+    const time = new Date();
+    const date = time.getFullYear()+'-'+(time.getMonth()+1)+'-'+time.getDate()+' '+time.getHours()+':'+time.getMinutes()+':'+time.getSeconds();
+    ids.forEach((id)=>{
+        let idi = date+id.id_inscripcion+program;
+        querys += 'INSERT INTO minasistencia VALUES("'+idi+'","'+nowTime+'","'+id.id_inscripcion+'","'+program+'",false);';
+    });
+    return querys;
 }
 
 module.exports = model;
