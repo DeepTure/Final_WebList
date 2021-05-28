@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: light)" href="../public/CSS/lightColorSheet.css">
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: dark)" href="../public/CSS/darkColorSheet.css">
 	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/navSheet.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
 	<link rel="icon" href="../public/IMG/DeepTure.ico">
 	<link rel="shortcut icon" href="../public/IMG/DeepTure.ico"> 
@@ -72,12 +73,13 @@
 				</p>
 			</section>
 			
-			<section class="squareSectionSizeLW addTopMarginAlt">
+			<section class="squareSectionSizeLW  addTopMarginAlt">
 				<p class="titleFont addLeftMarginAlt">
 					Editar datos
 				</p>
-                <form action="/home/perfil/change" method="post">
-                    <section class="squareSectionSize addLeftMarginAlt dottedBorder fillSpace">
+                
+                <section class="squareSectionSize addLeftMarginAlt dottedBorder fillSpace">
+					<form action="/home/perfil/change" method="post">
                         <p class="bodyFont addLeftMargin">
                             <br>	
                             Cambiar contraseña
@@ -85,12 +87,12 @@
                             <br>
                             <div class="bodyFont">
                                 <img class="inputIcon" src="../public/IMG/key.png">
-                                <input class="bodyFont fullLargeInput" type="password" name="password" placeholder="Nueva contraseña">
+                                <input class="bodyFont fullLargeInput" id="pass" type="password" name="password" placeholder="Nueva contraseña">
                             </div>
                             <br>
                             <div class="bodyFont">
                                 <img class="inputIcon" src="../public/IMG/key.png">
-                                <input class="bodyFont fullLargeInput" type="password" name="confirmPassword" placeholder="Confirmar contraseña">
+                                <input class="bodyFont fullLargeInput" id="conpass" type="password" name="confirmPassword" placeholder="Confirmar contraseña">
                             </div>
                         </p>
                         <p class="bodyFont addLeftMargin">
@@ -100,18 +102,23 @@
                             <br>
                             <div class="bodyFont">
                                 <img class="inputIcon" src="../public/IMG/mail.png">
-                                <input class="bodyFont fullLargeInput" type="text" name="email" placeholder="Correo electrónico">
+                                <input class="bodyFont fullLargeInput" id="correo" type="text" name="email" placeholder="Correo electrónico">
                             </div>
                         </p>
                         <p class="bodyFont centerText">
                             <br><br><br><br>
-                            <br><br><br><br>
-                            <input class="bodyFont buttonInput fullLargeButton submit" type="submit" name="login" value="Guardar">
+							<input class="bodyFont buttonInput fullLargeButton submit" type="button" name="login" value="Descargar firma digital">
+							<br><br>
+                            <input class="buttonInput fullLargeButton submit" id="changedata" type="button" name="profile" value="Modificar">
                         </p>
-                    </section>
-                </form>
+					</form>
+				</section>
 			</section>
 		</section>
 	</div>
+
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<script src="../public/JS/profile.js"></script>
+	<script src="../public/JS/toGeneral.js"></script>
 </body>
 </html>

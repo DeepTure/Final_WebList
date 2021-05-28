@@ -1,248 +1,240 @@
-* {
-    font-family: Arial;
-    margin: 0;
+*{
+	font-family: Arial;
+	margin: 0;
     padding: 0;
-    text-decoration: none;
-    font-size: 1rem;
+	text-decoration: none;
+	font-size: 1rem;
 }
 
-nav {
-    display: flex;
-    justify-content: space-between;
+nav{
+	display: flex;
+	justify-content: space-between;
 }
 
-section {
-    overflow: auto;
+section{
+	overflow: auto;
 }
 
-div {
-    display: flex;
-    justify-content: center;
+div{
+	display: flex;
+	justify-content: center;
 }
 
-article {
-    display: flex;
-    align-self: center;
+article{
+	display: flex;
+	align-self: center;
 }
 
-input,
-option {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    height: 1.5rem;
-    border-radius: 0.1rem;
-    border: 0.15rem solid lightgray;
+input, option{
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	height: 1.5rem;
+	border-radius: 0.1rem;
+	border: 0.15rem solid lightgray;
 }
 
-select {
-    height: 1.7rem;
-    border-radius: 0.1rem;
-    border: 0.15rem solid lightgray;
+select{
+	height: 1.7rem;
+	border-radius: 0.1rem;
+	border: 0.15rem solid lightgray;
 }
 
-table {
-    border: none;
-    transition: 1s background;
+table{
+	border: none;
+	transition: 1s background;
 }
 
-tr,
-th,
-td {
-    text-align: center;
-    width: 40%;
-    height: 1.4rem;
-    transition: 1s background;
+tr, th, td{
+	text-align: center;
+	width: 40%;
+	height: 1.4rem;
+	transition: 1s background;
 }
 
-th {
-    color: white;
+th{
+	color: white;
 }
 
-tr.title {
-    background-color: #800040;
+tr.title{
+	background-color: #800040;
 }
 
-tr.title:hover {
-    background-color: #800040;
+tr.title:hover{
+	background-color: #800040;
 }
 
-tr:hover {
-    background-color: rgb(200, 200, 200);
-    transition: 1s background;
+tr:hover{
+	background-color: rgb(200, 200, 200);
+	transition: 1s background;
 }
 
-#navbar ul {
-    background-color: rgb(255, 255, 255);
-}
+#navbar ul{
+	background-color: rgb(255, 255, 255);
+}	
 
-@media screen and (prefers-color-scheme: dark) {
-    #navbar ul {
-        background-color: rgb(0, 0, 0);
-    }
+@media screen and (prefers-color-scheme: dark){
+	#navbar ul{
+		background-color: rgb(0, 0, 0);
+	}	
 
-    tr:hover {
-        background-color: rgb(100, 100, 100);
-        transition: 1s background;
-    }
-}
-
-.checkbox {
-    -webkit-appearance: menulist-button;
-    -moz-appearance: menulist-button;
+	tr:hover{
+		background-color: rgb(100, 100, 100);
+		transition: 1s background;
+	}
 }
 
 /* Tamaños de letra */
-.titleFontLarge {
-    font-size: 3.8rem;
-    font-weight: 600;
+.titleFontLarge{
+	font-size: 3.8rem;
+	font-weight: 600;
 }
 
-.titleFont {
-    font-size: 1.71rem;
-    font-weight: 600;
+.titleFont{
+	font-size: 1.71rem;
+	font-weight: 600;
 }
 
-.subtitleFont {
-    font-size: 1.2rem;
-    font-weight: 600;
+.subtitleFont{
+	font-size: 1.2rem;
+	font-weight: 600;
 }
 
 /* Tamaños de elemneto */
-.defaultSectionSize {
-    margin: 3%;
-    width: 94%;
-    height: 37.5rem;
+.defaultSectionSize{
+	margin: 3%;
+	width: 94%;
+	height: 83vh;
 }
 
-.defaultSectionSizeNoMarg {
-    margin: 9;
-    width: 100%;
+.defaultSectionSizeNoMarg{
+	margin: 9;
+	width: 100%;
 }
 
-.squareSectionSize {
-    width: 25rem;
-    height: 23.5rem;
+.squareSectionSize{
+	width: 25rem;
+	height: 23.5rem;
 }
 
-.sectionSizeXLW {
-    width: 100%;
+.sectionSizeXLW{
+	width: 100%;
 }
 
-.squareSectionSizeLWAlt {
-    margin: 3%;
-    width: 44%;
+.squareSectionSizeLWAlt{
+	margin: 3%;
+	width: 44%;
 }
 
-.squareSectionSizeLW {
-    margin: 3%;
-    width: 44%;
-    height: 27rem;
+.squareSectionSizeLW{
+	margin: 3%;
+	width: 44%;
+	height: 71vh;
 }
 
-.fullLargeInput {
-    width: 87%;
+.fullLargeInput{
+	width: 87%;
 }
 
-.largeInput {
-    width: 75%;
+.largeInput{
+	width: 75%;
 }
 
-.mediumInput {
-    width: 14rem;
+.mediumInput{
+	width: 14rem;
 }
 
-.smallInput {
-    width: 10rem;
+.smallInput{
+	width: 10rem;
 }
 
-.buttonInput {
-    border-color: #800040;
-    font-size: 0.8rem;
-    width: 10rem;
-    height: 1.5rem;
-    transition: 1s border-color;
+.buttonInput{
+	border-color: #800040;
+	font-size: 0.8rem;
+	width: 10rem;
+	height: 1.5rem;
+	transition: 1s border-color;
 }
 
-.fullLargeButton {
-    width: 82%;
+.fullLargeButton{
+	width: 82%;
 }
 
-.largeButton {
-    width: 18rem;
+.largeButton{
+	width: 18rem;
 }
 
-.mediumButton {
-    width: 7rem;
+.mediumButton{
+	width: 7rem;
 }
 
-.smallButton {
-    width: 5rem;
+.smallButton{
+	width: 5rem;
 }
 
-.tinyButtonLW {
-    margin: 0.3rem;
-    font-size: 0.7rem;
-    width: 92%;
-    height: 1.2rem;
+.tinyButtonLW{
+	margin: 0.3rem;
+	font-size: 0.7rem;
+	width: 92%;
+	height: 1.2rem;
 }
 
-.tinyButton {
-    margin: 0.3rem;
-    font-size: 0.6rem;
-    width: 3.6rem;
-    height: 1rem;
+.tinyButton{
+	margin: 0.3rem;
+	font-size: 0.6rem;
+	width: 3.6rem;
+	height: 1rem;
 }
 
-.tallInput {
-    height: 3.5rem;
+.tallInput{
+	height: 3.5rem;
 }
 
 /* Colores estaticos */
-.submit {
-    background-color: #800040;
-    color: white;
-    transition: 1s background;
+.submit{
+	background-color: #800040;
+	color: white;
+	transition: 1s background;
 }
 
-.submit:hover {
-    background-color: #600020;
-    transition: 1s background;
+.submit:hover{
+	background-color: #600020;
+	transition: 1s background;
 }
 
-.red {
-    color: white;
-    border-color: #fe7f2d;
-    background-color: #fe7f2d;
-    transition: 1s background;
+.red{
+	color: white;
+	border-color: #FE7F2D;
+	background-color: #FE7F2D;
+	transition: 1s background;
 }
 
-.red:hover {
-    background-color: #dc5d0b;
-    transition: 1s background;
+.red:hover{
+	background-color: #DC5D0B;
+	transition: 1s background;
 }
 
-.green {
-    color: white;
-    border-color: #62c370;
-    background-color: #62c370;
-    transition: 1s background;
+.green{
+	color: white;
+	border-color: #62C370;
+	background-color: #62C370;
+	transition: 1s background;
 }
 
-.green:hover {
-    background-color: #40a150;
-    transition: 1s background;
+.green:hover{
+	background-color: #40A150;
+	transition: 1s background;
 }
 
-.blue {
-    color: white;
-    border-color: #00b4d8;
-    background-color: #00b4d8;
-    transition: 1s background;
+.blue{
+	color: white;
+	border-color: #00B4D8;
+	background-color: #00B4D8;
+	transition: 1s background;	
 }
 
-.blue:hover {
-    background-color: #00a2b6;
-    transition: 1s background;
+.blue:hover{
+	background-color: #00A2B6;
+	transition: 1s background;	
 }
 
 /* Colores originales
@@ -265,166 +257,169 @@ background-color: rgb(30, 62, 110); dk
 */
 
 /* Alinacion */
-.addTopMargin {
-    margin-top: 1.5rem;
+.addTopMargin{
+	margin-top: 1.5rem;
 }
 
-.addLargeTopMargin {
-    margin-top: 6%;
+.addLargeTopMargin{
+	margin-top: 6%;
 }
 
-.addLeftMargin {
-    margin-left: 1.5rem;
+.addLeftMargin{
+	margin-left: 1.5rem;
 }
 
-.addRightMargin {
-    margin-right: 1.5rem;
+.addRightMargin{
+	margin-right: 1.5rem;
 }
 
-.addLeftMarginAlt {
-    position: relative;
-    width: 94%;
-    left: 3%;
+.addLeftMarginAlt{
+	position: relative;
+	width: 94%;
+	left: 3%;
 }
 
-.addRightMarginAlt {
-    position: relative;
-    width: 94%;
-    right: 3%;
+.addRightMarginAlt{
+	position: relative;
+	width: 94%;
+	right: 3%;
 }
 
-.addTopMarginAlt {
-    position: relative;
-    margin-top: 3%;
+.addTopMarginAlt{
+	position: relative;
+	margin-top: 3%;
 }
 
-.alignMiddle {
-    align-self: center;
+.alignMiddle{
+	align-self: center;
 }
 
-.centerText {
-    text-align: center;
+.centerText{
+	text-align: center;
 }
 
-.autoManageSpaced {
-    display: flex;
-    justify-content: space-between;
+.autoManageSpaced{
+	display: flex;
+	justify-content: space-between;
 }
 
-.autoManageSpacedAlways {
-    display: flex;
-    justify-content: space-between;
+.autoManageSpacedAlways{
+	display: flex;
+	justify-content: space-between;
 }
 
-.autoManageTogether {
-    display: flex;
-    justify-content: center;
+.autoManageTogether{
+	display: flex;
+	justify-content: center;
 }
 
-.autoManageTogetherAlways {
-    display: flex;
-    justify-content: center;
+.autoManageTogetherAlways{
+	display: flex;
+	justify-content: center;
 }
 
-.autoManageCenter {
-    display: flex;
-    justify-content: center;
+.autoManageCenter{
+	display: flex;
+	justify-content: center;
 }
 
-.autoManageStack {
-    display: flex;
-    flex-direction: column;
+.autoManageStack{
+	display: flex;
+	flex-direction: column;
 }
 
-.fillSpace {
-    height: 90%;
+.fillSpace{
+	height: 90%;
 }
 
-.fillSpaceAlt {
-    height: 74%;
+.fillSpaceAlt{
+	height: 74%;
 }
 
 /* Otros */
-.addShadow {
-    border-radius: 0.5rem;
-    box-shadow: 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.1),
-        0 0.3rem 1rem 0 rgba(0, 0, 0, 0.2);
+.addShadow{
+	border-radius: 0.5rem;
+	box-shadow: 0 0.1rem 0.2rem 0 rgba(0, 0, 0, 0.1), 0 0.3rem 1rem 0 rgba(0, 0, 0, 0.2);
 }
 
-.navImg {
-    width: 3rem;
-    height: 3rem;
+.navImg{
+	width: 3rem;
+	height: 3rem;
 }
 
-.helpImg {
-    border: 0.1rem solid lightgray;
-    background-color: white;
-    padding: 1rem;
-    width: 6rem;
-    height: 6rem;
+.helpImg{
+	border: 0.1rem solid lightgray;
+	background-color: white;
+	padding: 1rem;
+	width: 6rem;
+	height: 6rem;
 }
 
-.inputIcon {
-    border: 0.15rem solid lightgray;
-    border-right: none;
-    background-color: white;
-    padding: 0.15rem;
-    width: 1.2rem;
-    height: 1.2rem;
+.inputIcon{
+	border: 0.15rem solid lightgray;
+	border-right: none;
+	background-color: white;
+	padding: 0.15rem;
+	width: 1.2rem;
+	height: 1.2rem;
 }
 
-.dashedBorder {
-    border: 0.2rem dashed;
+.dashedBorder{
+	border: 0.2rem dashed;
 }
 
-.dottedBorder {
-    border: 0.2rem dotted;
+.dottedBorder{
+	border: 0.2rem dotted;
 }
 
-.solidBorder {
-    border: 0.2rem solid;
+.solidBorder{
+	border: 0.2rem solid;
 }
 
 /* Ajuste en pantallas pequeñas */
 @media (max-width: 600px) {
-    .titleFontLarge {
-        font-size: 2rem;
-        font-weight: 600;
-    }
+	.titleFontLarge{
+		font-size: 2rem;
+		font-weight: 600;
+	}
 
-    .titleFont {
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
+	.titleFont{
+		font-size: 1.2rem;
+		font-weight: 600;
+	}
 
-    .timer {
-        height: 2.2rem;
-        width: 10rem;
-    }
+	.timer{
+		height: 2.2rem; 
+		width: 10rem;
+	}
 
-    .autoManageSpaced {
-        display: inline-block;
-        justify-content: none;
-    }
+	.autoManageSpaced{
+		display: inline-block;
+		justify-content: none;
+	}
 
-    .autoManageTogether {
-        display: inline-block;
-        justify-content: center;
-    }
+	.autoManageTogether{
+		display: inline-block;
+		justify-content: center;
+	}
 
-    .defaultSectionSize {
-        margin: 3%;
-        width: 94%;
-        height: 100%;
-    }
+	.defaultSectionSize{
+		margin: 3%;
+		width: 94%;
+		height: 100%;
+	}
 
-    .squareSectionSize {
-        width: 90%;
-        height: 28rem;
-    }
+	.squareSectionSize{
+		width: 90%;
+		height: 28rem;
+	}
 
-    .squareSectionSizeLW {
-        position: relative;
-        width: 94%;
-    }
+	.squareSectionSizeLW{
+		position: relative;
+		width: 94%;
+	}
+}
+/*Texto para las ventanas swet*/
+#swal2-content{
+	color:black !important;
 }

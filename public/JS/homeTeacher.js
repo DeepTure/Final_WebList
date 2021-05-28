@@ -7,17 +7,7 @@ $('#copyMessage').hide();
 $('#generateCode').hide();
 $('#settingsCode').hide();
 getGroupsTeacher();
-
-//comprobamos si tiene un token activo si es que no ha cerrado sesion
-if(sessionStorage.getItem('tokenActive')){
-    if(sessionStorage.getItem('tokenActive')=='true'){
-        showToken(sessionStorage.getItem('code'), sessionStorage.getItem('duration'));
-    }else{
-        verifyTokenSaved()
-    }
-}else{
-    verifyTokenSaved()
-}
+verifyTokenSaved();
 
 
 function getGroupsTeacher(){
@@ -43,17 +33,27 @@ $('#generateCode').click(function(){
     const group = sessionStorage.getItem('group');
     const program = sessionStorage.getItem('program');
     const idEmpleado = $('#idTeacher').val();
+    const time = new Date();
+    const nowTime = (time.getFullYear()+'-'+time.getMonth()+'-'+time.getDate());
     
     $.ajax({
         url:'/home/addToken',
         type:'post',
-        data:{duration, matter, generation, group, program, idEmpleado},
+        data:{duration, matter, generation, group, program, idEmpleado, nowTime},
         success:function(response){
             console.log(response);
-            if(response.responseT.protocol41==true && response.responseS.protocol41==true){
-                showToken(response.code, duration);
-            }else{
-                alert('Un error inesperado a ocurrido')
+            try{
+                if(response.responseT.protocol41==true && response.responseS.protocol41==true){
+                    showToken(response.code, (new Date(response.expire)));
+                    joinRoomSocket(response.room);
+                    toast('Codigo generado', 'No cierre esta ventana');
+                    console.log('New Token');
+                }else{
+                    alert('Un error inesperado a ocurrido')
+                }
+            }catch(e){
+                console.log(e);
+                alert('Un error inesperado a ocurrido');
             }
         },
         error:function(response){
@@ -115,7 +115,8 @@ function showToken(code, duration){
     $('#generateCode').hide();
     $('.groupsSection').hide();
     $('#inputShowCode').val(code);
-    updateTime(duration);
+    prepareTimer(duration);
+    startTimer();
 
     let button = document.querySelector('#clipButton');
     let input = document.querySelector('#inputShowCode');
@@ -136,9 +137,25 @@ function verifyTokenSaved(){
         data:{id},
         success:function(response){
             console.log(response);
-            if(response.length != 0){
-                //tiene un token activo
-                showToken('Token activo', (response.duracion+''));
+            //verificamos que este activo y que el tamaño sea correcto
+            if((response.length != 0) && (!response.isNotActive)){
+                if(!response.noToken){
+                    //tiene un token activo
+                    let code = '';
+                    if(sessionStorage.getItem('tokenActive')=='true'){
+                        code = sessionStorage.getItem('code');
+                    }else{
+                        code = 'Codigo activo';
+                    }
+                    showToken(code, (new Date(response.minutesRemaining)));
+                }else{
+                    console.log('No hay un token');
+                    if(response.long>1){
+                        alert('Tiene multiples tokens activos');
+                    }
+                }
+            }else{
+                alert('El token ah caducado');
             }
         },
         error:function(response){
