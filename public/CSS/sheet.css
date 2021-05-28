@@ -103,7 +103,7 @@ tr:hover{
 .defaultSectionSize{
 	margin: 3%;
 	width: 94%;
-	height: 37.5rem;
+	height: 83vh;
 }
 
 .defaultSectionSizeNoMarg{
@@ -128,7 +128,7 @@ tr:hover{
 .squareSectionSizeLW{
 	margin: 3%;
 	width: 44%;
-	height: 27rem;
+	height: 71vh;
 }
 
 .fullLargeInput{
