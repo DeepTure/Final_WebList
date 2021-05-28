@@ -689,6 +689,28 @@ model.getGroups = (req, res) => {
     }
 };
 
+//obtener datos de inasistencias
+model.getAbsences = (req, res) => {
+    try {
+        let { id_grupo, cicloE } = req.body;
+        console.log(id_grupo, cicloE);
+        db.query(
+            "SELECT fecha, boleta, CONCAT_WS(' ',nombre,app,apm) AS fullname, id_grupo, materia, cicloE FROM MInasistencia INNER JOIN MInscripcion USING (id_inscripcion) INNER JOIN MPrograma USING (id_programa) INNER JOIN EGeneracion ON EGeneracion.id_generacion = MInscripcion.id_generacion INNER JOIN EAlumno USING (boleta) INNER JOIN CUsuario USING (id_usuario) INNER JOIN CMateria USING (id_materia) WHERE (id_grupo = ? AND cicloE = ?)",
+            [id_grupo, cicloE],
+            (err, rows) => {
+                if (err) {
+                    console.error(err);
+                    return res.send(null);
+                }
+                return res.send(rows);
+            }
+        );
+    } catch (ex) {
+        console.error(ex);
+        return res.send(null);
+    }
+};
+
 //obtener grupos que ya se han dado de alta en dicho ciclo escolar
 model.getUpGroups = (req, res) => {
     try {
@@ -704,6 +726,20 @@ model.getUpGroups = (req, res) => {
         console.log(ex);
         return res.send(null);
     }
+};
+
+//obtener todos los grupos y ciclos escolares con un registro existente
+model.getAllRegGroups = (req, res) => {
+    db.query(
+        "SELECT DISTINCT id_grupo, cicloE FROM EGeneracion",
+        (err, rows) => {
+            if (err) {
+                console.log(err);
+                return res.send([]);
+            }
+            return res.send(rows);
+        }
+    );
 };
 
 //Dar de alta un grupo en dicho ciclo escolar

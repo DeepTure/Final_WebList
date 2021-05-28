@@ -1,6 +1,7 @@
 const router = require("express").Router();
 
 const models = require("../models/crudUsers");
+const { route } = require("./main");
 
 router.post(
     "/addProfesor",
@@ -53,6 +54,16 @@ router.post(
 );
 
 router.post(
+    "/getAbsences",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.send(null);
+    },
+    models.getAbsences
+);
+
+router.post(
     "/upGroup",
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
@@ -70,6 +81,16 @@ router.post(
         res.send(null);
     },
     models.getUpGroups
+);
+
+router.post(
+    "/getAllRegGroups",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.send(null);
+    },
+    models.getAllRegGroups
 );
 
 router.post(
@@ -110,6 +131,16 @@ router.post(
         res.redirect("/");
     },
     models.modifyProfesor
+);
+
+router.post(
+    "/modifyStudent",
+    async (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        res.redirect("/");
+    },
+    models.modifyStudent
 );
 
 router.post(

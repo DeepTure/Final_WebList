@@ -1,197 +1,196 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>
-		WebList
-	</title>
-	<link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css">
-	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: no-preference)" href="../public/CSS/lightColorSheet.css">
-	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: light)" href="../public/CSS/lightColorSheet.css">
-	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: dark)" href="../public/CSS/darkColorSheet.css">
-	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/navSheet.css">
+    <head>
+        <title>WebList</title>
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="../public/CSS/sheet.css" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen and (prefers-color-scheme: no-preference)"
+            href="../public/CSS/lightColorSheet.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen and (prefers-color-scheme: light)"
+            href="../public/CSS/lightColorSheet.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen and (prefers-color-scheme: dark)"
+            href="../public/CSS/darkColorSheet.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen"
+            href="../public/CSS/navSheet.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            media="screen"
+            href="../public/CSS/timerSheet.css"
+        />
+        <link rel="icon" href="../public/IMG/DeepTure.ico" />
+        <link rel="shortcut icon" href="../public/IMG/DeepTure.ico" />
 
-	<link rel="icon" href="../public/IMG/DeepTure.ico">
-	<link rel="shortcut icon" href="../public/IMG/DeepTure.ico">
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.1/chart.min.js"
+            integrity="sha512-tOcHADT+YGCQqH7YO99uJdko6L8Qk5oudLN6sCeI4BQnpENq6riR6x9Im+SGzhXpgooKBRkPsget4EOoH5jNCw=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        ></script>
+        <script
+            src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+            crossorigin="anonymous"
+        ></script>
+        <link rel="icon" href="../public/IMG/DeepTure.ico" />
+        <link rel="shortcut icon" href="../public/IMG/DeepTure.ico" />
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <style type="text/css">
+            @media (min-width: 600px) {
+                #navbar.active {
+                    width: 18.9rem;
+                }
+            }
+        </style>
+        <nav class="addShadow" id="header">
+            <article class="addLeftMargin">
+                <img src="../public/IMG/WebListLogo.png" class="navImg" />
+                <p class="titleFont addLeftMargin alignMiddle">
+                    WebList Project
+                </p>
+            </article>
 
-	<meta charset="utf-8">
-</head>
-<body>
-	<style type="text/css">
-		@media (min-width: 600px) {
-			#navbar.active{
-				width: 18.9rem;
-			}
-		}
-	</style>
-	<nav class="addShadow" id="header">
-        <article class="addLeftMargin">
-			<img src="../public/IMG/WebListLogo.png" class="navImg">
-			<p class="titleFont addLeftMargin alignMiddle">
-				WebList Project
-			</p>
-		</article>
+            <div class="navImg" id="toggle"></div>
+            <div class="navImg" id="navbar">
+                <ul>
+                    <li>
+                        <a href="/home"> Volver </a>
+                    </li>
+                    <li></li>
+                    <li>
+                        <a href="/home/historial/help"> Ayuda </a>
+                    </li>
+                    <li>
+                        <a href="/logout"> Cerrar Sesión </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <script src="../public/JS/nav.js"></script>
 
-        <div class="navImg" id="toggle"></div>
-        <div class="navImg" id="navbar">
-            <ul>
-                <li>
-                	<a href="/home">
-                		Volver
-                	</a>
-                </li>
-                <li>
-                </li>
-                <li>
-                	<a href="/home/historial/help">
-                		Ayuda
-                	</a>
-                </li>
-                <li>
-                	<a href="/logout">
-                		Cerrar Sesión
-                	</a>
-                </li>
-            </ul>
+        <div>
+            <section class="defaultSectionSize autoManageSpaced addShadow">
+                <!-- Izquierda -->
+                <section class="squareSectionSizeLW addTopMarginAlt">
+                    <p
+                        class="
+                            titleFont
+                            centerText
+                            addLeftMarginAlt
+                            addTopMarginAlt
+                        "
+                    >
+                        Gráficos
+                    </p>
+
+                    <br />
+
+                    <p class="addLeftMarginAlt centerText">
+                        Para empezar la busqueda seleccione un grupo y ciclo
+                        escolar
+                    </p>
+
+                    <br />
+
+                    <aside class="addLeftMarginAlt">
+                        <article class="autoManageCenter">
+                            <section id="groupsList">
+                                <select
+                                    class="smallInput centerText"
+                                    id="agroup"
+                                    name="group"
+                                ></select>
+                            </section>
+                        </article>
+                    </aside>
+
+                    <br />
+
+                    <input
+                        class="buttonInput addLeftMarginAlt blue"
+                        type="button"
+                        name="bringStudentReg"
+                        id="bringReg"
+                        value="Traer historial"
+                    />
+
+                    <br /><br />
+
+                    <p class="addLeftMarginAlt">Filtros de gráfica</p>
+
+                    <br />
+
+                    <select id="asub" class="addLeftMarginAlt">
+                        <option>-- Materia --</option>
+                    </select>
+
+                    <br /><br />
+
+                    <select id="astu" class="addLeftMarginAlt">
+                        <option>-- Todos los alumnos --</option>
+                    </select>
+
+                    <br /><br />
+
+                    <select id="adate" class="addLeftMarginAlt">
+                        <option>-- Fecha --</option>
+                    </select>
+                </section>
+
+                <!-- Derecha -->
+                <section class="squareSectionSizeLW addTopMarginAlt">
+                    <!-- Para este ejemplo se ocupara MorrisJS -->
+                    <!-- En un futuro AnyChart puede ser una opcion -->
+                    <section id="msgBox"></section>
+                    <section id="regsData">
+                        <p id="titleData" class="centerText">
+                            Seleccione un grupo y ciclo escolar
+                        </p>
+                        <div id="chartContainer" class="addLeftMarginAlt">
+                            <canvas id="sampleChart"></canvas>
+                        </div>
+                        <br />
+                        <section id="tableData">
+                            <table
+                                class="addLeftMarginAlt"
+                                cellspacing="0"
+                                cellpadding="0"
+                                id="tableAbs"
+                            ></table>
+                        </section>
+                        <style type="text/css">
+                            tr,
+                            th,
+                            td {
+                                text-align: center;
+                                padding-right: 1rem;
+                                padding-left: 1rem;
+                                height: 1.4rem;
+                                transition: 1s background;
+                            }
+                        </style>
+                    </section>
+                </section>
+            </section>
         </div>
-    </nav>
-    <script src="../public/JS/nav.js"></script>
-
-	<div>
-		<section class="defaultSectionSize autoManageSpaced addShadow">
-			<!-- Izquierda -->
-			<section class="squareSectionSizeLW addTopMarginAlt">
-				<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
-					Gráficos
-				</p>
-				
-				<br>
-				
-				<p class="addLeftMarginAlt centerText">
-					Para empezar la busqueda, seleccione un grupo
-				</p>
-
-				<br>
-
-				<aside class="addLeftMarginAlt">
-					<article class="autoManageCenter">
-						<input class="buttonInput smallButton blue" type="button" name="groupA" value="6IAB">
-						<input class="buttonInput smallButton blue" type="button" name="groupA" value="6ICD">
-						<input class="buttonInput smallButton blue" type="button" name="groupA" value="6IEF">
-					</article>
-				</aside>
-
-				<br>
-
-				<input class="buttonInput addLeftMarginAlt blue" type="button" name="bringStudentReg" value="Traer historial">
-
-				<br><br>
-
-				<p class="addLeftMarginAlt">
-					Filtros de gráfica
-				</p>
-
-				<br>
-
-				<select class="addLeftMarginAlt">
-					<option>
-						-- Materia --
-					</option>
-				</select>
-
-				<br><br>
-
-				<select class="addLeftMarginAlt">
-					<option>
-						-- Todos los alumnos --
-					</option>
-				</select>
-
-				<br><br>
-
-				<select class="addLeftMarginAlt">
-					<option>
-						-- Tiempo --
-					</option>
-				</select>
-			</section>
-			
-			<!-- Derecha -->
-			<section class="squareSectionSizeLW addTopMarginAlt">
-				<!-- Para este ejemplo se ocupara MorrisJS -->
-				<!-- En un futuro AnyChart puede ser una opcion -->
-				<link rel="stylesheet" href="../public/MorrisJS/morris.css">
-				<script src="../public/MorrisJS/jquery-3.6.0.min.js"></script>
-				<script src="../public/MorrisJS/raphael.min.js"></script>
-				<script src="../public/MorrisJS/morris.min.js"></script>
-
-				<p class="centerText">
-					Historial de faltas del grupo 6IAB
-				</p>
-
-				<div class="addLeftMarginAlt" id="sampleChart">
-					
-				</div>
-
-				<script>
-					new Morris.Bar({
-						  element: 'sampleChart',
-						  data: [
-						    { day: '2021-04-01', value: 1 },
-						    { day: '2021-04-02', value: 2 },
-						    { day: '2021-04-03', value: 4 },
-						    { day: '2021-04-04', value: 3 },
-						    { day: '2021-04-05', value: 0 }
-						  ],
-						  xkey: 'day',
-						  ykeys: ['value'],
-						  labels: ['Faltas'],
-						  barColors: ['#800040'],
-						  resize: [true]
-					});
-				</script>
-
-				<br>
-
-				<table class="addLeftMarginAlt" cellspacing="0" cellpadding="0">
-					<tr class="title">
-						<th>
-							Fecha
-						</th>
-						<th>
-							U.A
-						</th>
-						<th>
-							Alumno
-						</th>
-						<th>
-							
-						</th>
-					</tr>
-					<tr>
-						<td>
-							YYYY/MM/DD
-						</td>
-						<td>
-							Proyecto Integrador 
-						</td>
-						<td>
-							Fulano de Tal
-						</td>
-					</tr>
-					<tr>
-						<td>
-							YYYY/MM/DD
-						</td>
-						<td>
-							Proyecto Integrador 
-						</td>
-						<td>
-							Fulano de Tal
-						</td>
-					</tr>
-				</table>
-			</section>
-		</section>
-	</div>
-</body>
+        <script src="public/JS/historyAControlls.js"></script>
+    </body>
 </html>
