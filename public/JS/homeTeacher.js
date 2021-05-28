@@ -35,6 +35,7 @@ $('#generateCode').click(function(){
     const idEmpleado = $('#idTeacher').val();
     const time = new Date();
     const nowTime = (time.getFullYear()+'-'+time.getMonth()+'-'+time.getDate());
+    sessionStorage.setItem('nowTimeToken',nowTime);
     
     $.ajax({
         url:'/home/addToken',
@@ -147,7 +148,12 @@ function verifyTokenSaved(){
                     }else{
                         code = 'Codigo activo';
                     }
-                    showToken(code, (new Date(response.minutesRemaining)));
+                    //comprobamos si ya caduco
+                    if((new Date(response.minutesRemaining)).getTime()<=0){
+                        alert('Ha caducado');
+                    }else{
+                        showToken(code, (new Date(response.minutesRemaining)));
+                    }
                 }else{
                     console.log('No hay un token');
                     if(response.long>1){

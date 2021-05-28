@@ -40,6 +40,7 @@ $('#registerAttendance').click(function(){
                     console.log(response.tokenData);
                     //ahora mandamos a llamar una funcion del student socket
                     sendMyAssistences(response.tokenData, response.sala, response.userData);
+                    askTime(response.sala);
                     $('#registerAttendance').hide();
                 }else{
                     console.log(response);
@@ -52,7 +53,7 @@ $('#registerAttendance').click(function(){
             },
             error:function(response){
                 console.log(response);
-                alert('Ah ocurrido un error inesperado');
+                alert('Ha ocurrido un error inesperado');
             }
         });
     }else{

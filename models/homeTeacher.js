@@ -56,7 +56,7 @@ model.verifyToken = (req, res)=>{
                         if(err)return res.json(err);
                         db.query('DELETE FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
                             if(err)return res.json(err);
-                            res.send({isNotActive:true});
+                            return res.send({isNotActive:true});
                         }); 
                     });
                 }
@@ -131,7 +131,7 @@ function tokenIsActive(token){
     const expiration = creation;
     expiration.setMinutes(minutes);
 
-    return (time <= expiration);
+    return (time < expiration);
 }
 
 /**
@@ -151,7 +151,7 @@ function timeToExpire(duration, creation){
         return new Date(missingTime);
     }else{
         //nunca debería retornar esto
-        console.log('ah caducado');
+        console.log('ha caducado');
         return new Date(0);
     }
 }

@@ -165,7 +165,7 @@ function processProgramsForToken(ids){
 
 /**
  * 
- * @param {Recibe el registro de la bd etoken} token 
+ * @param {Object} token 
  * Se encarga de procesar las fechas para compararlas y saber si el token aun esta activo o ya caduó
  * Es importante resaltar que time y creacion son tipo date y duracion es INT
  */
@@ -177,7 +177,11 @@ function tokenActive(token){
     auxMinutes += parseInt(duracion);
     const caducidad = new Date(token[0].creacion);
     caducidad.setMinutes(auxMinutes);
-    return (time<=caducidad);
+    return (time<caducidad);
+}
+
+function assistanceWaiting(){
+
 }
 
 module.exports = model;

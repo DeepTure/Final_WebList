@@ -26,6 +26,11 @@ socket.on('assistences:recive', (tokenData)=>{
         table.insertAdjacentHTML('beforeend', code);
 });
 
+socket.on('assistence:getTime',(room)=>{
+    const tokenTime = sessionStorage.getItem('nowTimeToken');
+    socket.emit('assistence:setTime',{room, tokenTime});
+});
+
 //nos unimos a la sala
 function joinRoomSocket(room){
     socket.emit('room:join',{room});
