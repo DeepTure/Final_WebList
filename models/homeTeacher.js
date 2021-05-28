@@ -28,7 +28,8 @@ model.addToken = (req, res)=>{
         const idSala = generateIdRoom(data.program, data.idEmpleado);
         db.query('INSERT INTO esala VALUES(?,?)',[idSala, data.program],(err, responseS)=>{
             if(err)return res.json(err);
-            return res.json({responseT,responseS,code, room:idSala});
+            const expire = timeToExpire(parseInt(data.duration), time);
+            return res.json({responseT,responseS,code, room:idSala, expire});
         });
     });
 };
@@ -45,7 +46,8 @@ model.verifyToken = (req, res)=>{
                 //Verificamos que el token aun esté activo
                 const isActive = tokenIsActive(coincidencias);
                 if(isActive){
-                    const minutesRemaining = timeToExpire(coincidencias);
+                    const minutesRemaining = timeToExpire(parseInt(coincidencias[0].duracion), coincidencias[0].creacion);
+                    console.log('Minutos: '+minutesRemaining.getMinutes()+':'+minutesRemaining.getSeconds());                    
                     res.send({minutesRemaining});
                 }else{
                     //hay que eliminar el token y su sala
@@ -131,20 +133,35 @@ function tokenIsActive(token){
     return (time <= expiration);
 }
 
-function timeToExpire(token){
+/**
+ * Se encarga de calcular el tiempo faltante para que expire
+ * @param {number} duracion Es la duracion en minutos del token
+ * @param {Date} creacion es la fecha en que fue creado
+ * @returns {Date}  las horas no importan, solo los minutos y segundos que empieza a contar hacia atras
+ */
+function timeToExpire(duracion, creacion){
     const time = new Date();
-    const duration = token[0].duracion;
-    const creation = new Date(token[0].creacion);
+    const duration = duracion;
+    const creation = new Date(creacion);
     
+    //esta parte del codigo si se puede hacer mas corta, pero de momento se queda así
     if(time.getHours()==creation.getHours()){
         let minutesElapsed = time.getMinutes()-creation.getMinutes();
         let minutesRemaining = duration-minutesElapsed;
-        return minutesRemaining;
+        let secondsRemaining = time.getSeconds()-creation.getSeconds();
+        const expire = new Date();
+        expire.setMinutes(minutesRemaining)
+        expire.setSeconds(secondsRemaining);
+        return expire;
     }else if(time.getHours()>creation.getHours()){
         let minutesLeftForHour = 60-creation.getMinutes();
         let minutesElapsed = time.getMinutes()+minutesLeftForHour;
         let minutesRemaining = duration-minutesElapsed;
-        return minutesRemaining;
+        let secondsRemaining = time.getSeconds()-creation.getSeconds();
+        const expire = new Date();
+        expire.setMinutes(minutesRemaining)
+        expire.setSeconds(secondsRemaining);
+        return expire;
     }
 }
 

@@ -42,9 +42,10 @@ $('#generateCode').click(function(){
             console.log(response);
             try{
                 if(response.responseT.protocol41==true && response.responseS.protocol41==true){
-                    showToken(response.code, duration);
+                    showToken(response.code, (new Date(response.expire)));
                     joinRoomSocket(response.room);
                     toast('Codigo generado', 'No cierre esta ventana');
+                    console.log('New Token');
                 }else{
                     alert('Un error inesperado a ocurrido')
                 }
@@ -112,7 +113,8 @@ function showToken(code, duration){
     $('#generateCode').hide();
     $('.groupsSection').hide();
     $('#inputShowCode').val(code);
-    updateTime(duration);
+    prepareTimer(duration);
+    startTimer();
 
     let button = document.querySelector('#clipButton');
     let input = document.querySelector('#inputShowCode');
@@ -143,7 +145,7 @@ function verifyTokenSaved(){
                     }else{
                         code = 'Codigo activo';
                     }
-                    showToken(code, (response.minutesRemaining+''));
+                    showToken(code, (new Date(response.minutesRemaining)));
                 }else{
                     console.log('No hay un token');
                     if(response.long>1){

@@ -419,3 +419,7 @@ background-color: rgb(30, 62, 110); dk
 		width: 94%;
 	}
 }
+/*Texto para las ventanas swet*/
+#swal2-content{
+	color:black !important;
+}
