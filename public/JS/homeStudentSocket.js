@@ -23,6 +23,17 @@ socket.on('assistence:student:accept',(data)=>{
     }
 });
 
+socket.on('assistence:student:acceptAll',(data)=>{
+    const boletaStudent = $('#idStudent').val();
+    const boletas = data.students;
+    boletas.forEach((boleta)=>{
+        if(boletaStudent==boleta.boleta){
+            $('#registerAttendance').show();
+            popUp('Asistencia aceptada','Su profesor ha aceptado su asistencia','success');
+        }
+    });
+})
+
 //nos unimos a la sala
 function joinRoomSocket(room){
     socket.emit('room:join',{room});

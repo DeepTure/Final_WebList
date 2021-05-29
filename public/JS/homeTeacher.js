@@ -151,6 +151,7 @@ function verifyTokenSaved(){
                     //comprobamos si ya caduco
                     if((new Date(response.minutesRemaining)).getTime()<=0){
                         alert('Ha caducado');
+                        sessionStorage.setItem('tokenActive', 'false');
                     }else{
                         joinRoomSocket(response.room);
                         sessionStorage.setItem('room',response.room);
@@ -165,6 +166,7 @@ function verifyTokenSaved(){
                     }
                 }
             }else{
+                sessionStorage.setItem('tokenActive', 'false');
                 alert('El token ah caducado');
             }
         },
@@ -219,4 +221,35 @@ function acceptAssistence(boleta){
             console.log(response)
         }
     });
+}
+
+function acceptAll(){
+    const idToken = sessionStorage.getItem('idToken');
+    const program = sessionStorage.getItem('program')
+    const room = sessionStorage.getItem('room');
+    $.ajax({
+        url:'/home/profesor/asistencia/acceptAll',
+        type:'post',
+        data:{idToken, program},
+        success:function(response){
+            console.log(response);
+            const code = `<tr class="title">
+            <th>boleta</th>
+            <th>Nombre</th>
+            <th>
+                <input
+                    class="buttonInput tinyButtonLW green"
+                    type="button"
+                    name="acceptAll"
+                    value="Aceptar todo"
+                />
+            </th>
+        </tr>`;
+            $('#attendanceRegistration').html(code);
+            sendAssistencesAcceptAll(room,response.boletas);
+        },
+        error:function(response){
+            console.log(response);
+        }
+    })
 }

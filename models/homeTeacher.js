@@ -101,6 +101,34 @@ model.accept = (req,res)=>{
     });
 };
 
+model.acceptAll = (req, res)=>{
+    const data = req.body;
+    db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+        if(err)return res.json(err);
+        const timeCreation = new Date(timeToken[0].creacion);
+        const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+        db.query('SELECT id_inscripcion FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,students)=>{
+            if(err) return res.json(err)
+            const querys = getBoletasByInscripcion(students);
+            db.query(querys,(err, boletas)=>{
+                if(err)return res.json(err);
+                db.query('DELETE FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,deleted)=>{
+                    if(err)return res.json(err);
+                    return res.send({deleted, boletas});
+                });
+            });
+        });
+    });
+};
+
+function getBoletasByInscripcion(ids){
+    let querys = '';
+    ids.forEach((id)=>{
+        querys += 'SELECT boleta FROM minscripcion WHERE id_inscripcion="'+id.id_inscripcion+'";';
+    });
+    return querys;
+}
+
 //Funciones para el modelo
 function getSyringGroupsByPrograms(programas){
     let querys = '';

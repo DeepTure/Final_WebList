@@ -49,3 +49,7 @@ function sendAssistencesReject(room, boleta){
 function sendAssistencesAccept(room, boleta){
     socket.emit('assistence:teacher:accept',{room, boleta});
 }
+
+function sendAssistencesAcceptAll(room, students){
+    socket.emit('assistence:teacher:acceptAll',{room, students});
+}
