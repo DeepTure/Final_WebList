@@ -3,8 +3,8 @@ const mysql = require("mysql");
 //se le da paramentros a la conexion
 const mysqlConnection = mysql.createConnection({
     host: "localhost",
-    user: "test",
-    password: "3h)VJ>.>!x(63BkwVc",
+    user: "test3",
+    password: "test3",
     database: "weblistv2",
     multipleStatements: true,
 });
@@ -19,4 +19,4 @@ mysqlConnection.connect((err) => {
     }
 });
 
-module.exports = mysqlConnection; 
+module.exports = mysqlConnection;

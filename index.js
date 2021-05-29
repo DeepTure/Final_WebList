@@ -29,9 +29,9 @@ const recuperar = require("./routes/recover");
 const studentCrud = require("./routes/studentCrudRoutes");
 const help = require("./routes/help");
 const crud_admin = require("./routes/crud_admin");
-const homeTeacher = require('./routes/homeTeacherRoutes');
-const verifyCodeStudent = require('./models/verifyCodeStudentModel');
-const validacion = require('./models/validacion');
+const homeTeacher = require("./routes/homeTeacherRoutes");
+const verifyCodeStudent = require("./models/verifyCodeStudentModel");
+const validacion = require("./models/validacion");
 //variables
 
 /*
@@ -71,10 +71,8 @@ passport.use(
         (req, username, password, done) => {
             console.log(req.body);
 
-            if(username.length != 0 && password.length != 0){
+            if (username.length != 0 && password.length != 0) {
                 if (validacion.idrol(username)) {
-                    
-                
                     const crypto = require("crypto");
                     const hash = crypto.createHash("sha256");
                     hash.update(password);
@@ -149,7 +147,10 @@ passport.use(
                                     });
                                 }
                                 if (alumno.length > 0) {
-                                    var ids = [alumno[0].id_usuario, alumno[0].boleta];
+                                    var ids = [
+                                        alumno[0].id_usuario,
+                                        alumno[0].boleta,
+                                    ];
                                     return done(null, {
                                         rol: "alumno",
                                         id: ids,
@@ -167,14 +168,14 @@ passport.use(
                             message: "Debe de seleccionar un usuario",
                         });
                     }
-                }else{
+                } else {
                     return done(null, false, {
                         message: "El id no tiene un formato correcto",
                     });
                 }
-            }else{
-                return done(null, false,{
-                    message:"Debe de introducir datos",
+            } else {
+                return done(null, false, {
+                    message: "Debe de introducir datos",
                 });
             }
         }
@@ -189,15 +190,18 @@ passport.use(
             passwordField: "password",
             passReqToCallback: true,
         },
-        (req,username,password, done) =>{
+        (req, username, password, done) => {
             console.log(req.body);
             let token = 0;
-            try{
+            try {
                 db.query(
                     "SELECT id_token FROM EToken WHERE id_usuario = ?",
                     [username],
                     (err, tokenDb) => {
-                        if (err) return done(null, false, {message: "Hubo un fallo en el proceso",});
+                        if (err)
+                            return done(null, false, {
+                                message: "Hubo un fallo en el proceso",
+                            });
                         //verificamos si tiene un token activo
                         if (tokenDb.length != 0) {
                             token = tokenDb[0].id_token;
@@ -205,7 +209,7 @@ passport.use(
                             //compriobamos que sea el token
                             jwt.verify(token, password, (err, userData) => {
                                 if (err) {
-                                    console.log(err)
+                                    console.log(err);
                                     return done(null, false, {
                                         message: "Hubo un fallo en el proceso",
                                     });
@@ -215,45 +219,67 @@ passport.use(
                                         "DELETE FROM EToken WHERE id_usuario=?",
                                         [username],
                                         (err, response) => {
-                                            console.log("Token eliminado")
+                                            console.log("Token eliminado");
                                             if (err) return res.json(err);
                                             //Busqueda del id del rol de usuario
                                             if (req.body.rolsave == "Alumno") {
-                                                db.query("select * from EAlumno alumn JOIN CUsuario user on alumn.id_usuario = user.id_usuario where  (alumn.id_usuario = ?);",
-                                                [username],
-                                                (err,alumno) => {
-                                                    ids=[username,alumno[0].boleta]
-                                                    return done(null, {
-                                                        rol: "alumno",
-                                                        id: ids
-                                                    });
-                                                });
-                                            } else if(req.body.rolsave == "Profesor") {
-                                                db.query("select * from EProfesor profe JOIN CUsuario user on profe.id_usuario = user.id_usuario where  (profe.id_usuario = ?);",
-                                                [username],
-                                                (err,profesor) =>{
-                                                    ids=[username,profesor[0].id_empleado]
-                                                    return done(null,{
-                                                        rol:"profesor",
-                                                        id: ids
-                                                    });
-                                                });
-                                            } else if(req.body.rolsave == "Administrador"){
-                                                db.query("select * from EAdministrador admin JOIN CUsuario user on admin.id_usuario = user.id_usuario where  (admin.id_usuario = ?);",
-                                                [username],
-                                                (err, administrador) =>{
-                                                    ids=[username,administrador[0].id_administrador]
-                                                    return done(null,{
-                                                        rol: "administrador",
-                                                        id: ids
-                                                    });
-                                                })
-                                            }else{
+                                                db.query(
+                                                    "select * from EAlumno alumn JOIN CUsuario user on alumn.id_usuario = user.id_usuario where  (alumn.id_usuario = ?);",
+                                                    [username],
+                                                    (err, alumno) => {
+                                                        ids = [
+                                                            username,
+                                                            alumno[0].boleta,
+                                                        ];
+                                                        return done(null, {
+                                                            rol: "alumno",
+                                                            id: ids,
+                                                        });
+                                                    }
+                                                );
+                                            } else if (
+                                                req.body.rolsave == "Profesor"
+                                            ) {
+                                                db.query(
+                                                    "select * from EProfesor profe JOIN CUsuario user on profe.id_usuario = user.id_usuario where  (profe.id_usuario = ?);",
+                                                    [username],
+                                                    (err, profesor) => {
+                                                        ids = [
+                                                            username,
+                                                            profesor[0]
+                                                                .id_empleado,
+                                                        ];
+                                                        return done(null, {
+                                                            rol: "profesor",
+                                                            id: ids,
+                                                        });
+                                                    }
+                                                );
+                                            } else if (
+                                                req.body.rolsave ==
+                                                "Administrador"
+                                            ) {
+                                                db.query(
+                                                    "select * from EAdministrador admin JOIN CUsuario user on admin.id_usuario = user.id_usuario where  (admin.id_usuario = ?);",
+                                                    [username],
+                                                    (err, administrador) => {
+                                                        ids = [
+                                                            username,
+                                                            administrador[0]
+                                                                .id_administrador,
+                                                        ];
+                                                        return done(null, {
+                                                            rol: "administrador",
+                                                            id: ids,
+                                                        });
+                                                    }
+                                                );
+                                            } else {
                                                 return done(null, false, {
-                                                    message: "No hay rol guardado",
+                                                    message:
+                                                        "No hay rol guardado",
                                                 });
                                             }
-                                            
                                         }
                                     );
                                 }
@@ -266,8 +292,8 @@ passport.use(
                         }
                     }
                 );
-            }catch(ex){
-                console.log(ex)
+            } catch (ex) {
+                console.log(ex);
                 return done(null, false, {
                     message: "Hubo un fallo en el proceso",
                 });
@@ -388,6 +414,7 @@ app.use((req, res) => {
 
 app.use((error, req, res, next) => {
     res.status(500);
+    console.log(error);
     //se necesita crear la pagina
     res.render("error", { error: 500, message: error });
 });
@@ -403,24 +430,24 @@ const server = app.listen(app.get("host"), (req, res) => {
  * profesor-servidor-alumno
  */
 
- const SocketIO = require('socket.io');
- const io = SocketIO(server);
+const SocketIO = require("socket.io");
+const io = SocketIO(server);
 
-io.on('connection', (socket)=>{
-    console.log('new connection ',socket.id);
+io.on("connection", (socket) => {
+    console.log("new connection ", socket.id);
 
     //La verificacion del codigo se va a llevar a cabo mediante ajax y segun la respiuesta ya lo mandamos con socket
-    socket.on('assistences:send',(data)=>{
+    socket.on("assistences:send", (data) => {
         console.log(data);
         socket.join(data.room);
-        io.sockets.in(data.room).emit('assistences:recive',data);
+        io.sockets.in(data.room).emit("assistences:recive", data);
     });
 
     /**
      * Comenzamos con la programacion del profesor
      */
-    socket.on('room:join',(room)=>{
+    socket.on("room:join", (room) => {
         socket.join(room.room);
-        console.log('new room ',room.room);
+        console.log("new room ", room.room);
     });
 });

@@ -46,7 +46,7 @@
             media="screen"
             href="../public/CSS/timerSheet.css"
         />
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
         <link rel="icon" href="../public/IMG/DeepTure.ico" />
         <link rel="shortcut icon" href="../public/IMG/DeepTure.ico" />
         <meta charset="utf-8" />
@@ -115,12 +115,12 @@
                             />
                         </aside>
 
-                        <input
+                        <!--<input
                             class="smallInput centerText"
                             type="text"
                             name="search"
                             placeholder="Buscar"
-                        />
+                        />-->
                     </article>
 
                     <br />
@@ -344,9 +344,7 @@
                             <br />
                             <section id="GrpElement"></section>
                         </section>
-                        <br />
                     </aside>
-                    <br />
                     <input
                         class="buttonInput addLeftMarginAlt blue"
                         id="addUser"
@@ -357,35 +355,39 @@
 
                     <br /><br />
 
-                    <input
-                        class="
-                            buttonInput
-                            addLeftMarginAlt
-                            tallInput
-                            dashedBorder
-                            green
-                        "
-                        type="button"
-                        name="fastRegister"
-                        value="Subir archivo CSV"
-                    />
-
+                    <p class="titleFont centerText addTopMarginAlt">
+                        Subir archivo CSV
+                    </p>
+                    <br />
                     <!--Codigo de la caja-->
-                    <form action="/uploadFiles" class="dropzone" id="dropzone">
-                        <div class="fallback">
-                            <input
-                                type="file"
-                                name="file"
-                                multiple
-                                id="files"
-                            />
-                        </div>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <input
+                            type="file"
+                            name="file"
+                            id="fileCSV"
+                            accept=".csv"
+                            class="addLeftMarginAlt submit"
+                        />
+                        <br /><br />
+                        <input
+                            class="
+                                buttonInput
+                                addLeftMarginAlt
+                                tallInput
+                                dashedBorder
+                                green
+                            "
+                            type="submit"
+                            id="fastRegister"
+                            value="Subir archivo CSV"
+                        />
                     </form>
-                    <script>
+                    <br /><br />
+                    <!---<script>
                         let dropzone = new Dropzone("#files", {
                             url: "/uloadFiles",
                         });
-                    </script>
+                    </script>-->
                 </section>
             </section>
         </div>

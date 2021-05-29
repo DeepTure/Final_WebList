@@ -2,6 +2,9 @@ const model = {};
 const db = require("../database/connection");
 const crypto = require("crypto");
 const validar = require("./validacion");
+const csv = require("csv-parser");
+const fs = require("fs");
+const fsConstants = require("fs");
 
 const materiasCode = [
     { code: "MAP", id: "P606" },
@@ -40,6 +43,110 @@ const wordsForUse = [
     "n",
     "m",
 ];
+
+//añadir usuarios por csv
+model.addUsersByCSV = async (req, res) => {
+    try {
+        let { cicloE } = req.body;
+        let usersP = [];
+        let usersA = [];
+        let data = await readCSV(req.file.path);
+        let lastIDAl = await idGeneratorStandard("AL");
+        let idCounterAl = 0;
+        let lastIDPr = await idGeneratorStandard("PR");
+        let idCounterPr = 0;
+        data.forEach((dat) => {
+            let chunk = {};
+            chunk.nombre = dat.nombre;
+            chunk.app = dat.app;
+            chunk.apm = dat.apm;
+            chunk.cicloE = cicloE;
+            chunk.correo = "correo@gmail.com";
+            if (dat.tipo_usuario == "alumno") {
+                let index = -1;
+                usersA.forEach((user, i) => {
+                    if (user.boleta == dat.id) {
+                        index = i;
+                        return;
+                    }
+                });
+                if (index == -1) {
+                    chunk.grupos = [{ id_grupo: dat.grupo }];
+                    chunk.boleta = dat.id;
+                    chunk.id_usuario = idGeneratorStandardAscendant(
+                        "AL",
+                        lastIDAl,
+                        idCounterAl
+                    );
+                    idCounterAl++;
+                    chunk.contrasena = dat.id;
+                    usersA.push(chunk);
+                } else {
+                    usersA[index].grupos.push({ id_grupo: dat.grupo });
+                }
+            } else if (dat.tipo_usuario == "profesor") {
+                let index = -1;
+                usersP.forEach((user, i) => {
+                    if (user.id_empleado == dat.id) {
+                        index = i;
+                        return;
+                    }
+                });
+                if (index == -1) {
+                    chunk.materiasID = [
+                        { materiaCode: dat.materia, id_grupo: dat.grupo },
+                    ];
+                    chunk.id_empleado = dat.id;
+                    chunk.id_usuario = idGeneratorStandardAscendant(
+                        "PR",
+                        lastIDPr,
+                        idCounterPr
+                    );
+                    idCounterPr++;
+                    chunk.contrasena = dat.id;
+                    usersP.push(chunk);
+                } else {
+                    usersP[index].materiasID.push({
+                        materiaCode: dat.materia,
+                        id_grupo: dat.grupo,
+                    });
+                }
+            }
+        });
+        let chunkAl = null;
+        let chunkPr = null;
+        if (usersA.length > 0) {
+            chunkAl = QueryGeneratorChunkAddStudent(usersA);
+        }
+        if (usersP.length > 0) {
+            chunkPr = QueryGeneratorChunkAddProfesor(usersP);
+        }
+        let finalQueryChunk =
+            (chunkAl === null ? "" : chunkAl.query) +
+            (chunkPr === null ? "" : chunkPr.query);
+        let finalQueryDataChunk = [].concat(
+            chunkAl === null ? [] : chunkAl.queryData,
+            chunkPr === null ? [] : chunkPr.queryData
+        );
+        if (finalQueryChunk != "" && finalQueryDataChunk.length != 0) {
+            db.query(
+                finalQueryChunk,
+                finalQueryDataChunk,
+                async (err, rows) => {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).send("ERROR");
+                    }
+                    await quitFiles(req.file.path);
+                    return res.send(JSON.stringify(rows));
+                }
+            );
+        }
+    } catch (ex) {
+        console.log(ex);
+        return res.status(500).send("ERROR");
+    }
+};
 
 //ir a modificar profesor y preparacion previa
 model.goToModify = async (req, res) => {
@@ -782,6 +889,25 @@ model.upGroup = (req, res) => {
     }
 };
 
+//leer un archivo csv
+function readCSV(path) {
+    return new Promise((resolve, reject) => {
+        let data = [];
+        fs.createReadStream(path)
+            .pipe(csv())
+            .on("data", (row) => {
+                data.push(row);
+            })
+            .on("end", () => {
+                resolve(data);
+            })
+            .on("error", (ex) => {
+                console.log(ex);
+                reject(ex);
+            });
+    });
+}
+
 //Obtener un profesor por id
 function getProfesorById(id_empleado, cicloE) {
     return new Promise((resolve, reject) => {
@@ -1035,6 +1161,76 @@ function checkUpGroup(cicloE, id_grupo) {
     });
 }
 
+function quitFiles(path) {
+    return new Promise((resolve, reject) => {
+        fsConstants.access(path, fsConstants.constants.F_OK, (err) => {
+            if (err) {
+                reject(err);
+            }
+            fs.unlink(path, (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            });
+        });
+    });
+}
+
+//genera la query para insertar datos de profesor de forma masiva
+function QueryGeneratorChunkAddProfesor(data) {
+    let queryChunk = "";
+    let queryDataChunk = [];
+
+    data.forEach((dat) => {
+        let query = "";
+        let queryData = [];
+
+        //id_programa
+        dat.materiasID.forEach((materiaID) => {
+            materiaID.id_programa = idGeneratorProgram(
+                dat.cicloE + materiaID.id_grupo,
+                materiaID.materiaCode,
+                dat.id_empleado
+            );
+        });
+
+        //CUsuario
+        query += "INSERT INTO CUsuario SET ?;";
+        queryData.push({
+            id_usuario: dat.id_usuario,
+            nombre: dat.nombre,
+            app: dat.app,
+            apm: dat.apm,
+            email: dat.correo,
+            contrasena: dat.contrasena,
+        });
+
+        //EProfesor
+        query += "INSERT INTO EProfesor SET ?;";
+        queryData.push({
+            id_empleado: dat.id_empleado,
+            id_usuario: dat.id_usuario,
+        });
+
+        //MPrograma
+        dat.materiasID.forEach((materiaID) => {
+            query += "INSERT INTO MPrograma SET ?;";
+            queryData.push({
+                id_programa: materiaID.id_programa,
+                id_empleado: dat.id_empleado,
+                id_materia: materiaID.materiaCode,
+                id_generacion: dat.cicloE + materiaID.id_grupo,
+            });
+        });
+
+        queryChunk += query;
+        queryDataChunk = [].concat(queryDataChunk, queryData);
+    });
+
+    return { query: queryChunk, queryData: queryDataChunk };
+}
+
 //genera la query para insertar los datos del profesor
 function QueryGeneratorAddProfesor(data) {
     let {
@@ -1080,6 +1276,54 @@ function QueryGeneratorAddProfesor(data) {
     });
 
     return { query: query, queryData: queryData };
+}
+
+//genera la query para insertar datos de alumnos de forma masiva
+function QueryGeneratorChunkAddStudent(data) {
+    let queryChunk = "";
+    let queryDataChunk = [];
+
+    data.forEach((dat) => {
+        let query = "";
+        let queryData = [];
+
+        //id_inscripcion
+        dat.grupos.forEach((grupo) => {
+            grupo.id_inscripcion = idGeneratorInscripcion(
+                dat.cicloE + grupo.id_grupo,
+                dat.boleta
+            );
+        });
+
+        //CUsuario
+        query += "INSERT INTO CUsuario SET ?;";
+        queryData.push({
+            id_usuario: dat.id_usuario,
+            nombre: dat.nombre,
+            app: dat.app,
+            apm: dat.apm,
+            email: dat.correo,
+            contrasena: dat.contrasena,
+        });
+
+        //EAlumno
+        query += "INSERT INTO EAlumno SET ?;";
+        queryData.push({ boleta: dat.boleta, id_usuario: dat.id_usuario });
+
+        //MInscripcion
+        dat.grupos.forEach((grupo) => {
+            query += "INSERT INTO MInscripcion SET ?;";
+            queryData.push({
+                id_inscripcion: grupo.id_inscripcion,
+                boleta: dat.boleta,
+                id_generacion: dat.cicloE + grupo.id_grupo,
+            });
+        });
+
+        queryChunk += query;
+        queryDataChunk = [].concat(queryDataChunk, queryData);
+    });
+    return { query: queryChunk, queryData: queryDataChunk };
 }
 
 //genera la query para insertar los datos del alumno
@@ -1325,6 +1569,24 @@ function idGeneratorStandardFun(userType, lastID) {
 
     let lastNumber = parseInt(lastID.slice(2, 6));
     lastNumber++;
+    let lastNumberString = String(lastNumber);
+    for (
+        let index = lastNumberString.length;
+        lastNumberString.length < 4;
+        index++
+    ) {
+        lastNumberString = "0" + lastNumberString;
+    }
+    id = id + lastNumberString;
+    return id;
+}
+
+//Generador de ids para usuarios
+function idGeneratorStandardAscendant(userType, lastID, upValue) {
+    let id = userType;
+
+    let lastNumber = parseInt(lastID.slice(2, 6));
+    lastNumber += upValue;
     let lastNumberString = String(lastNumber);
     for (
         let index = lastNumberString.length;

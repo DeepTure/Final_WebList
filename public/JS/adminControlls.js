@@ -266,6 +266,42 @@ $("#arol").on("change", () => {
     }
 });
 
+//control para csv
+$("#fastRegister").click((ev) => {
+    ev.preventDefault();
+    let formdata = new FormData();
+
+    if ($("#fileCSV").prop("files").length == 1) {
+        let file = $("#fileCSV").prop("files")[0];
+        formdata.append("table", file, "tablaUsuarios.csv");
+        formdata.append("cicloE", generateCicloEscolar());
+        $.ajax({
+            enctype: "multipart/form-data",
+            url: "/addUsersByCSV",
+            type: "POST",
+            data: formdata,
+            processData: false,
+            contentType: false,
+            success: (res) => {
+                toast(
+                    "Success",
+                    "Se han procesado a los usuarios correctamente"
+                );
+                updateTableProfessor();
+            },
+            error: (err) => {
+                console.log(err);
+                toast(
+                    "Advertencia",
+                    "A ocurrido un error inesperado, intentelo mas tarde"
+                );
+            },
+        });
+    } else {
+        toast("Advertencia", "Asegurese de haber subido sus archivos");
+    }
+});
+
 //promesa para obtener los grupos que ya se han dado de alta
 function getReadyGroups() {
     return new Promise((resolve, reject) => {
