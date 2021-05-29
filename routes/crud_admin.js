@@ -1,7 +1,29 @@
 const router = require("express").Router();
 
 const models = require("../models/crudUsers");
-const { route } = require("./main");
+
+const multer = require("multer");
+const path = require("path");
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, "../temp/"));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${req.user.id[1]}-${Date.now()}-${file.originalname}`);
+    },
+});
+var upload = multer({ storage: storage });
+
+router.post(
+    "/addUsersByCSV",
+    upload.single("table"),
+    async (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "administrador")
+            return next();
+        return res.status(404).send("ERROR");
+    },
+    models.addUsersByCSV
+);
 
 router.post(
     "/addProfesor",
