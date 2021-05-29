@@ -122,7 +122,6 @@ model.verifyCode = (req, res)=>{
                              * Una vez verificado que el codigo sea correcto nos va a mandar aquí
                              */
                             const valid = tokenActive(token);
-                            console.log(tokenData);
                             if(valid){
                                 db.query('SELECT id_Sala FROM esala WHERE id_programa=?',[token[0].id_programa],(err, idSala)=>{
                                     if(err)return res.json(err);
@@ -130,7 +129,7 @@ model.verifyCode = (req, res)=>{
                                         if(err)return res,json(err);
                                         db.query('SELECT nombre, app FROM cusuario WHERE id_usuario = ?',[idu[0].id_usuario],(err, userData)=>{
                                             if(err)return res.json(err);
-                                            return res.json({success:true, tokenData, many:false, sala:idSala[0].id_Sala, userData:userData[0]});
+                                            return res.json({success:true, tokenData, many:false, sala:idSala[0].id_Sala, userData:userData[0], creationTime:((new Date(token[0].creacion)).getTime())});
                                         });
                                     });
                                 });
@@ -143,6 +142,44 @@ model.verifyCode = (req, res)=>{
                     return res.json({success:false, many:true});
                 }
             });
+        });
+    });
+};
+
+model.sendWaiting = (req, res)=>{
+    const data = req.body;
+    console.log(data);
+    const timeCreation = new Date(parseInt(data.creacion));
+    const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+    db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta = ?',[data.boleta],(err,idi)=>{
+        if(err)return res.json(err);
+        console.log('timeCreation: '+timeCreation+' fecha: ',fecha, 'idi: ',idi[0].id_inscripcion);
+        db.query("UPDATE minasistencia SET esperando=true WHERE fecha=? AND id_inscripcion=?",[fecha, idi[0].id_inscripcion],(err, update)=>{
+            if(err)return res.json(err);
+            return res.send(update);
+        });
+    });
+}
+
+model.verifyCodeSent = (req,res)=>{
+    const data = req.body;
+    db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta=?',[data.boleta],(err, idi)=>{
+        if(err)return res.json(err);
+        db.query('SELECT id_inasistencia, id_programa FROM minasistencia WHERE id_inscripcion=? AND esperando=true',[idi[0].id_inscripcion],(err,idin)=>{
+            if(err)return res.json(err);
+            if(idin.length!=0){
+                //si tiene una espera buscamos la sala
+                db.query('SELECT id_sala FROM esala WHERE id_programa=?',[idin[0].id_programa],(err, room)=>{
+                    if(err)return res.json(err);
+                    if(room.length!=0){
+                        return res.send({room:room[0].id_sala, waiting:true});
+                    }else{
+                        return res.send({waiting:false});
+                    }
+                });
+            }else{
+                return res.send({waiting:false});
+            }
         });
     });
 };
@@ -165,7 +202,7 @@ function processProgramsForToken(ids){
 
 /**
  * 
- * @param {Recibe el registro de la bd etoken} token 
+ * @param {Object} token 
  * Se encarga de procesar las fechas para compararlas y saber si el token aun esta activo o ya caduó
  * Es importante resaltar que time y creacion son tipo date y duracion es INT
  */
@@ -177,7 +214,7 @@ function tokenActive(token){
     auxMinutes += parseInt(duracion);
     const caducidad = new Date(token[0].creacion);
     caducidad.setMinutes(auxMinutes);
-    return (time<=caducidad);
+    return (time<caducidad);
 }
 
 module.exports = model;

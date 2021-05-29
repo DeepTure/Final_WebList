@@ -438,16 +438,35 @@ io.on("connection", (socket) => {
 
     //La verificacion del codigo se va a llevar a cabo mediante ajax y segun la respiuesta ya lo mandamos con socket
     socket.on("assistences:send", (data) => {
+        console.log("Servidor recive asistencia");
         console.log(data);
-        socket.join(data.room);
-        io.sockets.in(data.room).emit("assistences:recive", data);
+        io.sockets.in(data.room).emit("assistence:recive", data);
+    });
+
+    socket.on("assistence:time", (room) => {
+        io.sockets.in(room).emit("assistence:getTime", room);
     });
 
     /**
-     * Comenzamos con la programacion del profesor
+     * Comenzamos con la programacion de peticiones que provienen del profesor
      */
     socket.on("room:join", (room) => {
         socket.join(room.room);
         console.log("new room ", room.room);
+    });
+
+    //recive la sala y el tiempo
+    socket.on("assistence:setTime", (data) => {
+        io.sockets
+            .in(data.room)
+            .emit("assistence:student:tokenTime", data.tokenTime);
+    });
+
+    socket.on("assistence:teacher:reject", (data) => {
+        io.sockets.in(data.room).emit("assistence:student:reject", data);
+    });
+
+    socket.on("assistence:teacher:accept", (data) => {
+        io.sockets.in(data.room).emit("assistence:student:accept", data);
     });
 });

@@ -1,5 +1,6 @@
 //variables de arranque
 getSubjects();
+verifyCodeSent();
 
 function getSubjects(){
     const id = $('#idStudent').val();
@@ -38,9 +39,13 @@ $('#registerAttendance').click(function(){
                 console.log(response)
                 if(response.success){
                     console.log(response.tokenData);
+                    sessionStorage.setItem('room',response.sala);
+                    joinRoomSocket(response.sala);
                     //ahora mandamos a llamar una funcion del student socket
                     sendMyAssistences(response.tokenData, response.sala, response.userData);
+                    sendAssistenceWaiting(boleta, response.creationTime);
                     $('#registerAttendance').hide();
+                    toast('Peticion enviada', 'No cierre esta ventana');
                 }else{
                     console.log(response);
                     if(response.many){
@@ -52,10 +57,46 @@ $('#registerAttendance').click(function(){
             },
             error:function(response){
                 console.log(response);
-                alert('Ah ocurrido un error inesperado');
+                alert('Ha ocurrido un error inesperado');
             }
         });
     }else{
         alert('codigo incorrecto');
     }
 });
+
+function sendAssistenceWaiting(boleta, creacion){
+    $.ajax({
+        url:'home/student/sendWaiting',
+        type:'post',
+        data:{boleta, creacion},
+        success:function(response){
+            console.log(response);
+              return true;
+        },
+        error:function(response){
+            console.log(response);
+        }
+    })
+}
+
+function verifyCodeSent(){
+    const boleta = $('#idStudent').val();
+    $.ajax({
+        url:'/home/student/verifyCodeSent',
+        type:'post',
+        data:{boleta},
+        success:function(response){
+            console.log(response);
+            if(response.waiting){
+                sessionStorage.setItem('room',response.room);
+                joinRoomSocket(response.room);
+                $('#registerAttendance').hide();
+                toast('Peticion pendiente', 'Debe esperar a su profesor');
+            }
+        },
+        error:function(response){
+            console.log(response);
+        }
+    });
+}

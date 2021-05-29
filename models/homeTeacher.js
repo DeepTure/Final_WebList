@@ -29,8 +29,8 @@ model.addToken = (req, res)=>{
         db.query('INSERT INTO esala VALUES(?,?)',[idSala, data.program],(err, responseS)=>{
             if(err)return res.json(err);
             const expire = timeToExpire(parseInt(data.duration), time);
-            putGenerationAbsent(data.generation, data.program, data.nowTime);
-            return res.json({responseT,responseS,code, room:idSala, expire});
+            putGenerationAbsent(data.generation, data.program, time);
+            return res.json({responseT,responseS,code, room:idSala, expire, idToken:token, program:data.program});
         });
     });
 };
@@ -47,22 +47,56 @@ model.verifyToken = (req, res)=>{
                 //Verificamos que el token aun esté activo
                 const isActive = tokenIsActive(coincidencias);
                 if(isActive){
-                    const minutesRemaining = timeToExpire(parseInt(coincidencias[0].duracion), coincidencias[0].creacion);
-                    console.log('Minutos: '+minutesRemaining.getMinutes()+':'+minutesRemaining.getSeconds());                    
-                    res.send({minutesRemaining});
+                    const minutesRemaining = timeToExpire(parseInt(coincidencias[0].duracion), coincidencias[0].creacion);          
+                    db.query('SELECT id_sala FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err,room)=>{
+                        if(err)return res.json(err);
+                        return res.send({minutesRemaining, idToken:coincidencias[0].id_token, room:room[0].id_sala, program:coincidencias[0].id_programa});
+                    });
                 }else{
                     //hay que eliminar el token y su sala
                     db.query('DELETE FROM etokenlista WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
                         if(err)return res.json(err);
                         db.query('DELETE FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
                             if(err)return res.json(err);
-                            res.send({isNotActive:true});
+                            return res.send({isNotActive:true});
                         }); 
                     });
                 }
             }else{
                 res.send({noToken:true, long:coincidencias.length});
             }
+        });
+    });
+};
+
+model.reject = (req,res)=>{
+    const data = req.body;
+    db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta=?',[data.boleta],(err,idi)=>{
+        if(err)return res.json(err);
+        db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+            if(err)return res.json(err);
+            const timeCreation = new Date(timeToken[0].creacion);
+            const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+            db.query("UPDATE minasistencia SET esperando=false WHERE fecha=? AND id_inscripcion=?",[fecha, idi[0].id_inscripcion],(err,updated)=>{
+                if(err)return res.json(err);
+                return res.send(updated);
+            });
+        });
+    });
+};
+
+model.accept = (req,res)=>{
+    const data = req.body;
+    db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta=?',[data.boleta],(err,idi)=>{
+        if(err)return res.json(err);
+        db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+            if(err)return res.json(err);
+            const timeCreation = new Date(timeToken[0].creacion);
+            const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+            db.query("DELETE FROM minasistencia WHERE fecha=? AND id_inscripcion=? AND id_programa=?",[fecha, idi[0].id_inscripcion, data.program],(err,deleted)=>{
+                if(err)return res.json(err);
+                return res.send(deleted);
+            });
         });
     });
 };
@@ -131,7 +165,7 @@ function tokenIsActive(token){
     const expiration = creation;
     expiration.setMinutes(minutes);
 
-    return (time <= expiration);
+    return (time < expiration);
 }
 
 /**
@@ -151,7 +185,7 @@ function timeToExpire(duration, creation){
         return new Date(missingTime);
     }else{
         //nunca debería retornar esto
-        console.log('ah caducado');
+        console.log('ha caducado');
         return new Date(0);
     }
 }
@@ -159,14 +193,15 @@ function timeToExpire(duration, creation){
 /**
  * Esta funcion le pone inasistencia a todos en un programa y geberacion
  * @param {String} generation id de la generacion a la que se va a poner inasistencia
- * @param {String} nowTime Es la fecha actual del registro
+ * @param {Date} nowTime Es la fecha actual del registro
  * @param {String} program Es el programa en el que se esta pasando asistencia
  */
 function putGenerationAbsent(generation, program, nowTime){
+    const stringTime = (nowTime.getFullYear()+'-'+nowTime.getMonth()+'-'+nowTime.getDate());
     //obtenemos todas las inscripciones de esta generacion
     db.query('SELECT * FROM minscripcion WHERE id_generacion = ?',[generation],(err,idi)=>{
         if(err)console.log(err);
-        const querys = processQuerysInasistenciaByInscripcion(idi, program, nowTime);
+        const querys = processQuerysInasistenciaByInscripcion(idi, program, stringTime);
         db.query(querys,(err,res)=>{
             if(err)console.log(err);
             console.log('todos con falta alv');
