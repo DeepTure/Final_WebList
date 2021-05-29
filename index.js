@@ -413,7 +413,6 @@ io.on('connection', (socket)=>{
     socket.on('assistences:send',(data)=>{
         console.log('Servidor recive asistencia');
         console.log(data);
-        socket.join(data.room);
         io.sockets.in(data.room).emit('assistence:recive',data);
     });
 
@@ -432,5 +431,13 @@ io.on('connection', (socket)=>{
     //recive la sala y el tiempo
     socket.on('assistence:setTime',(data)=>{
         io.sockets.in(data.room).emit('assistence:student:tokenTime',data.tokenTime);
+    });
+
+    socket.on('assistence:teacher:reject',(data)=>{
+        io.sockets.in(data.room).emit('assistence:student:reject',data);
+    });
+
+    socket.on('assistence:teacher:accept',(data)=>{
+        io.sockets.in(data.room).emit('assistence:student:accept',data);
     });
 });

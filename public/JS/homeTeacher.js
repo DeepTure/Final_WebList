@@ -42,8 +42,11 @@ $('#generateCode').click(function(){
             console.log(response);
             try{
                 if(response.responseT.protocol41==true && response.responseS.protocol41==true){
+                    sessionStorage.setItem('idToken',response.idToken);
                     showToken(response.code, (new Date(response.expire)));
                     joinRoomSocket(response.room);
+                    sessionStorage.setItem('room',response.room);
+                    sessionStorage.setItem('program',response.program);
                     toast('Codigo generado', 'No cierre esta ventana');
                     console.log('New Token');
                 }else{
@@ -149,6 +152,10 @@ function verifyTokenSaved(){
                     if((new Date(response.minutesRemaining)).getTime()<=0){
                         alert('Ha caducado');
                     }else{
+                        joinRoomSocket(response.room);
+                        sessionStorage.setItem('room',response.room);
+                        sessionStorage.setItem('idToken',response.idToken);
+                        sessionStorage.setItem('program',response.program);
                         showToken(code, (new Date(response.minutesRemaining)));
                     }
                 }else{
@@ -163,6 +170,53 @@ function verifyTokenSaved(){
         },
         error:function(response){
             console.log(response);
+        }
+    });
+}
+
+/**
+ * Rechaza la asistencia de un alumno
+ * @param {String} boleta boleta del usuario
+ */
+function reject(boleta){
+    const idToken = sessionStorage.getItem('idToken');
+    const room = sessionStorage.getItem('room');
+    $.ajax({
+        url:'/home/profesor/asistencia/reject',
+        type:'post',
+        data:{boleta, idToken},
+        success:function(response){
+            console.log(response);
+            if(!response.protocol41){
+                alert('No se pudo rechazar');
+            }else{
+                $('#'+boleta).hide(150);
+                $('#'+boleta).remove();
+                sendAssistencesReject(room, boleta);
+            }
+        },
+        error:function(response){
+            console.log(response);
+        }
+    });
+}
+
+function acceptAssistence(boleta){
+    const idToken = sessionStorage.getItem('idToken');
+    const program = sessionStorage.getItem('program')
+    const room = sessionStorage.getItem('room');
+    $.ajax({
+        url:'/home/profesor/asistencia/accept',
+        type:'post',
+        data:{boleta, idToken, program},
+        success:function(response){
+            console.log(response)
+            $('#'+boleta).hide(150);
+            $('#'+boleta).remove();
+            sendAssistencesAccept(room, boleta);
+        },
+        error:function(response){
+            console.log(response)
         }
     });
 }

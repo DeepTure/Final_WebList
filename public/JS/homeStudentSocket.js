@@ -5,6 +5,29 @@ socket.on('assistence:student:tokenTime',(tokenTime)=>{
     sessionStorage.setItem('tokenTime',tokenTime);
 });
 
+//Recibe la boleta y sala
+socket.on('assistence:student:reject',(data)=>{
+    console.log('peticion de rechazo');
+    const boleta = $('#idStudent').val();
+    if(data.boleta == boleta){
+        $('#registerAttendance').show();
+        popUp('Asistencia rechazada','Su profesor ha rechazado su asistencia','error');
+    }
+});
+
+socket.on('assistence:student:accept',(data)=>{
+    const boleta = $('#idStudent').val();
+    if(data.boleta==boleta){
+        $('#registerAttendance').show();
+        popUp('Asistencia aceptada','Su profesor ha aceptado su asistencia','success');
+    }
+});
+
+//nos unimos a la sala
+function joinRoomSocket(room){
+    socket.emit('room:join',{room});
+}
+
 /**
  * 
  * @param {object} tokenData es la data del token

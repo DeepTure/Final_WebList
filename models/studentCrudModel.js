@@ -163,8 +163,25 @@ model.sendWaiting = (req, res)=>{
 
 model.verifyCodeSent = (req,res)=>{
     const data = req.body;
-    //falta iniciar esta funcion
-    //cada vez que el usuario entre debemos verificar si tiene un codigo en espera
+    db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta=?',[data.boleta],(err, idi)=>{
+        if(err)return res.json(err);
+        db.query('SELECT id_inasistencia, id_programa FROM minasistencia WHERE id_inscripcion=? AND esperando=true',[idi[0].id_inscripcion],(err,idin)=>{
+            if(err)return res.json(err);
+            if(idin.length!=0){
+                //si tiene una espera buscamos la sala
+                db.query('SELECT id_sala FROM esala WHERE id_programa=?',[idin[0].id_programa],(err, room)=>{
+                    if(err)return res.json(err);
+                    if(room.length!=0){
+                        return res.send({room:room[0].id_sala, waiting:true});
+                    }else{
+                        return res.send({waiting:false});
+                    }
+                });
+            }else{
+                return res.send({waiting:false});
+            }
+        });
+    });
 };
 
 function processGenerationQuerysForprogram(ids){
