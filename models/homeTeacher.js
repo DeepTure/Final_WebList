@@ -29,7 +29,7 @@ model.addToken = (req, res)=>{
         db.query('INSERT INTO esala VALUES(?,?)',[idSala, data.program],(err, responseS)=>{
             if(err)return res.json(err);
             const expire = timeToExpire(parseInt(data.duration), time);
-            putGenerationAbsent(data.generation, data.program, data.nowTime);
+            putGenerationAbsent(data.generation, data.program, time);
             return res.json({responseT,responseS,code, room:idSala, expire});
         });
     });
@@ -159,14 +159,15 @@ function timeToExpire(duration, creation){
 /**
  * Esta funcion le pone inasistencia a todos en un programa y geberacion
  * @param {String} generation id de la generacion a la que se va a poner inasistencia
- * @param {String} nowTime Es la fecha actual del registro
+ * @param {Date} nowTime Es la fecha actual del registro
  * @param {String} program Es el programa en el que se esta pasando asistencia
  */
 function putGenerationAbsent(generation, program, nowTime){
+    const stringTime = (nowTime.getFullYear()+'-'+nowTime.getMonth()+'-'+nowTime.getDate());
     //obtenemos todas las inscripciones de esta generacion
     db.query('SELECT * FROM minscripcion WHERE id_generacion = ?',[generation],(err,idi)=>{
         if(err)console.log(err);
-        const querys = processQuerysInasistenciaByInscripcion(idi, program, nowTime);
+        const querys = processQuerysInasistenciaByInscripcion(idi, program, stringTime);
         db.query(querys,(err,res)=>{
             if(err)console.log(err);
             console.log('todos con falta alv');

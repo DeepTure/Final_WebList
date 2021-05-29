@@ -1,6 +1,7 @@
 const socket = io();
 
-socket.on('assistences:recive', (tokenData)=>{
+socket.on('assistence:recive', (tokenData)=>{
+    console.log('Asistencia recivida profesor');
     console.log('Recibe sistencia');
     console.log(tokenData);
     const table = document.getElementById('attendanceRegistration');

@@ -33,14 +33,11 @@ $('#generateCode').click(function(){
     const group = sessionStorage.getItem('group');
     const program = sessionStorage.getItem('program');
     const idEmpleado = $('#idTeacher').val();
-    const time = new Date();
-    const nowTime = (time.getFullYear()+'-'+time.getMonth()+'-'+time.getDate());
-    sessionStorage.setItem('nowTimeToken',nowTime);
     
     $.ajax({
         url:'/home/addToken',
         type:'post',
-        data:{duration, matter, generation, group, program, idEmpleado, nowTime},
+        data:{duration, matter, generation, group, program, idEmpleado},
         success:function(response){
             console.log(response);
             try{

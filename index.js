@@ -411,6 +411,7 @@ io.on('connection', (socket)=>{
     
     //La verificacion del codigo se va a llevar a cabo mediante ajax y segun la respiuesta ya lo mandamos con socket
     socket.on('assistences:send',(data)=>{
+        console.log('Servidor recive asistencia');
         console.log(data);
         socket.join(data.room);
         io.sockets.in(data.room).emit('assistence:recive',data);

@@ -40,7 +40,7 @@ $('#registerAttendance').click(function(){
                     console.log(response.tokenData);
                     //ahora mandamos a llamar una funcion del student socket
                     sendMyAssistences(response.tokenData, response.sala, response.userData);
-                    askTime(response.sala);
+                    sendAssistenceWaiting(boleta, response.creationTime);
                     $('#registerAttendance').hide();
                 }else{
                     console.log(response);
@@ -60,3 +60,32 @@ $('#registerAttendance').click(function(){
         alert('codigo incorrecto');
     }
 });
+
+function sendAssistenceWaiting(boleta, creacion){
+    $.ajax({
+        url:'home/student/sendWaiting',
+        type:'post',
+        data:{boleta, creacion},
+        success:function(response){
+            console.log(response);
+        },
+        error:function(response){
+            console.log(response);
+        }
+    })
+}
+
+function verifyCodeSent(){
+    const boleta = $('#idStudent').val();
+    $.ajax({
+        url:'/home/student/verifyCodeSent',
+        type:'post',
+        data:{boleta},
+        success:function(response){
+            console.log(response);
+        },
+        error:function(response){
+            console.log(response);
+        }
+    });
+}
