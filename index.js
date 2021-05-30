@@ -21,7 +21,6 @@ const flash = require("connect-flash");
 const jwt = require("jsonwebtoken");
 
 //routers
-const main = require("./routes/main");
 const login = require("./routes/logic.login");
 const perfil = require("./routes/profile");
 const historial = require("./routes/history");
@@ -370,7 +369,6 @@ app.use("/home/public", express.static("public"));
 app.use(Parser);
 
 //rutas
-app.use(main);
 app.use(login);
 app.use(perfil);
 app.use(historial);

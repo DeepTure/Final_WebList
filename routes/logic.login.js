@@ -44,4 +44,11 @@ router.get(
     }
 );
 
+router.get("/", (req, res) => {
+    let { error } = req.flash();
+    return res.render("login", {
+        err: error === undefined ? "" : error,
+    });
+});
+
 module.exports = router;
