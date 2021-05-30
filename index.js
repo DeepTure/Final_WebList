@@ -90,11 +90,11 @@ passport.use(
                                         message: "Hubo un fallo en el proceso",
                                     });
                                 }
-                                var ids = [
-                                    administrador[0].id_usuario,
-                                    administrador[0].id_administrador,
-                                ];
                                 if (administrador.length > 0) {
+                                    var ids = [
+                                        administrador[0].id_usuario,
+                                        administrador[0].id_administrador,
+                                    ];
                                     return done(null, {
                                         rol: "administrador",
                                         id: ids,
@@ -470,11 +470,11 @@ io.on("connection", (socket) => {
         io.sockets.in(data.room).emit("assistence:student:accept", data);
     });
 
-    socket.on('assistence:teacher:acceptAll',(data)=>{
-        io.sockets.in(data.room).emit('assistence:student:acceptAll',data);
+    socket.on("assistence:teacher:acceptAll", (data) => {
+        io.sockets.in(data.room).emit("assistence:student:acceptAll", data);
     });
 
-    socket.on('assistence:teacher:rejectAll',(data)=>{
-        io.sockets.in(data.room).emit('assistence:student:rejectAll',data);
+    socket.on("assistence:teacher:rejectAll", (data) => {
+        io.sockets.in(data.room).emit("assistence:student:rejectAll", data);
     });
 });
