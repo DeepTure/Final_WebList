@@ -855,6 +855,21 @@ model.getAllRegGroups = (req, res) => {
     );
 };
 
+//obtener todos los grupos y ciclos escolares con un registro existente del profesor
+model.getProfessorRegGroups = (req, res) => {
+    db.query(
+        "SELECT DISTINCT id_grupo, cicloE FROM EGeneracion INNER JOIN MPrograma USING (id_generacion) WHERE (id_empleado = ?)",
+        [req.user.id[1]],
+        (err, rows) => {
+            if (err) {
+                console.log(err);
+                return res.send([]);
+            }
+            return res.send(rows);
+        }
+    );
+};
+
 //Dar de alta un grupo en dicho ciclo escolar
 model.upGroup = (req, res) => {
     try {

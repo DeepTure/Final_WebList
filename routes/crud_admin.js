@@ -78,7 +78,10 @@ router.post(
 router.post(
     "/getAbsences",
     (req, res, next) => {
-        if (req.isAuthenticated() && req.user.rol == "administrador")
+        if (
+            req.isAuthenticated() &&
+            (req.user.rol == "administrador" || req.user.rol == "profesor")
+        )
             return next();
         res.send(null);
     },
@@ -113,6 +116,15 @@ router.post(
         res.send(null);
     },
     models.getAllRegGroups
+);
+
+router.post(
+    "/getProfessorRegGroups",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "profesor") return next();
+        res.send(null);
+    },
+    models.getProfessorRegGroups
 );
 
 router.post(
