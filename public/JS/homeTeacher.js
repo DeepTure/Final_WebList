@@ -225,7 +225,7 @@ function acceptAssistence(boleta){
 
 function acceptAll(){
     const idToken = sessionStorage.getItem('idToken');
-    const program = sessionStorage.getItem('program')
+    const program = sessionStorage.getItem('program');
     const room = sessionStorage.getItem('room');
     $.ajax({
         url:'/home/profesor/asistencia/acceptAll',
@@ -242,11 +242,50 @@ function acceptAll(){
                     type="button"
                     name="acceptAll"
                     value="Aceptar todo"
+                    onclick="acceptAll()"
                 />
             </th>
         </tr>`;
             $('#attendanceRegistration').html(code);
             sendAssistencesAcceptAll(room,response.boletas);
+        },
+        error:function(response){
+            console.log(response);
+        }
+    })
+}
+
+function rejectAll(){
+    const idToken = sessionStorage.getItem('idToken');
+    const program = sessionStorage.getItem('program');
+    const room = sessionStorage.getItem('room');
+    //$('#attendanceRegistration').html(code);
+    $.ajax({
+        url:'/home/profesor/asistencia/rejectAll',
+        type:'post',
+        data:{idToken, program},
+        success:function(response){
+            console.log(response);
+            sendAssistencesRejectAll(room, response.boletas);
+        },
+        error:function(response){
+            console.log(response);
+        }
+    });
+}
+
+function deleteTokenSaved(){
+    const idToken = sessionStorage.getItem('idToken');
+    const program = sessionStorage.getItem('program');
+    $.ajax({
+        url:'/home/profesor/token/delete',
+        type:'post',
+        data:{idToken, program},
+        success:function(response){
+            console.log(response);
+            if(response.deletedS.affectedRows==1 && response.deletedT.affectedRows==1){
+                toast('Codigo caducado','su codigo ha caducado');
+            }
         },
         error:function(response){
             console.log(response);

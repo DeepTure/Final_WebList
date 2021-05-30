@@ -473,4 +473,8 @@ io.on("connection", (socket) => {
     socket.on('assistence:teacher:acceptAll',(data)=>{
         io.sockets.in(data.room).emit('assistence:student:acceptAll',data);
     });
+
+    socket.on('assistence:teacher:rejectAll',(data)=>{
+        io.sockets.in(data.room).emit('assistence:student:rejectAll',data);
+    });
 });

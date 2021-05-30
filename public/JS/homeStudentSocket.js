@@ -23,6 +23,17 @@ socket.on('assistence:student:accept',(data)=>{
     }
 });
 
+socket.on('assistence:student:rejectAll',(data)=>{
+    const boletaStudent = $('#idStudent').val();
+    const boletas = data.students;
+    boletas.forEach((boleta)=>{
+        if(boletaStudent==boleta.boleta){
+            $('#registerAttendance').show();
+            popUp('Asistencia rechazada','Su profesor ha rechazado su asistencia','error');
+        }
+    });
+});
+
 socket.on('assistence:student:acceptAll',(data)=>{
     const boletaStudent = $('#idStudent').val();
     const boletas = data.students;

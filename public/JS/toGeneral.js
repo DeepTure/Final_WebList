@@ -6,6 +6,16 @@ function popUp(titulo, relleno, icono) {
   });
 }
 
+
+function time(){
+  Swal.fire({
+    title:"Bienvenido",
+    text:"cinco segundos en lo que se cierra y mostramos el tiempo debajo",
+    timer: 5000,//ponemos un tiempo para que se cierre automaticamenyte
+    timerProgressBar:true//es para que se vea el tiempo
+  });
+}
+
 function toast(title, relleno){
   Swal.fire({
     title:title,

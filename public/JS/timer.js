@@ -15,8 +15,34 @@ function prepareTimer(missingTime){
     //si el tiempo es cero es porque ya termino
     if((tiempoFaltante.getMinutes() == 0) && (tiempoFaltante.getSeconds() == 0)){
         console.log("Ya chingastes");
-        verifyTokenSaved();
-        return true;
+        //popUpTimer('acepte todos los usuaris','Debe aceptar todos los usuarios antes de que se elimine el codigo','info',6000);
+        Swal.fire({
+            title: 'Tiempo terminado',
+            text:'Debe elegir si aceptar todas las solicitudes o rechazarlas',
+            icon:'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Rechazar todas',
+            confirmButtonColor:'#007bff',
+            cancelButtonColor:'#dc3545',
+            confirmButtonAriaLabel: 'Aceptar todas',
+            timer: 6000,//ponemos un tiempo para que se cierre automaticamenyte
+            timerProgressBar:true//es para que se vea el tiempo
+          }).then((willBe)=>{
+            console.log('willBe: ',willBe);
+            if(willBe.isDismissed){
+                rejectAll();
+            }else if(willBe.isConfirmed){
+                acceptAll();
+            }
+            deleteTokenSaved();
+            $('#showCode').hide();
+            $('#settingsCode').hide();
+            $('#subjects').hide();
+            $('#groups').show();
+            $('#generateCode').hide();
+            $('.groupsSection').show();
+          });
+          return true;
     }else{
         return false;
     }

@@ -121,6 +121,37 @@ model.acceptAll = (req, res)=>{
     });
 };
 
+model.rejectAll = (req, res)=>{
+    const data = req.body;
+    db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+        if(err)return res.json(err);
+        const timeCreation = new Date(timeToken[0].creacion);
+        const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+        db.query('SELECT id_inscripcion FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,students)=>{
+            if(err) return res.json(err)
+            const querys = getBoletasByInscripcion(students);
+            db.query(querys,(err, boletas)=>{
+                if(err)return res.json(err);
+                db.query("UPDATE minasistencia SET esperando=false WHERE fecha=? AND id_programa=?",[fecha, data.program],(err, updated)=>{
+                    if(err)return res.json(err);
+                    return res.send({updated, boletas});
+                });
+            });
+        });
+    });
+};
+
+model.deleteToken = (req, res)=>{
+    const data = req.body;
+    db.query('DELETE FROM etokenlista WHERE id_token=?',[data.idToken],(err, deletedT)=>{
+        if(err)return res.json(err);
+        db.query('DELETE FROM esala WHERE id_programa=?',[data.program],(err,deletedS)=>{
+            if(err)return res.json(err);
+            return res.send({deletedS, deletedT});
+        });
+    });
+};
+
 function getBoletasByInscripcion(ids){
     let querys = '';
     ids.forEach((id)=>{
@@ -184,7 +215,7 @@ function generateIdRoom(program, idEmpleado){
  * @returns {boolean} returna si el tiempo actual es menor al tiempo de caducidad
  */
 function tokenIsActive(token){
-    const time = new Date();
+    /*const time = new Date();
     const duration = token[0].duracion;
     const creation = new Date(token[0].creacion);
     
@@ -193,7 +224,12 @@ function tokenIsActive(token){
     const expiration = creation;
     expiration.setMinutes(minutes);
 
-    return (time < expiration);
+    return (time < expiration);*/
+    const time = new Date();
+    const duration = token[0].duracion;
+    const creation = new Date(token[0].creacion);
+    let difference = (creation.setMinutes(creation.getMinutes()+duration))-time.getTime();
+    return (difference>0);
 }
 
 /**
