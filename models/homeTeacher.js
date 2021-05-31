@@ -76,7 +76,7 @@ model.reject = (req,res)=>{
         db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
             if(err)return res.json(err);
             const timeCreation = new Date(timeToken[0].creacion);
-            const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+            const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
             db.query("UPDATE minasistencia SET esperando=false WHERE fecha=? AND id_inscripcion=?",[fecha, idi[0].id_inscripcion],(err,updated)=>{
                 if(err)return res.json(err);
                 return res.send(updated);
@@ -92,7 +92,7 @@ model.accept = (req,res)=>{
         db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
             if(err)return res.json(err);
             const timeCreation = new Date(timeToken[0].creacion);
-            const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+            const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
             db.query("DELETE FROM minasistencia WHERE fecha=? AND id_inscripcion=? AND id_programa=?",[fecha, idi[0].id_inscripcion, data.program],(err,deleted)=>{
                 if(err)return res.json(err);
                 return res.send(deleted);
@@ -106,7 +106,7 @@ model.acceptAll = (req, res)=>{
     db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
         if(err)return res.json(err);
         const timeCreation = new Date(timeToken[0].creacion);
-        const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+        const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
         db.query('SELECT id_inscripcion FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,students)=>{
             if(err) return res.json(err)
             const querys = getBoletasByInscripcion(students);
@@ -126,7 +126,7 @@ model.rejectAll = (req, res)=>{
     db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
         if(err)return res.json(err);
         const timeCreation = new Date(timeToken[0].creacion);
-        const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+        const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
         db.query('SELECT id_inscripcion FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,students)=>{
             if(err) return res.json(err)
             const querys = getBoletasByInscripcion(students);
@@ -151,6 +151,51 @@ model.deleteToken = (req, res)=>{
         });
     });
 };
+
+model.studentsWaiting = (req, res)=>{
+    const data = req.body;
+    db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+        if(err)return res.json(err);
+        const timeCreation = new Date(timeToken[0].creacion);
+        const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
+        db.query('SELECT id_inscripcion FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err, idi)=>{
+            if(err)return res.json(err);
+            if(idi.length!=0){
+                const querys = getBoletasByInscripcion(idi);
+                db.query(querys, (err, boletas)=>{
+                    if(err)return res.json(err);
+                    const querys = getStringQueryUseIdByBoletas(boletas);
+                    db.query(querys, (err, idu)=>{
+                        if(err)return res.json(err);
+                        const querys = getStringQueryNameByIdu(idu);
+                        db.query(querys, (err, names)=>{
+                            if(err)return res.json(err);
+                            res.send({names, boletas, waiting:true});
+                        });
+                    });
+                });
+            }else{
+                res.send({waiting:false});
+            }
+        });
+    });
+}
+
+function getStringQueryNameByIdu(ids){
+    let querys = '';
+    ids.forEach((id)=>{
+        querys += 'SELECT nombre, app FROM cusuario WHERE id_usuario="'+id.id_usuario+'";';
+    });
+    return querys;
+}
+
+function getStringQueryUseIdByBoletas(ids){
+    let querys = '';
+    ids.forEach((id)=>{
+        querys += 'SELECT id_usuario FROM ealumno WHERE boleta="'+id.boleta+'";';
+    });
+    return querys;
+}
 
 function getBoletasByInscripcion(ids){
     let querys = '';
@@ -261,7 +306,7 @@ function timeToExpire(duration, creation){
  * @param {String} program Es el programa en el que se esta pasando asistencia
  */
 function putGenerationAbsent(generation, program, nowTime){
-    const stringTime = (nowTime.getFullYear()+'-'+nowTime.getMonth()+'-'+nowTime.getDate());
+    const stringTime = (nowTime.getFullYear()+'-'+(nowTime.getMonth()+1)+'-'+nowTime.getDate());
     //obtenemos todas las inscripciones de esta generacion
     db.query('SELECT * FROM minscripcion WHERE id_generacion = ?',[generation],(err,idi)=>{
         if(err)console.log(err);

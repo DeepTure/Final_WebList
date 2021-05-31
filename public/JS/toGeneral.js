@@ -1,3 +1,9 @@
+/**
+ * muestra una ventana en toda la pantalla
+ * @param {String} titulo Titulo de la ventana
+ * @param {String} relleno Mensaje que se debe mostrar
+ * @param {String} icono warning, info, success, danger
+ */
 function popUp(titulo, relleno, icono) {
   Swal.fire({
     title: titulo,
@@ -16,6 +22,11 @@ function time(){
   });
 }
 
+/**
+ * Muestra una ventana pequeña
+ * @param {String} title Titulo de la ventana
+ * @param {String} relleno Mensaje que se debe mostrar
+ */
 function toast(title, relleno){
   Swal.fire({
     title:title,

@@ -9,5 +9,6 @@ router.post('/home/profesor/asistencia/accept',model.accept);
 router.post('/home/profesor/asistencia/acceptAll',model.acceptAll);
 router.post('/home/profesor/token/delete',model.deleteToken);
 router.post('/home/profesor/asistencia/rejectAll',model.rejectAll);
+router.post('/home/profesor/asistencia/studentsWaiting',model.studentsWaiting);
 
 module.exports = router;

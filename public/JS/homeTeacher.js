@@ -148,7 +148,7 @@ function verifyTokenSaved(){
                     }else{
                         code = 'Codigo activo';
                     }
-                    //comprobamos si ya caduco
+                    //comprobamos si ya caduco // esta condicion nunca se debería cumplir
                     if((new Date(response.minutesRemaining)).getTime()<=0){
                         alert('Ha caducado');
                         sessionStorage.setItem('tokenActive', 'false');
@@ -157,6 +157,7 @@ function verifyTokenSaved(){
                         sessionStorage.setItem('room',response.room);
                         sessionStorage.setItem('idToken',response.idToken);
                         sessionStorage.setItem('program',response.program);
+                        getStudentWaiting(response.idToken, response.program);
                         showToken(code, (new Date(response.minutesRemaining)));
                     }
                 }else{
@@ -167,7 +168,7 @@ function verifyTokenSaved(){
                 }
             }else{
                 sessionStorage.setItem('tokenActive', 'false');
-                alert('El token ah caducado');
+                popUp('Codigo caducado','Su codigo ha caducado','info');
             }
         },
         error:function(response){
@@ -259,7 +260,19 @@ function rejectAll(){
     const idToken = sessionStorage.getItem('idToken');
     const program = sessionStorage.getItem('program');
     const room = sessionStorage.getItem('room');
-    //$('#attendanceRegistration').html(code);
+    const code = `<tr class="title">
+            <th>boleta</th>
+            <th>Nombre</th>
+            <th>
+                <input
+                    class="buttonInput tinyButtonLW green"
+                    type="button"
+                    name="acceptAll"
+                    value="Aceptar todo"
+                    onclick="acceptAll()"
+                />
+            </th>
+        </tr>`;
     $.ajax({
         url:'/home/profesor/asistencia/rejectAll',
         type:'post',
@@ -267,6 +280,7 @@ function rejectAll(){
         success:function(response){
             console.log(response);
             sendAssistencesRejectAll(room, response.boletas);
+            $('#attendanceRegistration').html(code);
         },
         error:function(response){
             console.log(response);
@@ -291,4 +305,47 @@ function deleteTokenSaved(){
             console.log(response);
         }
     })
+}
+
+function getStudentWaiting(idToken, program){
+    $.ajax({
+        url:'/home/profesor/asistencia/studentsWaiting',
+        type:'post',
+        data:{idToken, program},
+        success:function(response){
+            console.log(response);
+            showStudents(response);
+        },
+        error:function(response){
+            console.log(response);
+        }
+    })
+}
+
+function showStudents(students){
+    const boletas = students.boletas;
+    const table = document.getElementById('attendanceRegistration');
+    boletas.forEach((boleta, i)=>{
+        let code = `<tr id="${boleta.boleta}"><td>`+(boleta.boleta)+`</td>
+        <td>${students.names[i].nombre} ${students.names[i].app}</td>
+        <td>
+            <article class="autoManageTogether">
+                <input
+                    class="buttonInput tinyButton blue"
+                    type="button"
+                    value="Aceptar"
+                    onclick="acceptAssistence(${boleta.boleta})"
+                />
+                <input
+                    class="buttonInput tinyButton red"
+                    type="button"
+                    name="decline"
+                    value="Rechazar"
+                    onclick="reject(${boleta.boleta})"
+                />
+            </article>
+        </td</tr>`;
+
+        table.insertAdjacentHTML('beforeend', code);
+    });
 }

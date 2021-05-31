@@ -20,6 +20,7 @@ socket.on('assistence:student:accept',(data)=>{
     if(data.boleta==boleta){
         $('#registerAttendance').show();
         popUp('Asistencia aceptada','Su profesor ha aceptado su asistencia','success');
+        $('#inputShowCode').val('');
     }
 });
 
@@ -41,6 +42,7 @@ socket.on('assistence:student:acceptAll',(data)=>{
         if(boletaStudent==boleta.boleta){
             $('#registerAttendance').show();
             popUp('Asistencia aceptada','Su profesor ha aceptado su asistencia','success');
+            $('#inputShowCode').val('');
         }
     });
 })
