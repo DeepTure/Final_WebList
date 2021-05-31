@@ -150,7 +150,7 @@ model.sendWaiting = (req, res)=>{
     const data = req.body;
     console.log(data);
     const timeCreation = new Date(parseInt(data.creacion));
-    const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth())+'-'+timeCreation.getDate());
+    const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
     db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta = ?',[data.boleta],(err,idi)=>{
         if(err)return res.json(err);
         console.log('timeCreation: '+timeCreation+' fecha: ',fecha, 'idi: ',idi[0].id_inscripcion);
@@ -183,6 +183,26 @@ model.verifyCodeSent = (req,res)=>{
         });
     });
 };
+
+model.deleteAssistence = (req, res)=>{
+    const boleta = req.body.boleta;
+    db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta=?',[boleta],(err, idi)=>{
+        if(err)return res.json(err);
+        const querys = processInscriptionDeleteByBoleta(idi);
+        db.query(querys, (err, deleted)=>{
+            if(err)return res.json(err);
+            return res.send(deleted);
+        });
+    });
+}
+
+function processInscriptionDeleteByBoleta(ids){
+    let querys = '';
+    ids.forEach((id)=>{
+        querys += 'UPDATE minasistencia SET esperando=false WHERE id_inscripcion="'+id.id_inscripcion+'";';
+    });
+    return querys;
+}
 
 function processGenerationQuerysForprogram(ids){
     let querys = '';

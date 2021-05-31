@@ -20,6 +20,7 @@ socket.on('assistence:student:accept',(data)=>{
     if(data.boleta==boleta){
         $('#registerAttendance').show();
         popUp('Asistencia aceptada','Su profesor ha aceptado su asistencia','success');
+        $('#inputShowCode').val('');
     }
 });
 
@@ -41,9 +42,16 @@ socket.on('assistence:student:acceptAll',(data)=>{
         if(boletaStudent==boleta.boleta){
             $('#registerAttendance').show();
             popUp('Asistencia aceptada','Su profesor ha aceptado su asistencia','success');
+            $('#inputShowCode').val('');
         }
     });
 })
+
+socket.on('assistence:student:endCode', ()=>{
+    $('#registerAttendance').show();
+    popUp('Asistencia rechazada','Su profesor ha no aceptó su asistencia','error');
+    deleteWaitingThisStudent($('#idStudent').val());
+});
 
 //nos unimos a la sala
 function joinRoomSocket(room){

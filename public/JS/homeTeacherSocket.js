@@ -57,3 +57,7 @@ function sendAssistencesAcceptAll(room, students){
 function sendAssistencesRejectAll(room, students){
     socket.emit('assistence:teacher:rejectAll',{room, students});
 }
+
+function assistencesDeclined(room){
+    socket.emit('assistence:teacher:endCode',room);
+}

@@ -21,6 +21,7 @@ function prepareTimer(missingTime){
             text:'Debe elegir si aceptar todas las solicitudes o rechazarlas',
             icon:'warning',
             showCancelButton: true,
+            confirmButtonText:'Aceptar todas',
             cancelButtonText: 'Rechazar todas',
             confirmButtonColor:'#007bff',
             cancelButtonColor:'#dc3545',
