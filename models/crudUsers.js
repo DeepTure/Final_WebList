@@ -56,7 +56,6 @@ model.addUsersByCSV = async (req, res) => {
         let lastIDPr = await idGeneratorStandard("PR");
         let idCounterPr = 0;
 
-        const hash = crypto.createHash("sha256");
         data.forEach((dat) => {
             let chunk = {};
             chunk.nombre = dat.nombre;
@@ -81,6 +80,7 @@ model.addUsersByCSV = async (req, res) => {
                         idCounterAl
                     );
                     idCounterAl++;
+                    let hash = crypto.createHash("sha256");
                     hash.update(chunk.boleta);
                     var asegurado = hash.digest("hex");
                     chunk.contrasena = asegurado;
@@ -107,6 +107,7 @@ model.addUsersByCSV = async (req, res) => {
                         idCounterPr
                     );
                     idCounterPr++;
+                    let hash = crypto.createHash("sha256");
                     hash.update(chunk.id_empleado);
                     var asegurado = hash.digest("hex");
                     chunk.contrasena = asegurado;
