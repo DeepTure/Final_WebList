@@ -169,6 +169,7 @@ function verifyTokenSaved(){
             }else{
                 sessionStorage.setItem('tokenActive', 'false');
                 popUp('Codigo caducado','Su codigo ha caducado','info');
+                assistencesDeclined(response.room);
             }
         },
         error:function(response){

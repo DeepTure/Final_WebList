@@ -7,5 +7,6 @@ router.post('/home/student/getGroups', model.getGroups);
 router.post('/home/student/verifyCode', model.verifyCode);
 router.post('/home/student/sendWaiting',model.sendWaiting);
 router.post('/home/student/verifyCodeSent', model.verifyCodeSent);
+router.post('/home/student/assistence/delete',model.deleteAssistence);
 
 module.exports = router;

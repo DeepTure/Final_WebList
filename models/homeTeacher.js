@@ -54,12 +54,14 @@ model.verifyToken = (req, res)=>{
                     });
                 }else{
                     //hay que eliminar el token y su sala
-                    db.query('DELETE FROM etokenlista WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
-                        if(err)return res.json(err);
-                        db.query('DELETE FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
+                    db.query('SELECT id_sala FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err,room)=>{
+                        db.query('DELETE FROM etokenlista WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
                             if(err)return res.json(err);
-                            return res.send({isNotActive:true});
-                        }); 
+                            db.query('DELETE FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
+                                if(err)return res.json(err);
+                                return res.send({isNotActive:true, idToken:coincidencias[0].id_token, program:coincidencias[0].id_programa, room:room[0].id_sala});
+                            }); 
+                        });
                     });
                 }
             }else{
@@ -260,16 +262,6 @@ function generateIdRoom(program, idEmpleado){
  * @returns {boolean} returna si el tiempo actual es menor al tiempo de caducidad
  */
 function tokenIsActive(token){
-    /*const time = new Date();
-    const duration = token[0].duracion;
-    const creation = new Date(token[0].creacion);
-    
-    let minutes = creation.getMinutes();
-    minutes += duration;
-    const expiration = creation;
-    expiration.setMinutes(minutes);
-
-    return (time < expiration);*/
     const time = new Date();
     const duration = token[0].duracion;
     const creation = new Date(token[0].creacion);

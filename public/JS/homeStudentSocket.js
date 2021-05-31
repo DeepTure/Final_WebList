@@ -47,6 +47,12 @@ socket.on('assistence:student:acceptAll',(data)=>{
     });
 })
 
+socket.on('assistence:student:endCode', ()=>{
+    $('#registerAttendance').show();
+    popUp('Asistencia rechazada','Su profesor ha no aceptó su asistencia','error');
+    deleteWaitingThisStudent($('#idStudent').val());
+});
+
 //nos unimos a la sala
 function joinRoomSocket(room){
     socket.emit('room:join',{room});

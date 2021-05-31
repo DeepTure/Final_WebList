@@ -184,6 +184,26 @@ model.verifyCodeSent = (req,res)=>{
     });
 };
 
+model.deleteAssistence = (req, res)=>{
+    const boleta = req.body.boleta;
+    db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta=?',[boleta],(err, idi)=>{
+        if(err)return res.json(err);
+        const querys = processInscriptionDeleteByBoleta(idi);
+        db.query(querys, (err, deleted)=>{
+            if(err)return res.json(err);
+            return res.send(deleted);
+        });
+    });
+}
+
+function processInscriptionDeleteByBoleta(ids){
+    let querys = '';
+    ids.forEach((id)=>{
+        querys += 'UPDATE minasistencia SET esperando=false WHERE id_inscripcion="'+id.id_inscripcion+'";';
+    });
+    return querys;
+}
+
 function processGenerationQuerysForprogram(ids){
     let querys = '';
     ids.forEach((id)=>{

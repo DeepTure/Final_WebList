@@ -100,3 +100,17 @@ function verifyCodeSent(){
         }
     });
 }
+
+function deleteWaitingThisStudent(boleta){
+    $.ajax({
+        url:'/home/student/assistence/delete',
+        type:'post',
+        data:{boleta},
+        success:function(response){
+            console.log(response);
+        },
+        error:function(response){
+            console.log(response);
+        }
+    })
+}
