@@ -69,112 +69,121 @@ passport.use(
         },
         (req, username, password, done) => {
             console.log(req.body);
-
-            if (username.length != 0 && password.length != 0) {
-                if (validacion.idrol(username)) {
-                    const crypto = require("crypto");
-                    const hash = crypto.createHash("sha256");
-                    hash.update(password);
-                    var asegurado = hash.digest("hex");
-                    //Depende del tipo de usuario busca dentro de la tabla usuario correspondiente su id y de la tabla master usuarios para ubicar su contraseña para así poder dar el login
-                    //Una vez encontrado se guardan los ids para uso próximo por todo el sistema
-                    if (req.body.rol == "Administrador") {
-                        db.query(
-                            "select * from EAdministrador admin JOIN CUsuario user on admin.id_usuario = user.id_usuario where  (admin.id_administrador = ? and user.contrasena = ?);",
-                            [username, asegurado],
-                            (err, administrador) => {
-                                if (err) {
-                                    console.log(err);
-                                    return done(null, false, {
-                                        message: "Hubo un fallo en el proceso",
-                                    });
-                                }
-                                if (administrador.length > 0) {
+            try{
+                if(username.length != 0 && password.length != 0){
+                    if (validacion.idrol(username)) {
+                        
+                    
+                        const crypto = require("crypto");
+                        const hash = crypto.createHash("sha256");
+                        hash.update(password);
+                        var asegurado = hash.digest("hex");
+                        //Depende del tipo de usuario busca dentro de la tabla usuario correspondiente su id y de la tabla master usuarios para ubicar su contraseña para así poder dar el login
+                        //Una vez encontrado se guardan los ids para uso próximo por todo el sistema
+                        if (req.body.rol == "Administrador") {
+                            db.query(
+                                "select * from EAdministrador admin JOIN CUsuario user on admin.id_usuario = user.id_usuario where  (admin.id_administrador = ? and user.contrasena = ?);",
+                                [username, asegurado],
+                                (err, administrador) => {
+                                    
+                                    if (err || administrador.length == 0) {
+                                        console.log(err);
+                                        return done(null, false, {
+                                            message: "Hubo un fallo en el proceso",
+                                        });
+                                    }
                                     var ids = [
                                         administrador[0].id_usuario,
                                         administrador[0].id_administrador,
                                     ];
-                                    return done(null, {
-                                        rol: "administrador",
-                                        id: ids,
-                                    });
-                                } else {
-                                    return done(null, false, {
-                                        message:
-                                            "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
-                                    });
+                                    if (administrador.length > 0) {
+                                        return done(null, {
+                                            rol: "administrador",
+                                            id: ids,
+                                        });
+                                    } else {
+                                        return done(null, false, {
+                                            message:
+                                                "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
+                                        });
+                                    }
                                 }
-                            }
-                        );
-                    } else if (req.body.rol == "Profesor") {
-                        db.query(
-                            "select * from EProfesor profe JOIN CUsuario user on profe.id_usuario = user.id_usuario where  (profe.id_empleado = ? and user.contrasena = ?);",
-                            [username, asegurado],
-                            (err, profesor) => {
-                                if (err) {
-                                    console.log(err);
-                                    return done(null, false, {
-                                        message: "Hubo un fallo en el proceso",
-                                    });
+                            );
+                        } else if (req.body.rol == "Profesor") {
+                            db.query(
+                                "select * from EProfesor profe JOIN CUsuario user on profe.id_usuario = user.id_usuario where  (profe.id_empleado = ? and user.contrasena = ?);",
+                                [username, asegurado],
+                                (err, profesor) => {
+                                    if (err || profesor.length == 0) {
+                                        console.log(err);
+                                        return done(null, false, {
+                                            message: "Hubo un fallo en el proceso",
+                                        });
+                                    }
+                                    if (profesor.length > 0) {
+                                        var ids = [
+                                            profesor[0].id_usuario,
+                                            profesor[0].id_empleado,
+                                        ];
+                                        return done(null, {
+                                            rol: "profesor",
+                                            id: ids,
+                                        });
+                                    } else {
+                                        return done(null, false, {
+                                            message:
+                                                "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
+                                        });
+                                    }
                                 }
-                                if (profesor.length > 0) {
-                                    var ids = [
-                                        profesor[0].id_usuario,
-                                        profesor[0].id_empleado,
-                                    ];
-                                    return done(null, {
-                                        rol: "profesor",
-                                        id: ids,
-                                    });
-                                } else {
-                                    return done(null, false, {
-                                        message:
-                                            "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
-                                    });
+                            );
+                        } else if (req.body.rol == "Alumno") {
+                            db.query(
+                                "select * from EAlumno alumn JOIN CUsuario user on alumn.id_usuario = user.id_usuario where  (alumn.boleta = ? and user.contrasena = ?);",
+                                [username, asegurado],
+                                (err, alumno) => {
+                                    if (err || alumno.length == 0) {
+                                        console.log(err);
+                                        return done(null, false, {
+                                            message: "Hubo un fallo en el proceso",
+                                        });
+                                    }
+                                    if (alumno.length > 0) {
+                                        var ids = [
+                                            alumno[0].id_usuario, 
+                                            alumno[0].boleta,
+                                        ];
+                                        return done(null, {
+                                            rol: "alumno",
+                                            id: ids,
+                                        });
+                                    } else {
+                                        return done(null, false, {
+                                            message:
+                                                "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
+                                        });
+                                    }
                                 }
-                            }
-                        );
-                    } else if (req.body.rol == "Alumno") {
-                        db.query(
-                            "select * from EAlumno alumn JOIN CUsuario user on alumn.id_usuario = user.id_usuario where  (alumn.boleta = ? and user.contrasena = ?);",
-                            [username, asegurado],
-                            (err, alumno) => {
-                                if (err) {
-                                    console.log(err);
-                                    return done(null, false, {
-                                        message: "Hubo un fallo en el proceso",
-                                    });
-                                }
-                                if (alumno.length > 0) {
-                                    var ids = [
-                                        alumno[0].id_usuario,
-                                        alumno[0].boleta,
-                                    ];
-                                    return done(null, {
-                                        rol: "alumno",
-                                        id: ids,
-                                    });
-                                } else {
-                                    return done(null, false, {
-                                        message:
-                                            "Usuario y/o contraseña incorrectos, Intentelo nuevamente",
-                                    });
-                                }
-                            }
-                        );
-                    } else {
+                            );
+                        } else {
+                            return done(null, false, {
+                                message: "Debe de seleccionar un usuario",
+                            });
+                        }
+                    }else{
                         return done(null, false, {
-                            message: "Debe de seleccionar un usuario",
+                            message: "El id no tiene un formato correcto",
                         });
                     }
-                } else {
-                    return done(null, false, {
-                        message: "El id no tiene un formato correcto",
+                }else{
+                    return done(null, false,{
+                        message:"Debe de introducir datos",
                     });
                 }
-            } else {
-                return done(null, false, {
-                    message: "Debe de introducir datos",
+            }catch(ex){
+                console.log(ex)
+                return done(null, false,{
+                    message:"Debe de introducir datos",
                 });
             }
         }
