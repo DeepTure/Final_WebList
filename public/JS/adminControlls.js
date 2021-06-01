@@ -50,14 +50,14 @@ $("#addGrp").click((ev) => {
     if (groupsItems.length < readyGroups.length) {
         createGroupBox();
     } else {
-        alert("No se pueden añadir mas grupos");
+        toast("Advertencia", "No se pueden añadir mas grupos");
     }
 });
 
 //listener para elimnar caja para materia y grupo
 $("#quitMat").click((ev) => {
     if (subjectsItems.length <= 1) {
-        alert("No se pueden eliminar mas materias");
+        toast("Advertencia", "No se pueden eliminar mas materias");
     } else {
         $(`#${subjectsItems[subjectsItems.length - 1].section}`).remove();
         subjectsItems.pop();
@@ -67,7 +67,7 @@ $("#quitMat").click((ev) => {
 //listener para elimnar caja para grupo en inscriṕcion
 $("#quitGrp").click((ev) => {
     if (groupsItems.length <= 1) {
-        alert("No se pueden eliminar mas grupos");
+        toast("Advertencia", "No se pueden eliminar mas grupos");
     } else {
         $(`#${groupsItems[groupsItems.length - 1].section}`).remove();
         groupsItems.pop();
@@ -106,7 +106,10 @@ $("#addUser").click((ev) => {
                 });
 
                 if (!check) {
-                    alert("No repita materias con los mismos grupos");
+                    toast(
+                        "Advertencia",
+                        "No repita materias con los mismos grupos"
+                    );
                     return;
                 }
                 if (validar(dataToSend)) {
@@ -122,21 +125,25 @@ $("#addUser").click((ev) => {
                             cicloE: generateCicloEscolar(),
                         },
                         success: (res) => {
-                            alert(res);
+                            toast("Informacion", res);
                             updateTableProfessor();
                         },
                         error: (err) => {
                             console.log(err);
-                            alert("Algo a salido mal, intentelo mas tarde");
+                            toast(
+                                "Advertencia",
+                                "Algo a salido mal, intentelo mas tarde"
+                            );
                         },
                     });
                 } else {
-                    alert(
+                    toast(
+                        "Advertencia",
                         "Por favor revise que los campos sean correctos e intentelo de nuevo"
                     );
                 }
             } else {
-                alert("Aun no se han añadido materias");
+                toast("Advertencia", "Aun no se han añadido materias");
             }
         } else {
             if (groupsItems.length != 0) {
@@ -161,7 +168,7 @@ $("#addUser").click((ev) => {
                 });
 
                 if (!check) {
-                    alert("No repita los mismos grupos");
+                    toast("Advertencia", "No repita los mismos grupos");
                     return;
                 }
                 if (validar(dataToSend)) {
@@ -177,26 +184,33 @@ $("#addUser").click((ev) => {
                             cicloE: generateCicloEscolar(),
                         },
                         success: (res) => {
-                            alert(res);
+                            toast("Informacion", res);
                             updateTableStudent();
                         },
                         error: (err) => {
                             console.log(err);
-                            alert("Algo a salido mal, intentelo mas tarde");
+                            toast(
+                                "Advertencia",
+                                "Algo a salido mal, intentelo mas tarde"
+                            );
                         },
                     });
                 } else {
-                    alert(
+                    toast(
+                        "Advertencia",
                         "Por favor revise que los campos sean correctos e intentelo de nuevo"
                     );
                 }
             } else {
-                alert("Aun no se han añadido grupos");
+                toast("Advertencia", "Aun no se han añadido grupos");
             }
         }
     } catch (ex) {
         console.log(ex);
-        alert("A ocurrido un error inesperado, intentelo de nuevo mas tarde");
+        toast(
+            "Advertencia",
+            "A ocurrido un error inesperado, intentelo de nuevo mas tarde"
+        );
     }
 });
 
@@ -227,7 +241,7 @@ $("#upGroup").click((ev) => {
                 cicloE,
             },
             success: (res) => {
-                alert(res);
+                toast("Advertencia", res);
                 getGroups()
                     .then((data) => {
                         groups = data;
@@ -238,18 +252,23 @@ $("#upGroup").click((ev) => {
                 if (subjectsItems.length == 0) {
                     $("#MatElement").empty();
                     createSubjBox();
-                    createGroupBox();
                 } else {
                     updateSubjBox();
+                }
+                if (groupsItems.length == 0) {
+                    $("#MatElement").empty();
+                    createGroupBox();
+                } else {
+                    updateGroupBox();
                 }
             },
             error: (err) => {
                 console.log(err);
-                alert("Algo a salido mal, intentelo mas tarde");
+                toast("Advertencia", "Algo a salido mal, intentelo mas tarde");
             },
         });
     } else {
-        alert("Algo salio mal, intentelo mas tarde");
+        toast("Advertencia", "Algo salio mal, intentelo mas tarde");
     }
 });
 
@@ -262,7 +281,7 @@ $("#arol").on("change", () => {
         $("#otherDataProfesor").hide();
         $("#otherDataAlumno").show();
     } else {
-        alert("Algo salio mal, intentelo mas tarde");
+        toast("Advertencia", "Algo salio mal, intentelo mas tarde");
     }
 });
 
@@ -283,10 +302,7 @@ $("#fastRegister").click((ev) => {
             processData: false,
             contentType: false,
             success: (res) => {
-                toast(
-                    "Success",
-                    "Se han procesado a los usuarios correctamente"
-                );
+                toast("Listo", "Se han procesado a los usuarios correctamente");
                 updateTableProfessor();
             },
             error: (err) => {
@@ -463,7 +479,8 @@ async function updateSubjBox() {
         readyGroups = tempGroups;
     } catch (ex) {
         console.log(ex);
-        alert(
+        toast(
+            "Advertencia",
             "Ocurrio un error al actualizar, Porfavor recarge la pagina o intentelo mas tarde"
         );
     }
@@ -489,7 +506,8 @@ async function updateGroupBox() {
         readyGroups = tempGroups;
     } catch (ex) {
         console.log(ex);
-        alert(
+        toast(
+            "Advertencia",
             "Ocurrio un error al actualizar, Porfavor recarge la pagina o intentelo mas tarde"
         );
     }
@@ -787,7 +805,7 @@ function changeProfessorMode(id_empleado, cicloE) {
         getProfessor(id_empleado, cicloE)
             .then((data) => {
                 if (data.code == 3) {
-                    alert("Algo salio mal, intentelo mas tarde");
+                    toast("Advertencia", "Algo salio mal, intentelo mas tarde");
                 } else if (data.code == 4) {
                     let materiaGrupo = [];
                     data.msg.forEach((item) => {
@@ -829,38 +847,52 @@ function changeProfessorMode(id_empleado, cicloE) {
             })
             .catch((error) => {
                 console.log(error);
-                alert("Algo salio mal, intentelo mas tarde");
+                toast("Advertencia", "Algo salio mal, intentelo mas tarde");
             });
     } catch (ex) {
         console.log(ex);
-        alert("Algo salio mal, intentelo mas tarde");
+        toast("Advertencia", "Algo salio mal, intentelo mas tarde");
     }
 }
 
 //funcion para elimar profesor por id
 function deleteByIdProfessor(id_empleado) {
     try {
-        let ask = confirm("¿Estas seguro que deseas eliminar ese usuario?");
-        if (ask) {
-            $.ajax({
-                url: "/deleteProfessorById",
-                type: "POST",
-                data: {
-                    id_empleado,
-                },
-                success: (res) => {
-                    alert(res);
-                    updateTableProfessor();
-                },
-                error: (err) => {
-                    console.log(err);
-                    alert("Algo a salido mal, intentelo mas tarde");
-                },
-            });
-        }
+        Swal.fire({
+            title: "Confirmacion",
+            text: "Desea eliminar este usuario?",
+            showCancelButton: true,
+            confirmButtonColor: "#007bff",
+            cancelButtonColor: "#dc3545",
+            confirmButtonText: `Si`,
+            cancelButtonText: `No`,
+            confirmButtonAriaLabel: "Si",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/deleteProfessorById",
+                    type: "POST",
+                    data: {
+                        id_empleado,
+                    },
+                    success: (res) => {
+                        popUp(res, "", "info");
+                        updateTableProfessor();
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        toast(
+                            "Advertencia",
+                            "Algo a salido mal, intentelo mas tarde"
+                        );
+                    },
+                });
+            }
+        });
     } catch (ex) {
         console.log(ex);
-        alert(
+        toast(
+            "Advertencia",
             "Ocurrio un error inesperado, recarge la pagina o intentelo mas tarde"
         );
     }
@@ -878,18 +910,22 @@ function deleteByIdStudent(boleta) {
                     boleta,
                 },
                 success: (res) => {
-                    alert(res);
+                    toast("Advertencia", res);
                     updateTableStudent();
                 },
                 error: (err) => {
                     console.log(err);
-                    alert("Algo a salido mal, intentelo mas tarde");
+                    toast(
+                        "Advertencia",
+                        "Algo a salido mal, intentelo mas tarde"
+                    );
                 },
             });
         }
     } catch (ex) {
         console.log(ex);
-        alert(
+        toast(
+            "Advertencia",
             "Ocurrio un error inesperado, recarge la pagina o intentelo mas tarde"
         );
     }
@@ -940,7 +976,10 @@ function validar(data) {
                 });
             }
         } else {
-            alert("Error: A ocurrido un error inesperado. Intentelo mas tarde");
+            toast(
+                "Advertencia",
+                "Error: A ocurrido un error inesperado. Intentelo mas tarde"
+            );
             return false;
         }
         if (
