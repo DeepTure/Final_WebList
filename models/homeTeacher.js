@@ -23,7 +23,7 @@ model.addToken = (req, res)=>{
     const time = new Date();
     const code = generateCode(6);
     const token = jwt.sign({ idPrograma:data.program}, code);
-    db.query("INSERT INTO ETokenlista VALUES(?,?,?,?)",[token, processDuration(data.duration), time, data.program], (err, responseT)=>{
+    db.query("INSERT INTO ETokenLista VALUES(?,?,?,?)",[token, processDuration(data.duration), time, data.program], (err, responseT)=>{
         if(err)return res.json(err);
         const idSala = generateIdRoom(data.program, data.idEmpleado);
         db.query('INSERT INTO ESala VALUES(?,?)',[idSala, data.program],(err, responseS)=>{
@@ -55,7 +55,7 @@ model.verifyToken = (req, res)=>{
                 }else{
                     //hay que eliminar el token y su sala
                     db.query('SELECT id_sala FROM ESala WHERE id_programa=?',[coincidencias[0].id_programa],(err,room)=>{
-                        db.query('DELETE FROM ETokenlista WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
+                        db.query('DELETE FROM ETokenLista WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
                             if(err)return res.json(err);
                             db.query('DELETE FROM ESala WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
                                 if(err)return res.json(err);
@@ -75,7 +75,7 @@ model.reject = (req,res)=>{
     const data = req.body;
     db.query('SELECT id_inscripcion FROM MInscripcion WHERE boleta=?',[data.boleta],(err,idi)=>{
         if(err)return res.json(err);
-        db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+        db.query('SELECT creacion FROM ETokenLista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
             if(err)return res.json(err);
             const timeCreation = new Date(timeToken[0].creacion);
             const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
@@ -91,7 +91,7 @@ model.accept = (req,res)=>{
     const data = req.body;
     db.query('SELECT id_inscripcion FROM MInscripcion WHERE boleta=?',[data.boleta],(err,idi)=>{
         if(err)return res.json(err);
-        db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+        db.query('SELECT creacion FROM ETokenLista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
             if(err)return res.json(err);
             const timeCreation = new Date(timeToken[0].creacion);
             const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
@@ -105,7 +105,7 @@ model.accept = (req,res)=>{
 
 model.acceptAll = (req, res)=>{
     const data = req.body;
-    db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+    db.query('SELECT creacion FROM ETokenLista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
         if(err)return res.json(err);
         const timeCreation = new Date(timeToken[0].creacion);
         const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
@@ -125,7 +125,7 @@ model.acceptAll = (req, res)=>{
 
 model.rejectAll = (req, res)=>{
     const data = req.body;
-    db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+    db.query('SELECT creacion FROM ETokenLista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
         if(err)return res.json(err);
         const timeCreation = new Date(timeToken[0].creacion);
         const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
@@ -145,7 +145,7 @@ model.rejectAll = (req, res)=>{
 
 model.deleteToken = (req, res)=>{
     const data = req.body;
-    db.query('DELETE FROM ETokenlista WHERE id_token=?',[data.idToken],(err, deletedT)=>{
+    db.query('DELETE FROM ETokenLista WHERE id_token=?',[data.idToken],(err, deletedT)=>{
         if(err)return res.json(err);
         db.query('DELETE FROM ESala WHERE id_programa=?',[data.program],(err,deletedS)=>{
             if(err)return res.json(err);
@@ -156,7 +156,7 @@ model.deleteToken = (req, res)=>{
 
 model.studentsWaiting = (req, res)=>{
     const data = req.body;
-    db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+    db.query('SELECT creacion FROM ETokenLista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
         if(err)return res.json(err);
         const timeCreation = new Date(timeToken[0].creacion);
         const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
@@ -225,7 +225,7 @@ function getSyringGroupsByPrograms(programas){
 function getStringQueryTokensByPrograms(programas){
     let querys = '';
     programas.forEach((programa)=>{
-        let aux = 'SELECT * FROM ETokenlista WHERE id_programa = "'+programa.id_programa+'";';
+        let aux = 'SELECT * FROM ETokenLista WHERE id_programa = "'+programa.id_programa+'";';
         querys += aux;
     });
     return querys;

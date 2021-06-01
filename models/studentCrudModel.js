@@ -215,7 +215,7 @@ function processGenerationQuerysForprogram(ids){
 function processProgramsForToken(ids){
     let querys = '';
     ids.forEach((id)=>{
-        querys += 'SELECT * FROM ETokenlista WHERE id_programa="'+id.id_programa+'";';
+        querys += 'SELECT * FROM ETokenLista WHERE id_programa="'+id.id_programa+'";';
     });
     return querys;
 }
