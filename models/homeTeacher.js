@@ -7,7 +7,7 @@ const db = require("../database/connection");
 model.getGroups = (req, res)=>{
     const data = req.body;
     //obtenemos los programas de los profes y sus materias en cada generacion
-    db.query('SELECT mprograma.*, cmateria.materia, cmateria.area FROM mprograma INNER JOIN cmateria ON cmateria.id_materia=mprograma.id_materia WHERE mprograma.id_empleado=?',[data.id],(err, programas)=>{
+    db.query('SELECT MPrograma.*, CMateria.materia, CMateria.area FROM MPrograma INNER JOIN CMateria ON CMateria.id_materia=MPrograma.id_materia WHERE MPrograma.id_empleado=?',[data.id],(err, programas)=>{
         if(err) return res.json(err);
         let querys = getSyringGroupsByPrograms(programas);
         db.query(querys,(err, grupos)=>{
@@ -23,10 +23,10 @@ model.addToken = (req, res)=>{
     const time = new Date();
     const code = generateCode(6);
     const token = jwt.sign({ idPrograma:data.program}, code);
-    db.query("INSERT INTO etokenlista VALUES(?,?,?,?)",[token, processDuration(data.duration), time, data.program], (err, responseT)=>{
+    db.query("INSERT INTO ETokenlista VALUES(?,?,?,?)",[token, processDuration(data.duration), time, data.program], (err, responseT)=>{
         if(err)return res.json(err);
         const idSala = generateIdRoom(data.program, data.idEmpleado);
-        db.query('INSERT INTO esala VALUES(?,?)',[idSala, data.program],(err, responseS)=>{
+        db.query('INSERT INTO ESala VALUES(?,?)',[idSala, data.program],(err, responseS)=>{
             if(err)return res.json(err);
             const expire = timeToExpire(parseInt(data.duration), time);
             putGenerationAbsent(data.generation, data.program, time);
@@ -37,7 +37,7 @@ model.addToken = (req, res)=>{
 
 model.verifyToken = (req, res)=>{
     const data = req.body;
-    db.query('SELECT id_programa FROM mprograma WHERE id_empleado = ?', [data.id], (err, programas)=>{
+    db.query('SELECT id_programa FROM MPrograma WHERE id_empleado = ?', [data.id], (err, programas)=>{
         if(err)return res.json(err)
         const querys = getStringQueryTokensByPrograms(programas);
         //las coincidencias son los registros donde haya un token
@@ -48,16 +48,16 @@ model.verifyToken = (req, res)=>{
                 const isActive = tokenIsActive(coincidencias);
                 if(isActive){
                     const minutesRemaining = timeToExpire(parseInt(coincidencias[0].duracion), coincidencias[0].creacion);          
-                    db.query('SELECT id_sala FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err,room)=>{
+                    db.query('SELECT id_sala FROM ESala WHERE id_programa=?',[coincidencias[0].id_programa],(err,room)=>{
                         if(err)return res.json(err);
                         return res.send({minutesRemaining, idToken:coincidencias[0].id_token, room:room[0].id_sala, program:coincidencias[0].id_programa});
                     });
                 }else{
                     //hay que eliminar el token y su sala
-                    db.query('SELECT id_sala FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err,room)=>{
-                        db.query('DELETE FROM etokenlista WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
+                    db.query('SELECT id_sala FROM ESala WHERE id_programa=?',[coincidencias[0].id_programa],(err,room)=>{
+                        db.query('DELETE FROM ETokenlista WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
                             if(err)return res.json(err);
-                            db.query('DELETE FROM esala WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
+                            db.query('DELETE FROM ESala WHERE id_programa=?',[coincidencias[0].id_programa],(err, response)=>{
                                 if(err)return res.json(err);
                                 return res.send({isNotActive:true, idToken:coincidencias[0].id_token, program:coincidencias[0].id_programa, room:room[0].id_sala});
                             }); 
@@ -73,13 +73,13 @@ model.verifyToken = (req, res)=>{
 
 model.reject = (req,res)=>{
     const data = req.body;
-    db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta=?',[data.boleta],(err,idi)=>{
+    db.query('SELECT id_inscripcion FROM MInscripcion WHERE boleta=?',[data.boleta],(err,idi)=>{
         if(err)return res.json(err);
-        db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+        db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
             if(err)return res.json(err);
             const timeCreation = new Date(timeToken[0].creacion);
             const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
-            db.query("UPDATE minasistencia SET esperando=false WHERE fecha=? AND id_inscripcion=?",[fecha, idi[0].id_inscripcion],(err,updated)=>{
+            db.query("UPDATE MInasistencia SET esperando=false WHERE fecha=? AND id_inscripcion=?",[fecha, idi[0].id_inscripcion],(err,updated)=>{
                 if(err)return res.json(err);
                 return res.send(updated);
             });
@@ -89,13 +89,13 @@ model.reject = (req,res)=>{
 
 model.accept = (req,res)=>{
     const data = req.body;
-    db.query('SELECT id_inscripcion FROM minscripcion WHERE boleta=?',[data.boleta],(err,idi)=>{
+    db.query('SELECT id_inscripcion FROM MInscripcion WHERE boleta=?',[data.boleta],(err,idi)=>{
         if(err)return res.json(err);
-        db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+        db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
             if(err)return res.json(err);
             const timeCreation = new Date(timeToken[0].creacion);
             const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
-            db.query("DELETE FROM minasistencia WHERE fecha=? AND id_inscripcion=? AND id_programa=?",[fecha, idi[0].id_inscripcion, data.program],(err,deleted)=>{
+            db.query("DELETE FROM MInasistencia WHERE fecha=? AND id_inscripcion=? AND id_programa=?",[fecha, idi[0].id_inscripcion, data.program],(err,deleted)=>{
                 if(err)return res.json(err);
                 return res.send(deleted);
             });
@@ -105,16 +105,16 @@ model.accept = (req,res)=>{
 
 model.acceptAll = (req, res)=>{
     const data = req.body;
-    db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+    db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
         if(err)return res.json(err);
         const timeCreation = new Date(timeToken[0].creacion);
         const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
-        db.query('SELECT id_inscripcion FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,students)=>{
+        db.query('SELECT id_inscripcion FROM MInasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,students)=>{
             if(err) return res.json(err)
             const querys = getBoletasByInscripcion(students);
             db.query(querys,(err, boletas)=>{
                 if(err)return res.json(err);
-                db.query('DELETE FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,deleted)=>{
+                db.query('DELETE FROM MInasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,deleted)=>{
                     if(err)return res.json(err);
                     return res.send({deleted, boletas});
                 });
@@ -125,16 +125,16 @@ model.acceptAll = (req, res)=>{
 
 model.rejectAll = (req, res)=>{
     const data = req.body;
-    db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+    db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
         if(err)return res.json(err);
         const timeCreation = new Date(timeToken[0].creacion);
         const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
-        db.query('SELECT id_inscripcion FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,students)=>{
+        db.query('SELECT id_inscripcion FROM MInasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err,students)=>{
             if(err) return res.json(err)
             const querys = getBoletasByInscripcion(students);
             db.query(querys,(err, boletas)=>{
                 if(err)return res.json(err);
-                db.query("UPDATE minasistencia SET esperando=false WHERE fecha=? AND id_programa=?",[fecha, data.program],(err, updated)=>{
+                db.query("UPDATE MInasistencia SET esperando=false WHERE fecha=? AND id_programa=?",[fecha, data.program],(err, updated)=>{
                     if(err)return res.json(err);
                     return res.send({updated, boletas});
                 });
@@ -145,9 +145,9 @@ model.rejectAll = (req, res)=>{
 
 model.deleteToken = (req, res)=>{
     const data = req.body;
-    db.query('DELETE FROM etokenlista WHERE id_token=?',[data.idToken],(err, deletedT)=>{
+    db.query('DELETE FROM ETokenlista WHERE id_token=?',[data.idToken],(err, deletedT)=>{
         if(err)return res.json(err);
-        db.query('DELETE FROM esala WHERE id_programa=?',[data.program],(err,deletedS)=>{
+        db.query('DELETE FROM ESala WHERE id_programa=?',[data.program],(err,deletedS)=>{
             if(err)return res.json(err);
             return res.send({deletedS, deletedT});
         });
@@ -156,11 +156,11 @@ model.deleteToken = (req, res)=>{
 
 model.studentsWaiting = (req, res)=>{
     const data = req.body;
-    db.query('SELECT creacion FROM etokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
+    db.query('SELECT creacion FROM ETokenlista WHERE id_token=?',[data.idToken],(err, timeToken)=>{
         if(err)return res.json(err);
         const timeCreation = new Date(timeToken[0].creacion);
         const fecha = (timeCreation.getFullYear()+'-'+(timeCreation.getMonth()+1)+'-'+timeCreation.getDate());
-        db.query('SELECT id_inscripcion FROM minasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err, idi)=>{
+        db.query('SELECT id_inscripcion FROM MInasistencia WHERE fecha=? AND id_programa=? AND esperando=true',[fecha, data.program],(err, idi)=>{
             if(err)return res.json(err);
             if(idi.length!=0){
                 const querys = getBoletasByInscripcion(idi);
@@ -186,7 +186,7 @@ model.studentsWaiting = (req, res)=>{
 function getStringQueryNameByIdu(ids){
     let querys = '';
     ids.forEach((id)=>{
-        querys += 'SELECT nombre, app FROM cusuario WHERE id_usuario="'+id.id_usuario+'";';
+        querys += 'SELECT nombre, app FROM CUsuario WHERE id_usuario="'+id.id_usuario+'";';
     });
     return querys;
 }
@@ -194,7 +194,7 @@ function getStringQueryNameByIdu(ids){
 function getStringQueryUseIdByBoletas(ids){
     let querys = '';
     ids.forEach((id)=>{
-        querys += 'SELECT id_usuario FROM ealumno WHERE boleta="'+id.boleta+'";';
+        querys += 'SELECT id_usuario FROM EAlumno WHERE boleta="'+id.boleta+'";';
     });
     return querys;
 }
@@ -202,7 +202,7 @@ function getStringQueryUseIdByBoletas(ids){
 function getBoletasByInscripcion(ids){
     let querys = '';
     ids.forEach((id)=>{
-        querys += 'SELECT boleta FROM minscripcion WHERE id_inscripcion="'+id.id_inscripcion+'";';
+        querys += 'SELECT boleta FROM MInscripcion WHERE id_inscripcion="'+id.id_inscripcion+'";';
     });
     return querys;
 }
@@ -211,7 +211,7 @@ function getBoletasByInscripcion(ids){
 function getSyringGroupsByPrograms(programas){
     let querys = '';
     programas.forEach((programa)=>{
-        let aux = 'SELECT id_grupo, id_generacion FROM egeneracion WHERE id_generacion="'+programa.id_generacion+'";';
+        let aux = 'SELECT id_grupo, id_generacion FROM EGeneracion WHERE id_generacion="'+programa.id_generacion+'";';
         querys += aux;
     });
     return querys;
@@ -225,7 +225,7 @@ function getSyringGroupsByPrograms(programas){
 function getStringQueryTokensByPrograms(programas){
     let querys = '';
     programas.forEach((programa)=>{
-        let aux = 'SELECT * FROM etokenlista WHERE id_programa = "'+programa.id_programa+'";';
+        let aux = 'SELECT * FROM ETokenlista WHERE id_programa = "'+programa.id_programa+'";';
         querys += aux;
     });
     return querys;
@@ -300,7 +300,7 @@ function timeToExpire(duration, creation){
 function putGenerationAbsent(generation, program, nowTime){
     const stringTime = (nowTime.getFullYear()+'-'+(nowTime.getMonth()+1)+'-'+nowTime.getDate());
     //obtenemos todas las inscripciones de esta generacion
-    db.query('SELECT * FROM minscripcion WHERE id_generacion = ?',[generation],(err,idi)=>{
+    db.query('SELECT * FROM MInscripcion WHERE id_generacion = ?',[generation],(err,idi)=>{
         if(err)console.log(err);
         const querys = processQuerysInasistenciaByInscripcion(idi, program, stringTime);
         db.query(querys,(err,res)=>{
@@ -321,7 +321,7 @@ function processQuerysInasistenciaByInscripcion(ids, program, nowTime){
     const date = time.getFullYear()+'-'+(time.getMonth()+1)+'-'+time.getDate()+' '+time.getHours()+':'+time.getMinutes()+':'+time.getSeconds();
     ids.forEach((id)=>{
         let idi = date+id.id_inscripcion+program;
-        querys += 'INSERT INTO minasistencia VALUES("'+idi+'","'+nowTime+'","'+id.id_inscripcion+'","'+program+'",false);';
+        querys += 'INSERT INTO MInasistencia VALUES("'+idi+'","'+nowTime+'","'+id.id_inscripcion+'","'+program+'",false);';
     });
     return querys;
 }
