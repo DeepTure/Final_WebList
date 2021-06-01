@@ -3,7 +3,7 @@ const db = require("../database/connection");
 const crypto = require("crypto");
 const validar = require("./validacion");
 const csv = require("csv-parser");
-const fs = require("fs");
+const fs = require("fs").promises;
 const fsConstants = require("fs");
 
 const materiasCode = [
@@ -56,7 +56,6 @@ model.addUsersByCSV = async (req, res) => {
         let lastIDPr = await idGeneratorStandard("PR");
         let idCounterPr = 0;
 
-        const hash = crypto.createHash("sha256");
         data.forEach((dat) => {
             let chunk = {};
             chunk.nombre = dat.nombre;
@@ -81,6 +80,7 @@ model.addUsersByCSV = async (req, res) => {
                         idCounterAl
                     );
                     idCounterAl++;
+                    let hash = crypto.createHash("sha256");
                     hash.update(chunk.boleta);
                     var asegurado = hash.digest("hex");
                     chunk.contrasena = asegurado;
@@ -107,6 +107,7 @@ model.addUsersByCSV = async (req, res) => {
                         idCounterPr
                     );
                     idCounterPr++;
+                    let hash = crypto.createHash("sha256");
                     hash.update(chunk.id_empleado);
                     var asegurado = hash.digest("hex");
                     chunk.contrasena = asegurado;
@@ -824,6 +825,27 @@ model.getAbsences = (req, res) => {
     }
 };
 
+//obtener inasistencias de un alumno
+model.getStudentAbsences = (req, res) => {
+    try {
+        let id = req.user.id[1];
+        db.query(
+            "SELECT fecha, boleta, CONCAT_WS(' ',nombre,app,apm) AS fullname, id_grupo, materia, cicloE FROM MInasistencia INNER JOIN MInscripcion USING (id_inscripcion) INNER JOIN MPrograma USING (id_programa) INNER JOIN EGeneracion ON EGeneracion.id_generacion = MInscripcion.id_generacion INNER JOIN EAlumno USING (boleta) INNER JOIN CUsuario USING (id_usuario) INNER JOIN CMateria USING (id_materia) WHERE (boleta = ?)",
+            [id],
+            (err, rows) => {
+                if (err) {
+                    console.error(err);
+                    return res.send(null);
+                }
+                return res.send(rows);
+            }
+        );
+    } catch (ex) {
+        console.error(ex);
+        return res.send(null);
+    }
+};
+
 //obtener grupos que ya se han dado de alta en dicho ciclo escolar
 model.getUpGroups = (req, res) => {
     try {
@@ -1182,19 +1204,13 @@ function checkUpGroup(cicloE, id_grupo) {
     });
 }
 
-function quitFiles(path) {
-    return new Promise((resolve, reject) => {
-        fsConstants.access(path, fsConstants.constants.F_OK, (err) => {
-            if (err) {
-                reject(err);
-            }
-            fs.unlink(path, (err) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve();
-            });
-        });
+async function quitFiles(path) {
+    fsConstants.access(path, fsConstants.constants.F_OK, async (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            await fs.unlink(path);
+        }
     });
 }
 

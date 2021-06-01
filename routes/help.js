@@ -97,6 +97,10 @@ router.get("/funciograficas", (req, res) => {
     return res.render("helps/funcionamiento_grafica");
 });
 
+router.get("/bot", (req, res) => {
+    return res.render("helps/bot");
+});
+
 //Enviar email a soporte técnico
 router.post('/help/sendEmail', model.sendEmail);
 

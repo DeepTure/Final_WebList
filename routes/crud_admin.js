@@ -89,6 +89,15 @@ router.post(
 );
 
 router.post(
+    "/getStudentAbsences",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "alumno") return next();
+        res.send(null);
+    },
+    models.getStudentAbsences
+);
+
+router.post(
     "/upGroup",
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")

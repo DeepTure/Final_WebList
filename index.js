@@ -479,7 +479,7 @@ io.on("connection", (socket) => {
         io.sockets.in(data.room).emit("assistence:student:rejectAll", data);
     });
 
-    socket.on('assistence:teacher:endCode', (room)=>{
+    socket.on("assistence:teacher:endCode", (room) => {
         io.sockets.in(room).emit("assistence:student:endCode", {});
     });
 });
