@@ -121,16 +121,15 @@
 	<!-- Help inicio-->
 	<% }else{ %>
 				<article class="autoManageTogetherAlways addLeftMarginAlt">
-					<article class="largeButton autoManageStack">
-						<a href="/bot" target="view" class="centerText blue">Consultar bot</a>
-						<br>
-						<a href="/ingresar" target="view" class="centerText blue">¿Cómo puedo ingresar a mi cuenta?</a>
-						<br>
-						<a href="/recupero" target="view" class="centerText blue">¿Cómo puedo recuperar mi acceso?</a>
-						<br>
-						<a href="/consultar" target="view" class="centerText blue">¿Cómo puedo consultar soporte técnico?</a>
-					</article>
-					<p style="visibility: hidden;"> space </p>
+
+						<a href="/bot" target="view" class="centerText blue" style="padding: 6px;">Consultar bot</a>
+						<p style="visibility: hidden;"> space </p>
+						<a href="/ingresar" target="view" class="centerText blue" style="padding: 6px;">¿Cómo puedo ingresar a mi cuenta?</a>
+						<p style="visibility: hidden;"> space </p>
+						<a href="/recupero" target="view" class="centerText blue" style="padding: 6px;">¿Cómo puedo recuperar mi acceso?</a>
+						<p style="visibility: hidden;"> space </p>
+						<a href="/consultar" target="view" class="centerText blue" style="padding: 6px;">¿Cómo puedo consultar soporte técnico?</a>
+					
 				</article>
 	<% } %>
 			<br>
@@ -145,7 +144,8 @@
 				¿Necesitas más ayuda?
 			</p>
 			<center>
-				<img src="public/IMG/email-help.png" style="width: 18rem; margin-top: 20px;">
+				<img src="public/IMG/email.png" style="width: 16rem; margin-top: 20px;">
+				
 			</center>
 			<br>
 			<h2 class="centerText">Comunicate con nosotros</h2>
@@ -166,8 +166,8 @@
 				<br>
 				<p class="centertText">
 					<div class="alignMiddle">
-						<img class="inputIcon" src="public/IMG/user.png">
-						<input class="largeInput" id="emailUser" type="email" placeholder="Correo electronico">
+						<img class="inputIcon" src="public/IMG/mail.png">
+						<input style="width: 30rem;" id="emailUser" type="email" placeholder="Correo electronico">
 					</div>
 					<br>
 					<center>
@@ -175,7 +175,7 @@
 					</center>
 					<br>
 					<div class="alignMiddle">
-						<textarea id="message" rows="4" cols="50" class="largeInput" style="resize: none; -webkit-appearance: none; -moz-appearance: none; border-radius: 0.1rem; border: 0.15rem solid lightgray;">
+						<textarea id="message" rows="4" cols="50" style="width: 32rem;">
 						</textarea>
 					</div>
 					<center>
@@ -186,9 +186,10 @@
 			</form>
 		</section>
 	</div>
-
+	<div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com
 	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 	<script src="public/JS/help.js"></script>
 	<script src="public/JS/toGeneral.js"></script>
 </body>
 </html>
+
