@@ -71,64 +71,158 @@
         <div>
             <section class="squareSectionSize addLargeTopMargin addShadow">
                 <p class="titleFont addTopMargin centerText">Iniciar sesión</p>
-                <form action="/InicioSesionController" method="POST">
-                    <br />
-                    <div class="alignMiddle">
-                        <img class="inputIcon" src="../public/IMG/user.png" />
+
+                <section id="regularLogin">
+                    <form
+                        id="regularLog"
+                        action="/InicioSesionController"
+                        method="POST"
+                    >
+                        <br />
+                        <div class="alignMiddle">
+                            <img
+                                class="inputIcon"
+                                src="../public/IMG/user.png"
+                            />
+                            <input
+                                class="largeInput"
+                                type="text"
+                                name="username"
+                                placeholder="Usuario"
+                            />
+                        </div>
+
+                        <br />
+                        <br />
+
+                        <div class="alignMiddle">
+                            <img
+                                class="inputIcon"
+                                src="../public/IMG/key.png"
+                            />
+                            <input
+                                class="largeInput"
+                                type="password"
+                                name="password"
+                                placeholder="Contraseña"
+                            />
+                        </div>
+                        <br />
+                        <br />
+
+                        <div class="alignMiddle">
+                            <img
+                                class="inputIcon"
+                                src="../public/IMG/users.png"
+                            />
+                            <select class="largeInput" id="kind" name="rol">
+                                <option class="largeInput">
+                                    -- Seleccione su perfil --
+                                </option>
+                                <option class="largeInput">
+                                    Administrador
+                                </option>
+                                <option class="largeInput">Profesor</option>
+                                <option class="largeInput">Alumno</option>
+                            </select>
+                        </div>
+
+                        <br />
+                    </form>
+                </section>
+                <section id="signLogin" style="display: none">
+                    <form id="signLog" action="/signLog" method="POST">
+                        <br />
+                        <div class="alignMiddle">
+                            <img
+                                class="inputIcon"
+                                src="../public/IMG/user.png"
+                            />
+                            <input
+                                class="largeInput"
+                                type="text"
+                                name="usr"
+                                id="usr"
+                                placeholder="Usuario"
+                            />
+                        </div>
+
+                        <br />
+                        <br />
+                        <div class="alignMiddle">
+                            <img
+                                class="inputIcon"
+                                src="../public/IMG/file.png"
+                            />
+                            <input
+                                class="largeInput"
+                                type="file"
+                                name="signature"
+                                id="sign"
+                                placeholder="archivo .dat"
+                                accept=".dat"
+                            />
+                        </div>
+
+                        <br />
+                        <br />
+
+                        <div class="alignMiddle">
+                            <img
+                                class="inputIcon"
+                                src="../public/IMG/users.png"
+                            />
+                            <select class="largeInput" id="rol" name="rol">
+                                <option class="largeInput">
+                                    -- Seleccione su perfil --
+                                </option>
+                                <option class="largeInput">
+                                    Administrador
+                                </option>
+                                <option class="largeInput">Profesor</option>
+                                <option class="largeInput">Alumno</option>
+                            </select>
+                        </div>
+
+                        <br />
                         <input
-                            class="largeInput"
-                            type="text"
-                            name="username"
-                            placeholder="Usuario"
+                            id="usrRolId"
+                            name="usrRol"
+                            type="hidden"
+                            value=""
                         />
-                    </div>
-
-                    <br />
-                    <br />
-
-                    <div class="alignMiddle">
-                        <img class="inputIcon" src="../public/IMG/key.png" />
                         <input
-                            class="largeInput"
-                            type="password"
+                            id="pswId"
                             name="password"
-                            placeholder="Contraseña"
-                        />
-                    </div>
-                    <br />
-                    <br />
-
-                    <div class="alignMiddle">
-                        <img class="inputIcon" src="../public/IMG/users.png" />
-                        <select class="largeInput" id="kind" name="rol">
-                            <option class="largeInput">
-                                -- Seleccione su perfil --
-                            </option>
-                            <option class="largeInput">Administrador</option>
-                            <option class="largeInput">Profesor</option>
-                            <option class="largeInput">Alumno</option>
-                        </select>
-                    </div>
-
-                    <br />
-
-                    <p class="centerText">
-                        <br /><br /><br />
-
-                        <input
-                            class="buttonInput submit"
-                            type="submit"
-                            name="login"
-                            value="Iniciar sesión"
+                            type="hidden"
+                            value=""
                         />
                         <input
-                            class="buttonInput"
-                            type="button"
-                            name="signature"
-                            value="Usar firma digital"
+                            id="usrId"
+                            name="username"
+                            type="hidden"
+                            value=""
                         />
-                    </p>
-                </form>
+                    </form>
+                </section>
+                <p class="centerText">
+                    <br /><br /><br /><br />
+
+                    <input
+                        class="buttonInput submit"
+                        type="submit"
+                        name="login"
+                        value="Iniciar sesión"
+                        id="logIn"
+                    />
+                    <input
+                        class="buttonInput"
+                        type="button"
+                        name="signature"
+                        value="Usar firma digital"
+                        id="digitalSign"
+                    />
+                </p>
             </section>
         </div>
         <% if (err != "") { %>
@@ -143,6 +237,7 @@
         <script>
             sessionStorage.clear();
         </script>
+        <script src="public/JS/loginControlls.js"></script>
         <script src="public/JS/toGeneral.js"></script>
     </body>
 </html>

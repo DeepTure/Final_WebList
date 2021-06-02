@@ -22,6 +22,7 @@ const jwt = require("jsonwebtoken");
 
 //routers
 const login = require("./routes/logic.login");
+const sign = require("./routes/sign.login");
 const perfil = require("./routes/profile");
 const historial = require("./routes/history");
 const recuperar = require("./routes/recover");
@@ -315,32 +316,33 @@ passport.use(
         (req, username, password, done) => {
             try {
                 let query = "";
-                if (req.body.usrRol == "profesor") {
+                if (req.body.usrRol == "Profesor") {
                     query =
-                        "select numEmpleado AS id from profesor where (numEmpleado= ? AND contraseña= ?)";
-                } else if (req.body.usrRol == "administrador") {
+                        "select id_empleado AS id, id_usuario from EProfesor INNER JOIN CUsuario using (id_usuario) where (id_empleado = ? AND contrasena = ?)";
+                } else if (req.body.usrRol == "Administrador") {
                     query =
-                        "select idAdmin AS id from administrador where (idAdmin= ? AND contraseña= ?)";
-                } else if (req.body.usrRol == "alumno") {
+                        "select id_administrador AS id, id_usuario from EAdministrador INNER JOIN CUsuario using (id_usuario) where (id_administrador = ? AND contrasena = ?)";
+                } else if (req.body.usrRol == "Alumno") {
                     query =
-                        "select boleta AS id from alumno where (boleta= ? AND contraseña= ?)";
+                        "select boleta AS id, id_usuario from EAlumno INNER JOIN CUsuario using (id_usuario) where (boleta = ? AND contrasena = ?)";
                 }
                 db.query(query, [username, password], (err, rows) => {
                     if (err) {
                         console.log(err);
                         return done(null, false, {
-                            message: "Hubo un fallo en el proceso",
+                            message: "Hubo un fallo en el proces2",
                         });
                     }
+                    console.log(rows);
                     if (rows.length > 0) {
+                        ids = [rows[0].id_usuario, rows[0].id];
                         return done(null, {
-                            rol: req.body.usrRol,
+                            rol: req.body.usrRol.toLowerCase(),
                             id: rows[0].id.toString(),
                         });
                     } else {
-                        return done(null, {
-                            rol: req.body.usrRol,
-                            id: username,
+                        return done(null, false, {
+                            message: "Hubo un fallo en el proceso 3",
                         });
                     }
                 });
@@ -373,6 +375,7 @@ app.use(Parser);
 
 //rutas
 app.use(login);
+app.use(sign);
 app.use(perfil);
 app.use(historial);
 app.use(recuperar);
