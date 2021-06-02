@@ -14,7 +14,6 @@ function prepareTimer(missingTime){
     
     //si el tiempo es cero es porque ya termino
     if((tiempoFaltante.getMinutes() == 0) && (tiempoFaltante.getSeconds() == 0)){
-        console.log("Ya chingastes");
         //popUpTimer('acepte todos los usuaris','Debe aceptar todos los usuarios antes de que se elimine el codigo','info',6000);
         Swal.fire({
             title: 'Tiempo terminado',
