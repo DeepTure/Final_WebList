@@ -221,7 +221,6 @@ function processProgramsForToken(ids){
 }
 
 /**
- * 
  * @param {Object} token 
  * Se encarga de procesar las fechas para compararlas y saber si el token aun esta activo o ya caduó
  * Es importante resaltar que time y creacion son tipo date y duracion es INT

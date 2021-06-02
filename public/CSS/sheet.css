@@ -423,3 +423,8 @@ background-color: rgb(30, 62, 110); dk
 #swal2-content{
 	color:black !important;
 }
+
+/*Texto para el text area*/
+.textArea-help{
+	color: black !important;
+}
