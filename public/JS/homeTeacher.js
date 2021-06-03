@@ -74,7 +74,7 @@ function showGroupsAndSubjects(gruposMaterias){
     let codeGrupos = "";
     let groupsHystory = [];
     grupos.forEach((grupo, i)=>{
-        if(!(grupo.id_grupo in groupsHystory)){
+        if(!(groupsHystory.includes(grupo.id_grupo))){
             codeGrupos += `<input
                 class="buttonInput smallButton blue"
                 type="button"
