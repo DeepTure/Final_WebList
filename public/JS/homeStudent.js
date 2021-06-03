@@ -25,7 +25,7 @@ function showGroups(gruposData) {
             grupos.push(grupo[0]);
         });
     } else {
-        grupos = gruposData.grupos;
+        grupos = gruposData;
     }
     let code = "";
     grupos.forEach((grupo) => {
