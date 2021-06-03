@@ -936,7 +936,8 @@ model.upGroup = (req, res) => {
 function readCSV(path) {
     return new Promise((resolve, reject) => {
         let data = [];
-        fs.createReadStream(path)
+        fsConstants
+            .createReadStream(path)
             .pipe(csv())
             .on("data", (row) => {
                 data.push(row);

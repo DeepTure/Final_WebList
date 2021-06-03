@@ -338,7 +338,7 @@ passport.use(
                         ids = [rows[0].id_usuario, rows[0].id];
                         return done(null, {
                             rol: req.body.usrRol.toLowerCase(),
-                            id: rows[0].id.toString(),
+                            id: ids,
                         });
                     } else {
                         return done(null, false, {
