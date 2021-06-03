@@ -27,7 +27,7 @@ socket.on("assistence:recive", (tokenData) => {
                         onclick="reject(${tokenData.boleta})"
                     />
                 </article>
-            </td</tr>`;
+            </td></tr>`;
 
         table.insertAdjacentHTML("beforeend", code);
         waitingList.push(tokenData.boleta);
