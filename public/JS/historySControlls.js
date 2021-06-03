@@ -17,6 +17,10 @@ $(document).ready(() => {
     getAllAbsences();
 });
 
+$("#getAbsencesId").click((ev) => {
+    getAllAbsences();
+});
+
 //funcion para traer y preparar los registros
 function getAllAbsences() {
     getAbsences()
