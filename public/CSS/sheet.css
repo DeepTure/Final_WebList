@@ -33,6 +33,14 @@ input, option{
 	border: 0.15rem solid lightgray;
 }
 
+textarea{
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	border-radius: 0.1rem;
+	border: 0.15rem solid lightgray;
+	resize: none;
+}
+
 select{
 	height: 1.7rem;
 	border-radius: 0.1rem;
@@ -422,4 +430,9 @@ background-color: rgb(30, 62, 110); dk
 /*Texto para las ventanas swet*/
 #swal2-content{
 	color:black !important;
+}
+
+/*Texto para el text area*/
+.textArea-help{
+	color: black !important;
 }
