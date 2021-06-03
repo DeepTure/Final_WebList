@@ -30,8 +30,8 @@ const studentCrud = require("./routes/studentCrudRoutes");
 const help = require("./routes/help");
 const crud_admin = require("./routes/crud_admin");
 const homeTeacher = require("./routes/homeTeacherRoutes");
-const verifyCodeStudent = require("./models/verifyCodeStudentModel");
 const validacion = require("./models/validacion");
+const resports = require("./models/sendEmailReports");
 //variables
 
 /*
@@ -384,9 +384,16 @@ app.use(help);
 app.use(studentCrud);
 app.use(homeTeacher);
 
+/*Título general del error.
+Activo principal.
+Descripción de la falla.
+Evidencias de respaldo (imágenes, videos, etc).*/
 //rutas de emergencia cuando ocurre
 app.use((req, res) => {
     res.status(404);
+    resports.generalReport('Error 404',`\n\nActivo: Servidor\n
+    Descripcion: un usuario intentó consultar una ruta desconocida del sistema.\n 
+    Ruta: `+req.url);
     //se necesita crear la pagina
     res.render("error", {
         error: 404,
@@ -395,13 +402,20 @@ app.use((req, res) => {
 });
 
 app.use((req, res) => {
+    resports.generalReport('Error 403',`\n\nActivo: Servidor\n
+    Descripcion: la petición es correcta pero el servidor se niega a ofrecerte el recurso o página web. Es posible que se necesite 
+    una cuenta en el servicio e iniciar sesión antes de poder acceder.\n 
+    Ruta: `+req.url);
     /*la petición es correcta pero el servidor se niega a ofrecerte el recurso o página web. Es posible que necesites una cuenta en el servicio e iniciar sesión 
     antes de poder acceder.*/
     res.status(403);
-    res.render("error", { error: 403, message: "Ha Ocurrido un error" });
+    res.render("error", { error: 403, message: "Ha ocurrido un error" });
 });
 
 app.use((req, res) => {
+    resports.generalReport('Error 405',`\n\nActivo: Servidor\n
+    Descripcion: el servidor no permite el uso de un metodo.\n 
+    Ruta: `+req.url);
     //no se permite el uso de ese método.
     res.status(405);
     res.render("error", {
@@ -411,12 +425,18 @@ app.use((req, res) => {
 });
 
 app.use((req, res) => {
+    resports.generalReport('Error 501',`\n\nActivo: Servidor\n
+    Descripcion:el servidor aun no ha implementado el método que se ha pedido, aunque es probable que se añada en un futuro.\n 
+    Ruta: `+req.url);
     //el servidor aun no ha implementado el método que se ha pedido, aunque es probable que se añada en un futuro.
     res.status(501);
     res.render("error", { error: 501, message: "Ha ocurrido un error" });
 });
 
 app.use((error, req, res, next) => {
+    resports.generalReport('Error 500',`\n\nActivo: Servidor\n
+    Descripcion: la pagina no está creada.\n 
+    Ruta: `+req.url);
     res.status(500);
     console.log(error);
     //se necesita crear la pagina
