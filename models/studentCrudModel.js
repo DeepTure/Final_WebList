@@ -413,7 +413,7 @@ function processProgramsForToken(ids) {
         ids.forEach((id) => {
             querys +=
                 'SELECT * FROM ETokenLista WHERE id_programa="' +
-                id[0].id_programa +
+                (id[0] === undefined ? id.id_programa : id[0].id_programa) +
                 '";';
         });
     } else {
