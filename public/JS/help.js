@@ -8,8 +8,10 @@ $('#toContactButton').click(()=>{
 $('#sendEmailSupport').click(()=>{
     const email = $('#emailUser').val();
     const message = $('#message').val();
+    const zone = $('#zone').val();
+    const title = $('#title').val();
     const vemail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-    if(!email || !message){
+    if(!email || !message || !zone || !title){
         alert('No puede enviar campos vacios');
     }else{
         if(vemail.test(email)){
@@ -17,7 +19,7 @@ $('#sendEmailSupport').click(()=>{
             $.ajax({
                 url:'/help/sendEmail',
                 type:'post',
-                data:{email, message},
+                data:{email, message, zone, title},
                 success:function(response){
                     console.log(response);
                     if(response == "ok"){
@@ -41,6 +43,8 @@ $('#sendEmailSupport').click(()=>{
 function clerInputsEmailContact(changeView){
     $('#emailUser').val('');
     $('#message').val('');
+    $('#zone').val('');
+    $('#title').val('')
     if(changeView){
         $('#contactSupportActive').hide();
         $('#contactSupport').show();

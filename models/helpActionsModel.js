@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 model.sendEmail = (req, res)=>{
     const data = req.body;
     try{
-        sendEmailMessage(data.email, data.message);
+        sendEmailMessage(data.email, data.message, data.zone, data.title);
         return res.send('ok');
     }catch(err){
         console.log(err);
@@ -23,12 +23,16 @@ model.sendEmail = (req, res)=>{
     }
 };
 
-function sendEmailMessage(email, message) {
+function sendEmailMessage(email, message, zone, title) {
+    const messageToSend = `Titulo: ${title}\n
+    Activo: ${zone}\n
+    Email: ${email}\n
+    Descripción: ${message}`;
     const mailOptions = {
         from: "System",
         to: 'moran.orozco.kevin@gmail.com',
         subject: "Petición de ayuda",
-        text: ("Buen día, un usuario con el correo '"+email+"' se intenta contactar con soporte tecnico con el siguiente mensaje: "+message)
+        text: messageToSend
     };
 
     transporter.sendMail(mailOptions, (err, info) => {
