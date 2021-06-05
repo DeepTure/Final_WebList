@@ -174,7 +174,7 @@ model.VerSign = async (req, res) => {
                         });
                     });
                 } else {
-                    await quitFiles(user);
+                    await quitFileDat(user);
                     return res.json({ check: false });
                 }
             });
