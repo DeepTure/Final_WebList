@@ -1,5 +1,6 @@
 const model = {};
 const nodemailer = require("nodemailer");
+const db = require("../database/connection");
 
 
 const transporter = nodemailer.createTransport({
@@ -34,19 +35,47 @@ function sendEmailMessage(email, message, zone, title) {
         subject: "Petición de ayuda",
         text: messageToSend
     };
-
-    transporter.sendMail(mailOptions, (err, info) => {
-        try {
-            if (err) {
-                console.log("Error: " + err);
-            } else {
-                console.log("Email enviado");
-            }
-        } catch (error) {
-            console.log("Error inesperado al enviar correo: " + error);
-            console.log(error.message);
-        }
+    db.query('SELECT id_usuario from EAdministrador', (err, ida)=>{
+        if(err)console.log(err);
+        const querys = getEmailAdmins(ida);
+        db.query(querys, (err, emails)=>{
+            if(err)console.log(err);
+            emails.forEach((email)=>{
+                const mailOptions = {
+                    from: "System",
+                    to: email.email,
+                    subject: "Petición de ayuda",
+                    text: messageToSend
+                };
+                transporter.sendMail(mailOptions, (err, info) => {
+                    try {
+                        if (err) {
+                            console.log("Error: " + err);
+                        } else {
+                            console.log("Email enviado");
+                        }
+                    } catch (error) {
+                        console.log("Error inesperado al enviar correo: " + error);
+                        console.log(error.message);
+                    }
+                });
+            });
+        });
     });
 }
 
+function getEmailAdmins(ids){
+    querys = '';
+    ids.forEach((id)=>{
+        querys += 'SELECT email FROM CUsuario WHERE id_usuario = "'+id.id_usuario+'";';
+    });
+    return querys;
+}
+
+function getIdAdmin(){
+    db.query('SELECT id_usuario from EAdministrador', (err, ida)=>{
+        if(err)console.log(err);
+        return ida;
+    });
+}
 module.exports = model;
