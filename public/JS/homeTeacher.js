@@ -340,7 +340,7 @@ function getStudentWaiting(idToken, program) {
         type: "post",
         data: { idToken, program },
         success: function (response) {
-            console.log(response);
+            console.log('getStudents: ',response);
             showStudents(response);
         },
         error: function (response) {

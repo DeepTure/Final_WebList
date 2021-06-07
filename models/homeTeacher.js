@@ -340,7 +340,7 @@ model.rejectAll = (req, res) => {
         [data.idToken],
         (err, timeToken) => {
             if (err) return res.json(err);
-            const timeCreation = new Date(timeToken[0].creacion);
+            const timeCreation = new Date(timeToken[0] === undefined ? timeToken.creacion:timeToken[0].creacion);
             const fecha =
                 timeCreation.getFullYear() +
                 "-" +
@@ -399,8 +399,9 @@ model.studentsWaiting = (req, res) => {
         "SELECT creacion FROM ETokenLista WHERE id_token=?",
         [data.idToken],
         (err, timeToken) => {
+            console.log('studentsWaiting: ',timeToken[0].creacion);
             if (err) return res.json(err);
-            const timeCreation = new Date(timeToken[0].creacion);
+            const timeCreation = new Date((timeToken[0].creacion+''));
             const fecha =
                 timeCreation.getFullYear() +
                 "-" +
@@ -420,8 +421,7 @@ model.studentsWaiting = (req, res) => {
                         const querys = getBoletasByInscripcion(idi);
                         db.query(querys, (err, boletas) => {
                             if (err) return res.json(err);
-                            const querys =
-                                getStringQueryUseIdByBoletas(boletas);
+                            const querys =  getStringQueryUseIdByBoletas(boletas);
                             db.query(querys, (err, idu) => {
                                 if (err) return res.json(err);
                                 const querys = getStringQueryNameByIdu(idu);
