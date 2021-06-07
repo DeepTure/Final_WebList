@@ -50,104 +50,172 @@ model.addUsersByCSV = async (req, res) => {
         let { cicloE } = req.body;
         let usersP = [];
         let usersA = [];
-        let data = await readCSV(req.file.path);
-        let lastIDAl = await idGeneratorStandard("AL");
-        let idCounterAl = 0;
-        let lastIDPr = await idGeneratorStandard("PR");
-        let idCounterPr = 0;
-
-        data.forEach((dat) => {
-            let chunk = {};
-            chunk.nombre = dat.nombre;
-            chunk.app = dat.app;
-            chunk.apm = dat.apm;
-            chunk.cicloE = cicloE;
-            chunk.correo = "correo@gmail.com";
-            if (dat.tipo_usuario == "alumno") {
-                let index = -1;
-                usersA.forEach((user, i) => {
-                    if (user.boleta == dat.id) {
-                        index = i;
-                        return;
+        if (req.file.mimetype == "text/csv") {
+            let check = await readCSV(req.file.path);
+            if (check.ok) {
+                let data = check.data;
+                let lastIDAl = await idGeneratorStandard("AL");
+                let idCounterAl = 0;
+                let lastIDPr = await idGeneratorStandard("PR");
+                let idCounterPr = 0;
+                let temp = [];
+                let test = true;
+                for (let dat of data) {
+                    if (!temp.includes(`${dat.ciclo_escolar} ${dat.grupo}`)) {
+                        let check = await checkUpGroup(
+                            dat.ciclo_escolar,
+                            dat.grupo
+                        );
+                        if (check) {
+                            test = false;
+                            break;
+                        }
+                    } else {
+                        temp.push(`${dat.ciclo_escolar} ${dat.grupo}`);
                     }
-                });
-                if (index == -1) {
-                    chunk.grupos = [{ id_grupo: dat.grupo }];
-                    chunk.boleta = dat.id;
-                    chunk.id_usuario = idGeneratorStandardAscendant(
-                        "AL",
-                        lastIDAl,
-                        idCounterAl
-                    );
-                    idCounterAl++;
-                    let hash = crypto.createHash("sha256");
-                    hash.update(chunk.boleta);
-                    var asegurado = hash.digest("hex");
-                    chunk.contrasena = asegurado;
-                    usersA.push(chunk);
-                } else {
-                    usersA[index].grupos.push({ id_grupo: dat.grupo });
                 }
-            } else if (dat.tipo_usuario == "profesor") {
-                let index = -1;
-                usersP.forEach((user, i) => {
-                    if (user.id_empleado == dat.id) {
-                        index = i;
-                        return;
+                temp = [];
+                if (test) {
+                    for (let dat of data) {
+                        if (!temp.includes(dat.id)) {
+                            let checkS = await checkAddStudent(dat.id);
+                            let checkP = await checkAddProfesor(dat.id);
+                            if (checkS && checkP) {
+                                temp.push(dat.id);
+                            }
+                        }
                     }
-                });
-                if (index == -1) {
-                    chunk.materiasID = [
-                        { materiaCode: dat.materia, id_grupo: dat.grupo },
-                    ];
-                    chunk.id_empleado = dat.id;
-                    chunk.id_usuario = idGeneratorStandardAscendant(
-                        "PR",
-                        lastIDPr,
-                        idCounterPr
-                    );
-                    idCounterPr++;
-                    let hash = crypto.createHash("sha256");
-                    hash.update(chunk.id_empleado);
-                    var asegurado = hash.digest("hex");
-                    chunk.contrasena = asegurado;
-                    usersP.push(chunk);
+                    if (temp.length > 0) {
+                        let finalData = data.filter((dat) =>
+                            temp.includes(dat.id)
+                        );
+                        console.log(finalData);
+                        finalData.forEach((dat) => {
+                            let chunk = {};
+                            chunk.nombre = dat.nombre;
+                            chunk.app = dat.app;
+                            chunk.apm = dat.apm;
+                            chunk.cicloE = cicloE;
+                            chunk.correo = "correo@gmail.com";
+                            if (dat.tipo_usuario == "alumno") {
+                                let index = -1;
+                                usersA.forEach((user, i) => {
+                                    if (user.boleta == dat.id) {
+                                        index = i;
+                                        return;
+                                    }
+                                });
+                                if (index == -1) {
+                                    chunk.grupos = [{ id_grupo: dat.grupo }];
+                                    chunk.boleta = dat.id;
+                                    chunk.id_usuario =
+                                        idGeneratorStandardAscendant(
+                                            "AL",
+                                            lastIDAl,
+                                            idCounterAl
+                                        );
+                                    idCounterAl++;
+                                    let hash = crypto.createHash("sha256");
+                                    hash.update(chunk.boleta);
+                                    var asegurado = hash.digest("hex");
+                                    chunk.contrasena = asegurado;
+                                    usersA.push(chunk);
+                                } else {
+                                    usersA[index].grupos.push({
+                                        id_grupo: dat.grupo,
+                                    });
+                                }
+                            } else if (dat.tipo_usuario == "profesor") {
+                                let index = -1;
+                                usersP.forEach((user, i) => {
+                                    if (user.id_empleado == dat.id) {
+                                        index = i;
+                                        return;
+                                    }
+                                });
+                                if (index == -1) {
+                                    chunk.materiasID = [
+                                        {
+                                            materiaCode: dat.materia,
+                                            id_grupo: dat.grupo,
+                                        },
+                                    ];
+                                    chunk.id_empleado = dat.id;
+                                    chunk.id_usuario =
+                                        idGeneratorStandardAscendant(
+                                            "PR",
+                                            lastIDPr,
+                                            idCounterPr
+                                        );
+                                    idCounterPr++;
+                                    let hash = crypto.createHash("sha256");
+                                    hash.update(chunk.id_empleado);
+                                    var asegurado = hash.digest("hex");
+                                    chunk.contrasena = asegurado;
+                                    usersP.push(chunk);
+                                } else {
+                                    usersP[index].materiasID.push({
+                                        materiaCode: dat.materia,
+                                        id_grupo: dat.grupo,
+                                    });
+                                }
+                            }
+                        });
+                        let chunkAl = null;
+                        let chunkPr = null;
+                        if (usersA.length > 0) {
+                            chunkAl = QueryGeneratorChunkAddStudent(usersA);
+                        }
+                        if (usersP.length > 0) {
+                            chunkPr = QueryGeneratorChunkAddProfesor(usersP);
+                        }
+                        let finalQueryChunk =
+                            (chunkAl === null ? "" : chunkAl.query) +
+                            (chunkPr === null ? "" : chunkPr.query);
+                        let finalQueryDataChunk = [].concat(
+                            chunkAl === null ? [] : chunkAl.queryData,
+                            chunkPr === null ? [] : chunkPr.queryData
+                        );
+                        if (
+                            finalQueryChunk != "" &&
+                            finalQueryDataChunk.length != 0
+                        ) {
+                            db.query(
+                                finalQueryChunk,
+                                finalQueryDataChunk,
+                                async (err, rows) => {
+                                    if (err) {
+                                        await quitFiles(req.file.path);
+                                        return res.status(500).send("ERROR");
+                                    }
+                                    await quitFiles(req.file.path);
+                                    return res.json({
+                                        ok: true,
+                                    });
+                                }
+                            );
+                        }
+                    } else {
+                        await quitFiles(req.file.path);
+                        return res.json({
+                            ok: false,
+                            msg: "Ya existen esos registros",
+                        });
+                    }
                 } else {
-                    usersP[index].materiasID.push({
-                        materiaCode: dat.materia,
-                        id_grupo: dat.grupo,
+                    await quitFiles(req.file.path);
+                    return res.json({
+                        ok: false,
+                        msg: "Algunos grupos no estan dados de alta",
                     });
                 }
+            } else {
+                await quitFiles(req.file.path);
+                return res.json(check);
             }
-        });
-        let chunkAl = null;
-        let chunkPr = null;
-        if (usersA.length > 0) {
-            chunkAl = QueryGeneratorChunkAddStudent(usersA);
-        }
-        if (usersP.length > 0) {
-            chunkPr = QueryGeneratorChunkAddProfesor(usersP);
-        }
-        let finalQueryChunk =
-            (chunkAl === null ? "" : chunkAl.query) +
-            (chunkPr === null ? "" : chunkPr.query);
-        let finalQueryDataChunk = [].concat(
-            chunkAl === null ? [] : chunkAl.queryData,
-            chunkPr === null ? [] : chunkPr.queryData
-        );
-        if (finalQueryChunk != "" && finalQueryDataChunk.length != 0) {
-            db.query(
-                finalQueryChunk,
-                finalQueryDataChunk,
-                async (err, rows) => {
-                    if (err) {
-                        console.log(err);
-                        return res.status(500).send("ERROR");
-                    }
-                    await quitFiles(req.file.path);
-                    return res.send(JSON.stringify(rows));
-                }
-            );
+        } else {
+            await quitFiles(req.file.path);
+            return res.json({ ok: false, msg: "Tipo de archivo invalido" });
         }
     } catch (ex) {
         console.log(ex);
@@ -936,14 +1004,31 @@ model.upGroup = (req, res) => {
 function readCSV(path) {
     return new Promise((resolve, reject) => {
         let data = [];
+        let ok = true;
         fsConstants
             .createReadStream(path)
             .pipe(csv())
             .on("data", (row) => {
                 data.push(row);
             })
+            .on("headers", (headers) => {
+                if (
+                    !(headers.length == 8
+                        ? headers[0] == "id" &&
+                          headers[1] == "nombre" &&
+                          headers[2] == "app" &&
+                          headers[3] == "apm" &&
+                          headers[4] == "ciclo_escolar" &&
+                          headers[5] == "grupo" &&
+                          headers[6] == "tipo_usuario" &&
+                          headers[7] == "materia"
+                        : false)
+                ) {
+                    resolve({ ok: false, msg: "Formato no valido" });
+                }
+            })
             .on("end", () => {
-                resolve(data);
+                resolve({ ok: true, data });
             })
             .on("error", (ex) => {
                 console.log(ex);

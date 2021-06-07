@@ -1,6 +1,6 @@
 const patron_almn = /^([0-9]{10}){1}$/;
 const patron_prof = /^([0-9]{10}){1}$/;
-const patron_letras = /^([áéíóúÁÉÍÓÚa-zA-Z ]{1,45}){1}$/;
+const patron_letras = /^([áéíóúÁÉÍÓÚñÑa-zA-Z ]{1,45}){1}$/;
 
 var groups = [];
 var readyGroups = [];
@@ -127,6 +127,14 @@ $("#addUser").click((ev) => {
                         success: (res) => {
                             toast("Informacion", res);
                             updateTableProfessor();
+                            $("#bStudentEntities").attr(
+                                "class",
+                                "buttonInput smallButton blue"
+                            );
+                            $("#bProfessorEntities").attr(
+                                "class",
+                                "buttonInput smallButton red"
+                            );
                         },
                         error: (err) => {
                             console.log(err);
@@ -186,6 +194,14 @@ $("#addUser").click((ev) => {
                         success: (res) => {
                             toast("Informacion", res);
                             updateTableStudent();
+                            $("#bProfessorEntities").attr(
+                                "class",
+                                "buttonInput smallButton blue"
+                            );
+                            $("#bStudentEntities").attr(
+                                "class",
+                                "buttonInput smallButton red"
+                            );
                         },
                         error: (err) => {
                             console.log(err);
@@ -292,27 +308,51 @@ $("#fastRegister").click((ev) => {
 
     if ($("#fileCSV").prop("files").length == 1) {
         let file = $("#fileCSV").prop("files")[0];
-        formdata.append("table", file, "tablaUsuarios.csv");
-        formdata.append("cicloE", generateCicloEscolar());
-        $.ajax({
-            enctype: "multipart/form-data",
-            url: "/addUsersByCSV",
-            type: "POST",
-            data: formdata,
-            processData: false,
-            contentType: false,
-            success: (res) => {
-                toast("Listo", "Se han procesado a los usuarios correctamente");
-                updateTableProfessor();
-            },
-            error: (err) => {
-                console.log(err);
-                toast(
-                    "Advertencia",
-                    "A ocurrido un error inesperado, intentelo mas tarde"
-                );
-            },
-        });
+        if (file.type == "text/csv") {
+            formdata.append("table", file, "tablaUsuarios.csv");
+            formdata.append("cicloE", generateCicloEscolar());
+            toast("Procesando...", "No cierre esta ventana");
+            $.ajax({
+                enctype: "multipart/form-data",
+                url: "/addUsersByCSV",
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success: (res) => {
+                    if (res.ok) {
+                        toast(
+                            "Listo",
+                            "Se han procesado a los usuarios correctamente"
+                        );
+                        updateTableProfessor();
+                        $("#bStudentEntities").attr(
+                            "class",
+                            "buttonInput smallButton blue"
+                        );
+                        $("#bProfessorEntities").attr(
+                            "class",
+                            "buttonInput smallButton red"
+                        );
+                    } else {
+                        toast("Advertencia", res.msg);
+                    }
+                },
+                error: (err) => {
+                    console.log(err);
+                    toast(
+                        "Advertencia",
+                        `Algo a salido mal, intentelo mas tarde`
+                    );
+                },
+                complete: () => {
+                    $("#fileCSV").val("");
+                },
+            });
+        } else {
+            $("#fileCSV").val("");
+            toast("Advertencia", "Introduzca un archivo csv valido");
+        }
     } else {
         toast("Advertencia", "Asegurese de haber subido sus archivos");
     }

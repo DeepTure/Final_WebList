@@ -129,6 +129,7 @@ $("#changedata").click(function () {
 
 $("#digSign").click((ev) => {
     $("#digSign").prop("disabled", true);
+    toast("Procesando...", "No cierre esta ventana");
     $.ajax({
         url: "/genSign",
         type: "post",
@@ -148,6 +149,7 @@ $("#digSign").click((ev) => {
             window.URL.revokeObjectURL(signUrl);
 
             $("#digSign").prop("disabled", false);
+            toast("Listo", "Guarde su firma digital");
         },
         error: (err) => {
             console.log(err);
