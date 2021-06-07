@@ -11,6 +11,7 @@
 	<link rel="stylesheet" type="text/css" media="screen and (prefers-color-scheme: dark)" href="../public/CSS/darkColorSheet.css">
 	<link rel="stylesheet" type="text/css" media='screen' href="../public/CSS/navSheet.css">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+	<script src="https://unpkg.com/scrollreveal"></script>
 	
 
 	<link rel="icon" href="../public/IMG/DeepTure.ico">
@@ -26,7 +27,7 @@
 			}
 		}
 	</style>
-	<nav class="addShadow" id="header">
+	<nav class="addShadow navegation" id="header">
         <article class="addLeftMargin">
 			<img src="../public/IMG/WebListLogo.png" class="navImg">
 			<p class="titleFont addLeftMargin alignMiddle">
@@ -53,7 +54,7 @@
     <script src="../public/JS/nav.js"></script>
 
 	<div>
-		<section class="squareSectionSize addLargeTopMargin addShadow">
+		<section class="squareSectionSize recoverBox addLargeTopMargin addShadow">
 			<form>
 				<p class="titleFont addTopMargin centerText">
 					Recuperar accesso
@@ -115,5 +116,9 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 	<script src="../public/JS/recoverCount.js"></script>
 	<script src="../public/JS/toGeneral.js"></script>
+	<script>
+        ScrollReveal().reveal('.navegation',{delay:500, origin:'left', distance:'300px'});
+        ScrollReveal().reveal('.recoverBox',{delay:500, origin:'right', distance:'300px'});
+    </script>
 </body>
 </html>
