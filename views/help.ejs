@@ -15,6 +15,7 @@
 	<link rel="icon" href="../public/IMG/DeepTure.ico">
 	<link rel="shortcut icon" href="../public/IMG/DeepTure.ico">
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+	<script src="https://unpkg.com/scrollreveal"></script>
 
 	<meta charset="utf-8">
 </head>
@@ -26,7 +27,7 @@
 			}
 		}
 	</style>
-	<nav class="addShadow" id="header">
+	<nav class="addShadow navegation" id="header">
         <article class="addLeftMargin">
 			<img src="../public/IMG/WebListLogo.png" class="navImg">
 			<p class="titleFont addLeftMargin alignMiddle">
@@ -52,7 +53,7 @@
     </nav>
     <script src="../public/JS/nav.js"></script>
 
-	<div>
+	<div class="divOne">
 		<section class="defaultSectionSize addShadow">
 			<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
 				Centro de ayuda
@@ -137,7 +138,7 @@
 			</iframe>
 		</section>
 		</div>
-	<div>
+	<div class="divTwo">
 		<section class="defaultSectionSize addShadow" id="contactSupport">
 			<p class="titleFont centerText addLeftMarginAlt addTopMarginAlt">
 				¿Necesitas más ayuda?
@@ -204,6 +205,11 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 	<script src="public/JS/help.js"></script>
 	<script src="public/JS/toGeneral.js"></script>
+	<script>
+		ScrollReveal().reveal('.navegation',{delay:500, origin:'left', distance:'300px'});
+		ScrollReveal().reveal('.divOne',{delay:500, origin:'right', distance:'300px'});
+		ScrollReveal().reveal('.divTwo',{delay:500, origin:'left', distance:'300px'});
+	</script>
 </body>
 </html>
 

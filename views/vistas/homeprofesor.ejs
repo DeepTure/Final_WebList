@@ -38,7 +38,7 @@
         <link rel="icon" href="../public/IMG/DeepTure.ico" />
         <link rel="shortcut icon" href="../public/IMG/DeepTure.ico" />
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-
+        <script src="https://unpkg.com/scrollreveal"></script>
         <script src="../public/JS/timer.js"></script>
 
         <meta charset="utf-8" />
@@ -108,7 +108,7 @@
                     <input type="hidden" value="<%= id %>" id="idTeacher">
                     <br />
 
-                    <aside class="addLeftMarginAlt">
+                    <aside class="addLeftMarginAlt allSettings">
                         <label class="groupsSection">Seleccione un grupo</label>
                         <br />
 
@@ -197,7 +197,7 @@
                     <br />
 
                     <article
-                        class="autoManageCenter addLeftMarginAlt centerText"
+                        class="autoManageCenter addLeftMarginAlt centerText timerShower"
                     >
                         <div class="timer">
                             <div class="titleFontLarge" id="minuto">NA</div>
@@ -219,7 +219,7 @@
                     <br />
 
                     <table
-                        class="addLeftMarginAlt"
+                        class="addLeftMarginAlt tableShower"
                         cellspacing="0"
                         cellpadding="0"
                         id="attendanceRegistration"
@@ -247,4 +247,9 @@
     <script src="../public/JS/toGeneral.js"></script>
     <script src="public/JS/homeTeacher.js"></script>
     <script src="public/JS/homeTeacherSocket.js"></script>
+    <script>
+        ScrollReveal().reveal('.tableShower',{delay:500, origin:'left', distance:'300px'});
+        ScrollReveal().reveal('.allSettings',{delay:500, origin:'right', distance:'300px'});
+        ScrollReveal().reveal('.timerShower',{delay:500, origin:'left', distance:'300px'});
+    </script>
 </html>

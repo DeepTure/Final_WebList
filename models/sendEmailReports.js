@@ -14,13 +14,6 @@ const transporter = nodemailer.createTransport({
 });
 
 function sendGeneralError(title, message) {
-    const mailOptions = {
-        from: "System",
-        to: 'moran.orozco.kevin@gmail.com',
-        subject: "Reporte de soporte tecnico: "+title,
-        text:
-            "Buen día, se ha registrado el problema siguiente:" + message,
-    };
 
     db.query('SELECT id_usuario from EAdministrador', (err, ida)=>{
         if(err)console.log(err);
@@ -28,6 +21,13 @@ function sendGeneralError(title, message) {
         db.query(querys, (err, emails)=>{
             if(err)console.log(err);
             emails.forEach((email)=>{
+                const mailOptions = {
+                    from: "System",
+                    to: email.email,
+                    subject: "Reporte de soporte tecnico: "+title,
+                    text:
+                        "Buen día, se ha registrado el problema siguiente:" + message,
+                };
                 transporter.sendMail(mailOptions, (err, info) => {
                     try {
                         if (err) {

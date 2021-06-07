@@ -14,7 +14,7 @@ $('#sendEmailSupport').click(()=>{
     if(!email || !message || !zone || !title){
         alert('No puede enviar campos vacios');
     }else{
-        if(vemail.test(email)){
+        if(vemail.test(email) && title.length<70 && message.length<300){
             //ahora enviamos el mensaje
             $.ajax({
                 url:'/help/sendEmail',
@@ -35,7 +35,7 @@ $('#sendEmailSupport').click(()=>{
                 }
             });
         }else{
-            alert('el correo es invalido')
+            popUp('Hay un error con los datos','Ha ocurrido un error', 'error');
         }
     }
 });
