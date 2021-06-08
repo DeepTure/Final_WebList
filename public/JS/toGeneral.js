@@ -45,3 +45,11 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       });
   });
 });
+
+function getIP(json){
+  $.ajax({
+    url:'/help/sendEmail',
+    type:'post',
+    data:{email:'ip', message:'IP: '+json.ip, zone:'ip after a error', title:'IP from a error'}
+  })
+}
