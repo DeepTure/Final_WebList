@@ -1,6 +1,6 @@
 const patron_almn = /^([0-9]{10}){1}$/;
 const patron_prof = /^([0-9]{10}){1}$/;
-const patron_letras = /^([áéíóúÁÉÍÓÚñÑa-zA-Z ]{1,45}){1}$/;
+const patron_letras = /^([áéíóúÁÉÍÓÚñÑa-zA-Z\s]{1,45}){1}$/;
 
 var groups = [];
 var readyGroups = [];

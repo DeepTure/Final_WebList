@@ -1,6 +1,6 @@
 var patron_idrol = /^[0-9]{1,10}$/;
-var patron_nombre = /^[áéíóúÁÉÍÓÚña-zA-Z\s]{1,50}$/;
-var patron_ApellidoPM = /^[áéíóúÁÉÍÓÚña-zA-Z]{1,20}$/;
+var patron_nombre = /^[áéíóúÁÉÍÓÚña-zA-Z\s]{1,45}$/;
+var patron_ApellidoPM = /^[áéíóúÁÉÍÓÚña-zA-Z\s]{1,45}$/;
 var patron_numEmpleado = /^[0-9]{10}$/;
 var patron_boleta = /^[0-9]{10}$/;
 var patron_email =
@@ -29,7 +29,7 @@ function ApellidoPM(appm) {
     if (patron_ApellidoPM.test(appm)) {
         return true;
     } else {
-        console.log("Validación no aprobada del apellido")
+        console.log("Validación no aprobada del apellido");
         return false;
     }
 }
@@ -38,7 +38,7 @@ function numEmpleado(num) {
     if (patron_numEmpleado.test(num)) {
         return true;
     } else {
-        console.log("Validación no aprobada del número de empleado")
+        console.log("Validación no aprobada del número de empleado");
         return false;
     }
 }
@@ -47,7 +47,7 @@ function boleta(bol) {
     if (patron_boleta.test(bol)) {
         return true;
     } else {
-        console.log("Validación no aprobada de la boleta")
+        console.log("Validación no aprobada de la boleta");
         return false;
     }
 }
@@ -56,7 +56,7 @@ function correo(email) {
     if (patron_email.test(email)) {
         return true;
     } else {
-        console.log("Validación no aprobada en el email")
+        console.log("Validación no aprobada en el email");
         return false;
     }
 }
@@ -65,7 +65,7 @@ function contra(pass) {
     if (patron_contra.test(pass)) {
         return true;
     } else {
-        console.log("Validación no aprobada de la contraseña")
+        console.log("Validación no aprobada de la contraseña");
         return false;
     }
 }

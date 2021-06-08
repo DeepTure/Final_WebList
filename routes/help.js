@@ -1,44 +1,51 @@
 const router = require("express").Router();
-const model = require('../models/helpActionsModel');
+const model = require("../models/helpActionsModel");
 
 //Redireccionamiento al perfil
-router.get('/home/help',(req,res,next)=>{
-    if(req.isAuthenticated()) return next();
-    res.redirect("/");
-    
-},(req,res)=>{
-    let rol = req.user.rol;
-    let direccion ="/home";
-    return res.render("help",{direccion, rol});
-});
+router.get(
+    "/home/help",
+    (req, res, next) => {
+        if (req.isAuthenticated()) return next();
+        return res.redirect("/");
+    },
+    (req, res) => {
+        let rol = req.user.rol;
+        let direccion = "/home";
+        return res.render("help", { direccion, rol });
+    }
+);
 
-router.get('/home/historial/help',(req,res,next)=>{
-    if(req.isAuthenticated()) return next();
-    res.redirect("/");
-    
-},(req,res)=>{
-    let direccion ="/home/historial";
-    let rol = req.user.rol;
-    return res.render("help",{direccion, rol});
-});
+router.get(
+    "/home/historial/help",
+    (req, res, next) => {
+        if (req.isAuthenticated()) return next();
+        return res.redirect("/");
+    },
+    (req, res) => {
+        let direccion = "/home/historial";
+        let rol = req.user.rol;
+        return res.render("help", { direccion, rol });
+    }
+);
 
-router.get('/home/modify/help',(req,res,next)=>{
-    if(req.isAuthenticated()) return next();
-    res.redirect("/");
-    
-},(req,res)=>{
-    let direccion ="/home";
-    let rol = req.user.rol;
-    return res.render("help",{direccion, rol});
-});
-
+router.get(
+    "/home/modify/help",
+    (req, res, next) => {
+        if (req.isAuthenticated()) return next();
+        return res.redirect("/");
+    },
+    (req, res) => {
+        let direccion = "/home";
+        let rol = req.user.rol;
+        return res.render("help", { direccion, rol });
+    }
+);
 
 router.get("/help", (req, res) => {
-    let direccion ="/";
+    let direccion = "/";
     let rol = "";
-    return res.render("help",{direccion,rol});
+    return res.render("help", { direccion, rol });
 });
-
 
 //Renderizado de preguntas de help inicial
 router.get("/ingresar", (req, res) => {
@@ -102,6 +109,6 @@ router.get("/bot", (req, res) => {
 });
 
 //Enviar email a soporte técnico
-router.post('/help/sendEmail', model.sendEmail);
+router.post("/help/sendEmail", model.sendEmail);
 
 module.exports = router;

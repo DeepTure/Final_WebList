@@ -30,7 +30,7 @@ router.post(
     async (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send("ERROR");
+        return res.status(404).send("ERROR");
     },
     models.addProfesor
 );
@@ -40,7 +40,7 @@ router.post(
     async (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send("ERROR");
+        return res.status(404).send("ERROR");
     },
     models.addStudent
 );
@@ -50,7 +50,7 @@ router.post(
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send(null);
+        return res.status(404).send(null);
     },
     models.getProfesor
 );
@@ -60,7 +60,7 @@ router.post(
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send(null);
+        return res.status(404).send(null);
     },
     models.getStudents
 );
@@ -70,7 +70,7 @@ router.post(
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send(null);
+        return res.status(404).send(null);
     },
     models.getGroups
 );
@@ -78,21 +78,27 @@ router.post(
 router.post(
     "/getAbsences",
     (req, res, next) => {
-        if (
-            req.isAuthenticated() &&
-            (req.user.rol == "administrador" || req.user.rol == "profesor")
-        )
+        if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send(null);
+        return res.status(404).send(null);
     },
     models.getAbsences
+);
+
+router.post(
+    "/getAbsencesP",
+    (req, res, next) => {
+        if (req.isAuthenticated() && req.user.rol == "profesor") return next();
+        return res.status(404).send(null);
+    },
+    models.getAbsencesP
 );
 
 router.post(
     "/getStudentAbsences",
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "alumno") return next();
-        res.send(null);
+        return res.status(404).send(null);
     },
     models.getStudentAbsences
 );
@@ -102,7 +108,7 @@ router.post(
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send("ERROR");
+        return res.status(404).send("ERROR");
     },
     models.upGroup
 );
@@ -112,7 +118,7 @@ router.post(
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send(null);
+        return res.status(404).send(null);
     },
     models.getUpGroups
 );
@@ -122,7 +128,7 @@ router.post(
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send(null);
+        return res.status(404).send(null);
     },
     models.getAllRegGroups
 );
@@ -131,7 +137,7 @@ router.post(
     "/getProfessorRegGroups",
     (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "profesor") return next();
-        res.send(null);
+        return res.status(404).send(null);
     },
     models.getProfessorRegGroups
 );
@@ -141,7 +147,7 @@ router.post(
     async (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send("ERROR");
+        return res.status(404).send("ERROR");
     },
     models.deleteProfessorById
 );
@@ -151,7 +157,7 @@ router.post(
     async (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.send("ERROR");
+        return res.status(404).send("ERROR");
     },
     models.deleteStudentById
 );
@@ -161,7 +167,7 @@ router.post(
     async (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.redirect("/");
+        return res.redirect("/");
     },
     models.goToModify
 );
@@ -171,7 +177,7 @@ router.post(
     async (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.redirect("/");
+        return res.redirect("/");
     },
     models.modifyProfesor
 );
@@ -181,7 +187,7 @@ router.post(
     async (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.redirect("/");
+        return res.redirect("/");
     },
     models.modifyStudent
 );
@@ -191,7 +197,7 @@ router.post(
     async (req, res, next) => {
         if (req.isAuthenticated() && req.user.rol == "administrador")
             return next();
-        res.redirect("/");
+        return res.redirect("/");
     },
     models.modifyStudent
 );

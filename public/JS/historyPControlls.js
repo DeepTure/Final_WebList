@@ -20,43 +20,47 @@ $(document).ready(() => {
 //funcion para traer y preparar los registros
 $("#bringReg").click((ev) => {
     if (grupoCiclo.includes($("#agroup option:selected").val())) {
-        getAbsences(
-            $("#agroup option:selected").val().slice(0, 4),
-            $("#agroup option:selected").val().slice(5)
-        )
-            .then((data) => {
-                if (data.length > 0) {
-                    absences = data;
-                    filteredAbsences = [];
-                    $("#msgBox").empty();
-                    $("#regsData").show();
-                    setAllParams();
-                    setAllAbsences();
-                    createChart();
-                } else {
-                    $("#asub").html("<option>-- Materia --</option>");
-                    $("#astu").html("<option>-- Todos los alumnos --</option>");
-                    $("#adate").html("<option>-- Fecha --</option>");
-                    $("#regsData").hide();
-                    $("#msgBox").html(
-                        "<p " +
-                            'class="' +
-                            "titleFont " +
-                            "centerText " +
-                            "addLeftMarginAlt " +
-                            'addTopMarginAlt" ' +
-                            ">" +
-                            "No se encontraron inasistencias pertenecientes a esa generacion" +
-                            "</p>" +
-                            "<br />"
-                    );
-                }
-            })
-            .catch((ex) => {
-                console.log(ex);
-            });
+        prepareAll();
     }
 });
+
+function prepareAll() {
+    getAbsences(
+        $("#agroup option:selected").val().slice(0, 4),
+        $("#agroup option:selected").val().slice(5)
+    )
+        .then((data) => {
+            if (data.length > 0) {
+                absences = data;
+                filteredAbsences = [];
+                $("#msgBox").empty();
+                $("#regsData").show();
+                setAllParams();
+                setAllAbsences();
+                createChart();
+            } else {
+                $("#asub").html("<option>-- Materia --</option>");
+                $("#astu").html("<option>-- Todos los alumnos --</option>");
+                $("#adate").html("<option>-- Fecha --</option>");
+                $("#regsData").hide();
+                $("#msgBox").html(
+                    "<p " +
+                        'class="' +
+                        "titleFont " +
+                        "centerText " +
+                        "addLeftMarginAlt " +
+                        'addTopMarginAlt" ' +
+                        ">" +
+                        "No se encontraron inasistencias pertenecientes a esa generacion" +
+                        "</p>" +
+                        "<br />"
+                );
+            }
+        })
+        .catch((ex) => {
+            console.log(ex);
+        });
+}
 
 //filtro materias
 $("#asub").on("change", () => {
@@ -177,7 +181,7 @@ function setAllAbsences() {
             `<td>${absence.boleta}</td>` +
             `<td>${absence.fullname}</td>` +
             `<td>${absence.materia.toLowerCase()}</td>` +
-            `<td>${new Date(absence.fecha).toString().slice(0, 24)}</td>` +
+            `<td>${absence.fecha.slice(0, 10)}</td>` +
             "<td>" +
             `<article class="autoManageTogether">` +
             "<input " +
@@ -185,7 +189,7 @@ function setAllAbsences() {
             `type="button" ` +
             `name="delete" ` +
             `value="Eliminar" ` +
-            `onclick="deleteById('${absence.boleta}')"` +
+            `onclick="deleteById('${absence.id_inasistencia}')"` +
             "/>" +
             "</article>" +
             "</td>";
@@ -219,9 +223,7 @@ function updateAllAbsences() {
                 `<td>${filteredAbsence.boleta}</td>` +
                 `<td>${filteredAbsence.fullname}</td>` +
                 `<td>${filteredAbsence.materia.toLowerCase()}</td>` +
-                `<td>${new Date(filteredAbsence.fecha)
-                    .toString()
-                    .slice(0, 24)}</td>` +
+                `<td>${filteredAbsence.fecha.slice(0, 10)}</td>` +
                 "<td>" +
                 `<article class="autoManageTogether">` +
                 "<input " +
@@ -229,7 +231,7 @@ function updateAllAbsences() {
                 `type="button" ` +
                 `name="delete" ` +
                 `value="Eliminar" ` +
-                `onclick="deleteById('${filteredAbsence.boleta}')"` +
+                `onclick="deleteById('${filteredAbsence.id_inasistencia}')"` +
                 "/>" +
                 "</article>" +
                 "</td>";
@@ -248,6 +250,55 @@ function updateAllAbsences() {
                 "No se encontraron inasistencias con dichos filtros" +
                 "</p>" +
                 "<br />"
+        );
+    }
+}
+
+//funcion para eliminar una falta
+function deleteById(id_inasistencia) {
+    try {
+        Swal.fire({
+            title: "Confirmacion",
+            text: "Desea eliminar esta inasistencia?",
+            showCancelButton: true,
+            confirmButtonColor: "#007bff",
+            cancelButtonColor: "#dc3545",
+            confirmButtonText: `Si`,
+            cancelButtonText: `No`,
+            confirmButtonAriaLabel: "Si",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/home/profesor/asistencia/deleteAttendance",
+                    type: "POST",
+                    data: {
+                        id_inasistencia,
+                    },
+                    success: (res) => {
+                        popUp(res, "", "info");
+                        if (
+                            grupoCiclo.includes(
+                                $("#agroup option:selected").val()
+                            )
+                        ) {
+                            prepareAll();
+                        }
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        toast(
+                            "Advertencia",
+                            "Algo a salido mal, intentelo mas tarde"
+                        );
+                    },
+                });
+            }
+        });
+    } catch (ex) {
+        console.log(ex);
+        toast(
+            "Advertencia",
+            "Ocurrio un error inesperado, recarge la pagina o intentelo mas tarde"
         );
     }
 }
@@ -336,7 +387,7 @@ function setAllGroups() {
 function getAbsences(id_grupo, cicloE) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: "/getAbsences",
+            url: "/getAbsencesP",
             type: "POST",
             data: {
                 id_grupo,
