@@ -166,7 +166,7 @@ function setAllAbsences() {
             `<td>${absence.fullname}</td>` +
             `<td>${absence.materia.toLowerCase()}</td>` +
             `<td>${absence.id_grupo}</td>` +
-            `<td>${absence.fecha.slice(0, 10)}</td>`;
+            `<td>${absence.fecha.replace(/[TZ]+/, " ").slice(0, 19)}</td>`;
     });
     $("#titleData").text(`Tu historial`);
     $("#tableAbs").html(html);
@@ -196,7 +196,9 @@ function updateAllAbsences() {
                 `<td>${filteredAbsence.fullname}</td>` +
                 `<td>${filteredAbsence.materia.toLowerCase()}</td>` +
                 `<td>${filteredAbsence.id_grupo}</td>` +
-                `<td>${filteredAbsence.fecha.slice(0, 10)}</td>`;
+                `<td>${filteredAbsence.fecha
+                    .replace(/[TZ]+/, " ")
+                    .slice(0, 19)}</td>`;
         });
         html += "</table>";
         $("#tableAbs").html(html);

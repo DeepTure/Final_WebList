@@ -176,7 +176,7 @@ function setAllAbsences() {
             `<td>${absence.boleta}</td>` +
             `<td>${absence.fullname}</td>` +
             `<td>${absence.materia.toLowerCase()}</td>` +
-            `<td>${absence.fecha.slice(0, 10)}</td>`;
+            `<td>${absence.fecha.replace(/[TZ]+/, " ").slice(0, 19)}</td>`;
     });
     $("#titleData").text(
         `Historial de faltas del grupo ${absences[0].id_grupo} en el ciclo ${absences[0].cicloE}`
@@ -206,7 +206,9 @@ function updateAllAbsences() {
                 `<td>${filteredAbsence.boleta}</td>` +
                 `<td>${filteredAbsence.fullname}</td>` +
                 `<td>${filteredAbsence.materia.toLowerCase()}</td>` +
-                `<td>${filteredAbsence.fecha.slice(0, 10)}</td>`;
+                `<td>${filteredAbsence.fecha
+                    .replace(/[TZ]+/, " ")
+                    .slice(0, 19)}</td>`;
         });
         html += "</table>";
         $("#tableAbs").html(html);

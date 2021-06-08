@@ -124,6 +124,7 @@ model.verifyCode = (req, res) => {
                                         /**
                                          * Una vez verificado que el codigo sea correcto nos va a mandar aquí
                                          */
+                                        console.log(token);
                                         const valid = tokenActive(token);
                                         if (valid) {
                                             db.query(
@@ -305,32 +306,28 @@ model.verifyCode = (req, res) => {
 model.sendWaiting = (req, res) => {
     try {
         const data = req.body;
-        console.log(data);
-        const timeCreation = new Date(parseInt(data.creacion));
-        const fecha =
-            timeCreation.getFullYear() +
-            "-" +
-            ((timeCreation.getMonth() + 1).toString.length == 1
-                ? "0" + (timeCreation.getMonth() + 1)
-                : timeCreation.getMonth() + 1) +
-            "-" +
-            (timeCreation.getDate().toString.length == 1
-                ? "0" + timeCreation.getDate()
-                : timeCreation.getDate());
+        console.log(data, new Date(parseInt(data.creacion)));
+        const timeCreation = db
+            .escape(new Date(parseInt(data.creacion)))
+            .replace(".000", "");
         db.query(
             "SELECT id_inscripcion FROM MInscripcion WHERE boleta = ? AND id_generacion =?",
             [data.boleta, data.id_generacion],
             (err, idi) => {
                 if (err) return res.json(err);
                 console.log(
-                    "timeCreation: " + timeCreation + " fecha: ",
-                    fecha,
+                    "timeCreation: " +
+                        new Date(parseInt(data.creacion)) +
+                        " fecha: ",
+                    timeCreation,
                     "idi: ",
                     idi[0].id_inscripcion
                 );
                 db.query(
-                    "UPDATE MInasistencia SET esperando=1 WHERE DATE(fecha)=? AND id_inscripcion=?",
-                    [fecha, idi[0].id_inscripcion],
+                    "UPDATE MInasistencia SET esperando=1 WHERE fecha=" +
+                        timeCreation +
+                        " AND id_inscripcion=?",
+                    [idi[0].id_inscripcion],
                     (err, update) => {
                         if (err) return res.json(err);
                         return res.send(update);

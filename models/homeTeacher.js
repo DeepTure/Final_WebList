@@ -91,7 +91,6 @@ model.verifyToken = (req, res) => {
             //las coincidencias son los registros donde haya un token
             db.query(querys, (err, coincidencias) => {
                 if (err) return res.json(err);
-                console.log(coincidencias, "coincidencias");
                 if (coincidencias.length == 1) {
                     //Verificamos que el token aun esté activo
                     const isActive = tokenIsActive(coincidencias);
@@ -250,20 +249,15 @@ model.reject = (req, res) => {
                 [data.idToken],
                 (err, timeToken) => {
                     if (err) return res.json(err);
-                    const timeCreation = new Date(timeToken[0].creacion);
-                    const fecha =
-                        timeCreation.getFullYear() +
-                        "-" +
-                        ((timeCreation.getMonth() + 1).toString.length == 1
-                            ? "0" + (timeCreation.getMonth() + 1)
-                            : timeCreation.getMonth() + 1) +
-                        "-" +
-                        (timeCreation.getDate().toString.length == 1
-                            ? "0" + timeCreation.getDate()
-                            : timeCreation.getDate());
+                    const timeCreation = db
+                        .escape(new Date(timeToken[0].creacion))
+                        .replace(".000", "");
+
                     db.query(
-                        "UPDATE MInasistencia SET esperando=0 WHERE DATE(fecha)=? AND id_inscripcion=? AND id_programa=?",
-                        [fecha, idi[0].id_inscripcion, data.program],
+                        "UPDATE MInasistencia SET esperando=0 WHERE fecha=" +
+                            timeCreation +
+                            " AND id_inscripcion=? AND id_programa=?",
+                        [idi[0].id_inscripcion, data.program],
                         (err, updated) => {
                             if (err) return res.json(err);
                             return res.send(updated);
@@ -287,21 +281,15 @@ model.accept = (req, res) => {
                 [data.idToken],
                 (err, timeToken) => {
                     if (err) return res.json(err);
-                    const timeCreation = new Date(timeToken[0].creacion);
-                    const fecha =
-                        timeCreation.getFullYear() +
-                        "-" +
-                        ((timeCreation.getMonth() + 1).toString.length == 1
-                            ? "0" + (timeCreation.getMonth() + 1)
-                            : timeCreation.getMonth() + 1) +
-                        "-" +
-                        (timeCreation.getDate().toString.length == 1
-                            ? "0" + timeCreation.getDate()
-                            : timeCreation.getDate());
-                    console.log(fecha, idi[0].id_inscripcion, data.program);
+                    const timeCreation = db
+                        .escape(new Date(timeToken[0].creacion))
+                        .replace(".000", "");
+
                     db.query(
-                        "DELETE FROM MInasistencia WHERE DATE(fecha)=? AND id_inscripcion=? AND id_programa=?",
-                        [fecha, idi[0].id_inscripcion, data.program],
+                        "DELETE FROM MInasistencia WHERE fecha=" +
+                            timeCreation +
+                            " AND id_inscripcion=? AND id_programa=?",
+                        [idi[0].id_inscripcion, data.program],
                         (err, deleted) => {
                             if (err) return res.json(err);
                             return res.send(deleted);
@@ -320,29 +308,26 @@ model.acceptAll = (req, res) => {
         [data.idToken],
         (err, timeToken) => {
             if (err) return res.json(err);
-            const timeCreation = new Date(timeToken[0].creacion);
-            const fecha =
-                timeCreation.getFullYear() +
-                "-" +
-                ((timeCreation.getMonth() + 1).toString.length == 1
-                    ? "0" + (timeCreation.getMonth() + 1)
-                    : timeCreation.getMonth() + 1) +
-                "-" +
-                (timeCreation.getDate().toString.length == 1
-                    ? "0" + timeCreation.getDate()
-                    : timeCreation.getDate());
+            const timeCreation = db
+                .escape(new Date(timeToken[0].creacion))
+                .replace(".000", "");
+
             db.query(
-                "SELECT id_inscripcion FROM MInasistencia WHERE DATE(fecha)=? AND id_programa=? AND esperando=1",
-                [fecha, data.program],
+                "SELECT id_inscripcion FROM MInasistencia WHERE fecha=" +
+                    timeCreation +
+                    " AND id_programa=? AND esperando=1",
+                [data.program],
                 (err, students) => {
                     if (err) return res.json(err);
                     const querys = getBoletasByInscripcion(students);
-                    console.log(querys, students, fecha);
+                    console.log(querys, students, timeCreation);
                     db.query(querys, (err, boletas) => {
                         if (err) return res.json(err);
                         db.query(
-                            "DELETE FROM MInasistencia WHERE DATE(fecha)=? AND id_programa=? AND esperando=1",
-                            [fecha, data.program],
+                            "DELETE FROM MInasistencia WHERE fecha=" +
+                                timeCreation +
+                                " AND id_programa=? AND esperando=1",
+                            [data.program],
                             (err, deleted) => {
                                 if (err) return res.json(err);
                                 return res.send({ deleted, boletas });
@@ -362,32 +347,25 @@ model.rejectAll = (req, res) => {
         [data.idToken],
         (err, timeToken) => {
             if (err) return res.json(err);
-            const timeCreation = new Date(
-                timeToken[0] === undefined
-                    ? timeToken.creacion
-                    : timeToken[0].creacion
-            );
-            const fecha =
-                timeCreation.getFullYear() +
-                "-" +
-                ((timeCreation.getMonth() + 1).toString.length == 1
-                    ? "0" + (timeCreation.getMonth() + 1)
-                    : timeCreation.getMonth() + 1) +
-                "-" +
-                (timeCreation.getDate().toString.length == 1
-                    ? "0" + timeCreation.getDate()
-                    : timeCreation.getDate());
+            const timeCreation = db
+                .escape(new Date(timeToken[0].creacion))
+                .replace(".000", "");
+
             db.query(
-                "SELECT id_inscripcion FROM MInasistencia WHERE DATE(fecha)=? AND id_programa=? AND esperando=1",
-                [fecha, data.program],
+                "SELECT id_inscripcion FROM MInasistencia WHERE fecha=" +
+                    timeCreation +
+                    " AND id_programa=? AND esperando=1",
+                [data.program],
                 (err, students) => {
                     if (err) return res.json(err);
                     const querys = getBoletasByInscripcion(students);
                     db.query(querys, (err, boletas) => {
                         if (err) return res.json(err);
                         db.query(
-                            "UPDATE MInasistencia SET esperando=0 WHERE DATE(fecha)=? AND id_programa=?",
-                            [fecha, data.program],
+                            "UPDATE MInasistencia SET esperando=0 WHERE fecha=" +
+                                timeCreation +
+                                " AND id_programa=?",
+                            [data.program],
                             (err, updated) => {
                                 if (err) return res.json(err);
                                 return res.send({ updated, boletas });
@@ -427,31 +405,30 @@ model.studentsWaiting = (req, res) => {
         (err, timeToken) => {
             console.log("studentsWaiting: ", timeToken[0].creacion);
             if (err) return res.json(err);
-            const timeCreation = new Date(timeToken[0].creacion + "");
-            const fecha =
-                timeCreation.getFullYear() +
-                "-" +
-                ((timeCreation.getMonth() + 1).toString.length == 1
-                    ? "0" + (timeCreation.getMonth() + 1)
-                    : timeCreation.getMonth() + 1) +
-                "-" +
-                (timeCreation.getDate().toString.length == 1
-                    ? "0" + timeCreation.getDate()
-                    : timeCreation.getDate());
+            const timeCreation = db
+                .escape(new Date(timeToken[0].creacion))
+                .replace(".000", "");
+            console.log(
+                "studentsWaiting: ",
+                timeToken[0].creacion,
+                timeCreation
+            );
             db.query(
-                "SELECT id_inscripcion FROM MInasistencia WHERE DATE(fecha)=? AND id_programa=? AND esperando=1",
-                [fecha, data.program],
+                "SELECT id_inscripcion FROM MInasistencia WHERE fecha=" +
+                    timeCreation +
+                    " AND id_programa=? AND esperando=1",
+                [data.program],
                 (err, idi) => {
                     if (err) return res.json(err);
+                    console.log(idi);
                     if (idi.length != 0) {
-                        const querys = getBoletasByInscripcion(idi);
+                        let querys = getBoletasByInscripcion(idi);
                         db.query(querys, (err, boletas) => {
                             if (err) return res.json(err);
-                            const querys =
-                                getStringQueryUseIdByBoletas(boletas);
+                            querys = getStringQueryUseIdByBoletas(boletas);
                             db.query(querys, (err, idu) => {
                                 if (err) return res.json(err);
-                                const querys = getStringQueryNameByIdu(idu);
+                                querys = getStringQueryNameByIdu(idu);
                                 db.query(querys, (err, names) => {
                                     if (err) return res.json(err);
                                     res.send({ names, boletas, waiting: true });
@@ -472,7 +449,7 @@ function getStringQueryNameByIdu(ids) {
     ids.forEach((id) => {
         querys +=
             'SELECT nombre, app FROM CUsuario WHERE id_usuario="' +
-            id.id_usuario +
+            (id[0] === undefined ? id.id_usuario : id[0].id_usuario) +
             '";';
     });
     return querys;
@@ -482,7 +459,9 @@ function getStringQueryUseIdByBoletas(ids) {
     let querys = "";
     ids.forEach((id) => {
         querys +=
-            'SELECT id_usuario FROM EAlumno WHERE boleta="' + id.boleta + '";';
+            'SELECT id_usuario FROM EAlumno WHERE boleta="' +
+            (id[0] === undefined ? id.boleta : id[0].boleta) +
+            '";';
     });
     return querys;
 }
@@ -492,7 +471,7 @@ function getBoletasByInscripcion(ids) {
     ids.forEach((id) => {
         querys +=
             'SELECT boleta FROM MInscripcion WHERE id_inscripcion="' +
-            id.id_inscripcion +
+            (id[0] === undefined ? id.id_inscripcion : id[0].id_inscripcion) +
             '";';
     });
     return querys;
@@ -596,12 +575,7 @@ function timeToExpire(duration, creation) {
  * @param {String} program Es el programa en el que se esta pasando asistencia
  */
 function putGenerationAbsent(generation, program, nowTime) {
-    const stringTime =
-        nowTime.getFullYear() +
-        "-" +
-        (nowTime.getMonth() + 1) +
-        "-" +
-        nowTime.getDate();
+    const stringTime = nowTime;
     //obtenemos todas las inscripciones de esta generacion
     db.query(
         "SELECT * FROM MInscripcion WHERE id_generacion = ?",
@@ -628,26 +602,16 @@ Se crea como llave compuesta a partir de fecha (en formato '1000-01-01 00:00:00'
 En total son 55 caracteres.*/
 function processQuerysInasistenciaByInscripcion(ids, program, nowTime) {
     let querys = "";
-    const time = new Date();
-    const date =
-        time.getFullYear() +
-        "-" +
-        (time.getMonth() + 1) +
-        "-" +
-        time.getDate() +
-        " " +
-        time.getHours() +
-        ":" +
-        time.getMinutes() +
-        ":" +
-        time.getSeconds();
     ids.forEach((id) => {
-        let idi = date + id.id_inscripcion + program;
+        let idi =
+            db.escape(nowTime).replace("'", "").slice(0, 19) +
+            id.id_inscripcion +
+            program;
         querys +=
             'INSERT INTO MInasistencia VALUES("' +
             idi +
             '","' +
-            nowTime +
+            db.escape(nowTime).replace("'", "").slice(0, 23) +
             '","' +
             id.id_inscripcion +
             '","' +

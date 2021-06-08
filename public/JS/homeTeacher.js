@@ -340,8 +340,10 @@ function getStudentWaiting(idToken, program) {
         type: "post",
         data: { idToken, program },
         success: function (response) {
-            console.log('getStudents: ',response);
-            showStudents(response);
+            console.log("getStudents: ", response);
+            if (response.waiting === undefined ? true : response.waiting) {
+                showStudents(response);
+            }
         },
         error: function (response) {
             console.log(response);
@@ -350,14 +352,31 @@ function getStudentWaiting(idToken, program) {
 }
 
 function showStudents(students) {
-    const boletas = students.boletas;
+    let boletas = [];
+    let names = [];
+    students.boletas.forEach((boleta, i) => {
+        boletas.push({
+            boleta: boleta[0] === undefined ? boleta.boleta : boleta[0].boleta,
+        });
+        names.push({
+            nombre:
+                students.names[i][0] === undefined
+                    ? students.names[i].nombre
+                    : students.names[i][0].nombre,
+            app:
+                students.names[i][0] === undefined
+                    ? students.names[i].app
+                    : students.names[i][0].app,
+        });
+    });
+
     const table = document.getElementById("attendanceRegistration");
     boletas.forEach((boleta, i) => {
         let code =
             `<tr id="${boleta.boleta}"><td>` +
             boleta.boleta +
             `</td>
-        <td>${students.names[i].nombre} ${students.names[i].app}</td>
+        <td>${names[i].nombre} ${names[i].app}</td>
         <td>
             <article class="autoManageTogether">
                 <input
