@@ -893,6 +893,28 @@ model.getAbsences = (req, res) => {
     }
 };
 
+//obtener datos de inasistencias para el profesor
+model.getAbsencesP = (req, res) => {
+    try {
+        let { id_grupo, cicloE } = req.body;
+        console.log(id_grupo, cicloE);
+        db.query(
+            "SELECT id_inasistencia, fecha, boleta, CONCAT_WS(' ',nombre,app,apm) AS fullname, id_grupo, materia, cicloE FROM MInasistencia INNER JOIN MInscripcion USING (id_inscripcion) INNER JOIN MPrograma USING (id_programa) INNER JOIN EGeneracion ON EGeneracion.id_generacion = MInscripcion.id_generacion INNER JOIN EAlumno USING (boleta) INNER JOIN CUsuario USING (id_usuario) INNER JOIN CMateria USING (id_materia) WHERE (id_grupo = ? AND cicloE = ?)",
+            [id_grupo, cicloE],
+            (err, rows) => {
+                if (err) {
+                    console.error(err);
+                    return res.send(null);
+                }
+                return res.send(rows);
+            }
+        );
+    } catch (ex) {
+        console.error(ex);
+        return res.send(null);
+    }
+};
+
 //obtener inasistencias de un alumno
 model.getStudentAbsences = (req, res) => {
     try {

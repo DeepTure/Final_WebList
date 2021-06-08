@@ -3,6 +3,28 @@ const model = {};
 const jwt = require("jsonwebtoken");
 const db = require("../database/connection");
 
+model.deleteAttendance = (req, res) => {
+    let { id_inasistencia } = req.body;
+    try {
+        db.query(
+            "DELETE FROM MInasistencia WHERE (id_inasistencia = ?)",
+            [id_inasistencia],
+            (err, rows) => {
+                if (err) {
+                    console.log(err);
+                    return res.send(
+                        "Algo salio mal, intentelo de nuevo mas tarde"
+                    );
+                }
+                return res.send("Se a eliminado el usuario exitosamente");
+            }
+        );
+    } catch (ex) {
+        console.log(ex);
+        return res.send("A fatal error has ocurred. Please try again later");
+    }
+};
+
 //problemas con el modo asincrono SELECT id_grupo FROM egeneracion WHERE id_generacion=?
 model.getGroups = (req, res) => {
     const data = req.body;
@@ -340,7 +362,11 @@ model.rejectAll = (req, res) => {
         [data.idToken],
         (err, timeToken) => {
             if (err) return res.json(err);
-            const timeCreation = new Date(timeToken[0] === undefined ? timeToken.creacion:timeToken[0].creacion);
+            const timeCreation = new Date(
+                timeToken[0] === undefined
+                    ? timeToken.creacion
+                    : timeToken[0].creacion
+            );
             const fecha =
                 timeCreation.getFullYear() +
                 "-" +
@@ -399,9 +425,9 @@ model.studentsWaiting = (req, res) => {
         "SELECT creacion FROM ETokenLista WHERE id_token=?",
         [data.idToken],
         (err, timeToken) => {
-            console.log('studentsWaiting: ',timeToken[0].creacion);
+            console.log("studentsWaiting: ", timeToken[0].creacion);
             if (err) return res.json(err);
-            const timeCreation = new Date((timeToken[0].creacion+''));
+            const timeCreation = new Date(timeToken[0].creacion + "");
             const fecha =
                 timeCreation.getFullYear() +
                 "-" +
@@ -421,7 +447,8 @@ model.studentsWaiting = (req, res) => {
                         const querys = getBoletasByInscripcion(idi);
                         db.query(querys, (err, boletas) => {
                             if (err) return res.json(err);
-                            const querys =  getStringQueryUseIdByBoletas(boletas);
+                            const querys =
+                                getStringQueryUseIdByBoletas(boletas);
                             db.query(querys, (err, idu) => {
                                 if (err) return res.json(err);
                                 const querys = getStringQueryNameByIdu(idu);
