@@ -43,7 +43,6 @@ $('#sendEmailSupport').click(()=>{
 function clerInputsEmailContact(changeView){
     $('#emailUser').val('');
     $('#message').val('');
-    $('#zone').val('');
     $('#title').val('')
     if(changeView){
         $('#contactSupportActive').hide();

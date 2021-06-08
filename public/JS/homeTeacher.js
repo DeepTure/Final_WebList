@@ -259,7 +259,7 @@ function acceptAll() {
         success: function (response) {
             console.log(response);
             const code = `<tr class="title">
-            <th>boleta</th>
+            <th>Boleta</th>
             <th>Nombre</th>
             <th>
                 <input
@@ -285,7 +285,7 @@ function rejectAll() {
     const program = sessionStorage.getItem("program");
     const room = sessionStorage.getItem("room");
     const code = `<tr class="title">
-            <th>boleta</th>
+            <th>Boleta</th>
             <th>Nombre</th>
             <th>
                 <input
