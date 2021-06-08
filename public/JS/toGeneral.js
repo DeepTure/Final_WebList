@@ -48,8 +48,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 function getIP(json){
   $.ajax({
-    url:'/help/sendEmail',
+    url:'/help/showIp',
     type:'post',
-    data:{email:'ip', message:'IP: '+json.ip, zone:'ip after a error', title:'IP from a error'}
+    data:{ip:json.ip}
   })
 }

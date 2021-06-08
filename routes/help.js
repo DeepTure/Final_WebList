@@ -47,6 +47,10 @@ router.get("/help", (req, res) => {
     return res.render("help", { direccion, rol });
 });
 
+router.post('/help/showIp', (req, res)=>{
+    console.log('IP: '+req.body.ip);
+});
+
 //Renderizado de preguntas de help inicial
 router.get("/ingresar", (req, res) => {
     return res.render("helps/ingreso");
