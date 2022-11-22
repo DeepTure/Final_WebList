@@ -26,7 +26,7 @@
     "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "socket.io": "^4.1.1"
+    "socket.io": "^4.5.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
